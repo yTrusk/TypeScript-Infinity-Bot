@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id String @id @unique @default(uuid())
+  guild_id String
+  user_id String
+  balance Float @default(0.0)
+  nome_prod String
+  preco_prod Float @default(0)
+
+  @@unique([guild_id, user_id])
+}
+
+model Config {
+  id String @id @unique @default(uuid())
+  guild_id String @unique
+  logstaff String
+  logsugest String
+  refstaff String
+  antlk String
+  logsbv String
+  cargoverify String
+  cateticket String
+  canal_voz String
+}
+
+model Sugestions {
+    id String @id @unique @default(cuid())
+
+    message_id String @unique
+    aprovar_button String? @unique 
+    recusar_button String? @unique
+
+    votes UserToSugestions[]
+}
+
+model UserToSugestions {
+    id String @id @unique @default(cuid())
+
+    user_id String
+    positive Int? @default(0)
+    negative Int? @default(0)
+
+    sugestions Sugestions @relation(fields: [sugestion_id], references: [id])
+    sugestion_id String 
+
+    @@index([sugestion_id])
+}
+
+model Guild {
+  id String @id @unique @default(cuid())
+  guild_name String?
+  guild_id String @unique
+
+  products Products[]
+}
+
+model Products {
+    id String @id @unique @default(cuid())
+
+    name String
+    price Float
+    descprod String
+    embedtitle String
+    embeddesc String
+    guild Guild @relation(fields: [guild_id], references: [id])
+    guild_id String
+
+    @@index([guild_id])
+}
