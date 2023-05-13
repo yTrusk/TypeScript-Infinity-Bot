@@ -66,11 +66,11 @@ export default new Command({
       },
     });
     if (!userGuild) {
-      userGuild = await userCreate(interaction, user?.id);
+      userGuild = await userCreate(interaction.guild?.id as string, user?.id);
     }
     const userGuildBalance = userGuild.balance;
     if (!userGuild2) {
-      userGuild2 = await userCreate(interaction, user2?.id);
+      userGuild2 = await userCreate(interaction.guild?.id as string, user2?.id);
     }
     const userGuild2Balance = userGuild2.balance;
 
@@ -87,7 +87,7 @@ export default new Command({
     } else {
       if (!cooldowns[user.id]) cooldowns[user.id] = { lastCmd: null };
       let ultimoCmd = cooldowns[user.id].lastCmd;
-      let timeout = ms("1 day"); // Coloque em ms o tempo
+      let timeout = ms("30s"); // Coloque em ms o tempo
       if (ultimoCmd !== null && timeout - (Date.now() - ultimoCmd) > 0) {
         let time = Math.ceil((timeout - (Date.now() - ultimoCmd)) / 1000);
         let resta = `${time} segundos`;
@@ -148,7 +148,7 @@ export default new Command({
       collector.on("collect", async (i) => {
         if (i.customId === "recusarduelo") {
           const embed = embeddesc(
-            `O usuário: ${user2} recusou o duelo`,
+            `**O usuário: ${user2} recusou o duelo**`,
             interaction
           );
           interaction.editReply({ embeds: [embed], components: [row2] });

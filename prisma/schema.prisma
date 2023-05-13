@@ -19,19 +19,6 @@ model User {
   @@unique([guild_id, user_id])
 }
 
-model Config {
-  id String @id @unique @default(uuid())
-  guild_id String @unique
-  logstaff String
-  logsugest String
-  refstaff String
-  antlk String
-  logsbv String
-  cargoverify String
-  cateticket String
-  canal_voz String
-}
-
 model Sugestions {
     id String @id @unique @default(cuid())
 
@@ -61,6 +48,24 @@ model Guild {
   guild_id String @unique
 
   products Products[]
+  config Config[]
+}
+
+model Config {
+  id String @id @unique @default(uuid())
+  logstaff String
+  logsugest String
+  refstaff String
+  antlk String
+  logsbv String
+  cargoverify String
+  cateticket String
+  canal_voz String
+
+  guild Guild @relation(fields: [guild_id], references: [id])
+  guild_id String  
+
+  @@index([guild_id])
 }
 
 model Products {

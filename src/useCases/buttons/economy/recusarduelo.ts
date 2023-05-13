@@ -1,21 +1,25 @@
+import { ButtonStyle } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
+import { buttonsRow, embeddesc } from "../../../functions/functions";
 
 export default class RecusarDueloClass extends actionEvent {
     constructor(client: ExtendedClient){
         super(client, {
             event: 'recusarduelo',
-            type: 'button'
+            type: 'button',
+            guild: {
+                include: {
+
+                }
+            }
         })
    }
    async execute({ client, interaction }: actionEventProps){
         if(!interaction.isButton()) return;
-    /*
-        const embed = embeddesc(
-            `O usuário: ${user2} recusou o duelo`,
-            interaction
-          );
-          interaction.editReply({ embeds: [embed], components: [row2] });
-          */
+   interaction.reply({
+     content: `<a:errado:1084631043757310043> **Você recusou o duelo.**`,
+   });
+          
    }
 }

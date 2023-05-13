@@ -15,14 +15,16 @@ import {
   ComponentsModal,
   ComponentsSelect,
 } from "./types/Command";
-dotenv.config();
 import fs, { readdirSync } from "fs";
 import path, { sep } from "path";
 import { EventType } from "./types/event";
 import { actionEvent } from "../classes/actions";
 export * from "colors";
+import { PrismaClient } from "@prisma/client";
 const fileCondition = (fileName: string) =>
   fileName.endsWith(".ts") || fileName.endsWith(".js");
+  
+dotenv.config();
 
 export class ExtendedClient extends Client {
   public commands: Collection<string, CommandType> = new Collection();
@@ -30,6 +32,8 @@ export class ExtendedClient extends Client {
   public buttons: ComponentsButton = new Collection();
   public selects: ComponentsSelect = new Collection();
   public modals: ComponentsModal = new Collection();
+
+  public prisma: PrismaClient;
 
   constructor() {
     super({
@@ -47,6 +51,7 @@ export class ExtendedClient extends Client {
         Partials.User,
       ],
     });
+    this.prisma = new PrismaClient();
   }
   public start() {
     this.registerModules();
@@ -133,7 +138,9 @@ export class ExtendedClient extends Client {
 
             console.log(`[Action] - ${action.config.event} loaded`);
             this.infinityActions.set(action.config.event, action);
-          } catch (err) {}
+          } catch (err) {
+            console.log(`Ocorreu um erro ao carregar uma ação!`)
+          }
         }
       });
     });

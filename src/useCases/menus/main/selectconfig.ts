@@ -1,14 +1,19 @@
+import { EmbedBuilder, ButtonStyle } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
+import { configModal, embeddesc, buttonsRow } from "../../../functions/functions";
+import { PrismaClient } from "@prisma/client";
 
-export default class RecusarDueloClass extends actionEvent {
+const prisma = new PrismaClient()
+
+export default class selectConfigClass extends actionEvent {
     constructor(client: ExtendedClient){
         super(client, {
             event: 'selectconfig',
-            type: 'button'
+            type: 'selectmenu',
         })
    }
-   async execute({ client, interaction }: actionEventProps){
+   async execute({ client, interaction, guild }: actionEventProps){
         if(!interaction.isStringSelectMenu()) return;
 
         let op = interaction.values[0];
