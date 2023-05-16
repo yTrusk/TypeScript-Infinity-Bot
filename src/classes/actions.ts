@@ -7,7 +7,7 @@ export interface actionEventProps {
     interaction: Interaction & {
         guild: DiscordGuild | null
     }
-    guild?: Guild | Prisma.GuildSelect
+    guild?: Guild | Prisma.GuildSelect 
 }
 
 export type OptionsType = 'button' | 'selectmenu' | 'modal'
@@ -17,7 +17,7 @@ export type Options = {
     type: OptionsType;
 
     guild?: {
-        include?: Prisma.GuildInclude
+        include?: Prisma.GuildInclude | null
     }
 }
 

@@ -7,8 +7,8 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
-import { configCreate, userCreate } from "../../functions/functions";
+import { PrismaClient, User } from "@prisma/client";
+import { configCreate, handle, userCreate } from "../../functions/functions";
 const prisma = new PrismaClient();
 export default new Command({
   name: "config",
@@ -100,15 +100,22 @@ export default new Command({
           },
         });
         if (!userGuild) {
-         await userCreate(interaction.guild?.id, interaction.user.id)
+         const [user, userError] =  await handle<User>(
+            userCreate(interaction.guild?.id, interaction.user.id)
+          );
+          if(userError){
+            // erro ao criar o usuario
+          }
         }
         const guildid = interaction.guild?.id as string;
-        let guildConfig = await prisma.config.findUnique({
+        let guildConfig = await prisma.guild.findUnique({
           where: {
             guild_id: guildid,
-          },
+          }, include:{
+            config: true
+          }
         });
-        if (!guildConfig) {
+        if (!guildConfig?.config) {
           await configCreate(guildid);
         } else {
           return;

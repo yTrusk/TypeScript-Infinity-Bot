@@ -7,12 +7,12 @@ export default class RecusarDueloClass extends actionEvent {
       event: "aceitarduelo",
       type: "button",
       guild: {
-        include: {},
+        include: null,
       },
     });
   }
-  async execute({ client, interaction }: actionEventProps) {
+  async execute({ interaction }: actionEventProps) {
       if (!interaction.isButton()) return;
-      interaction.reply({ content: `<a:certo:1084630932885078036> **Você aceitou o duelo.**` });
+      interaction.reply({ content: `<a:certo:1084630932885078036> **Você aceitou o duelo.**`, ephemeral: true });
   }
 }

@@ -219,6 +219,63 @@ async function userCreate(guild: any, user: any) {
   });
   return userGuild;
 }
+
+type Maybe<T> = T | null;
+type AsyncResult = any;
+type AsyncError = any;
+type AsyncReturn<R, E> = [Maybe<R>, Maybe<E>];
+type AsyncFn = Promise<AsyncResult>;
+
+export async function handle<R = AsyncResult, E = AsyncError>(
+  fn: AsyncFn
+): Promise<AsyncReturn<R, E>> {
+  try {
+    const data: R = await fn;
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}
+async function setPremiumExpiration(userId: string, dias: number) {
+  const dataAtual = new Date();
+  const dataExpiracao = new Date(dataAtual.getTime());
+  dataExpiracao.setDate(dataExpiracao.getDate() + dias);
+  const test = await prisma.userProfile.findUnique({
+    where: { user_id: userId },
+  });
+  if (!test) {
+    await prisma.userProfile.create({
+      data: { user_id: userId, premium: true, dateexpires: dataExpiracao },
+    });
+    return;
+  }
+await prisma.userProfile.update({where: {user_id: userId}, data: {dateexpires: dataExpiracao, premium: true}})
+    return console.log(
+      `Usuário ${userId} agora possui premium ativado até ${dataExpiracao}`
+    );
+}
+
+async function verificarUsersPremium() {
+  const usuarios = await prisma.userProfile.findMany();
+
+  for (const usuario of usuarios) {
+    let mensagem;
+    if (usuario.premium && new Date(usuario.dateexpires) > new Date()) {
+      await prisma.userProfile.update({
+        where: { id: usuario.id },
+        data: { premium: true },
+      });
+      mensagem = `Usuário ${usuario.id} tem premium ativo`;
+    } else {
+      await prisma.userProfile.update({
+        where: { id: usuario.id },
+        data: { premium: false },
+      });
+      mensagem = `Usuário ${usuario.id} não tem premium ativo`;
+    }
+  }
+}
+console.log(verificarUsersPremium());
 export {
   configModal,
   embeddesc,
@@ -228,4 +285,6 @@ export {
   embed1img,
   configCreate,
   userCreate,
+  verificarUsersPremium,
+  setPremiumExpiration,
 };

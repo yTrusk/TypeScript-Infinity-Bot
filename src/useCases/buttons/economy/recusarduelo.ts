@@ -18,7 +18,7 @@ export default class RecusarDueloClass extends actionEvent {
    async execute({ client, interaction }: actionEventProps){
         if(!interaction.isButton()) return;
    interaction.reply({
-     content: `<a:errado:1084631043757310043> **Você recusou o duelo.**`,
+     content: `<a:errado:1084631043757310043> **Você recusou o duelo.**`, ephemeral: true,
    });
           
    }

@@ -11,14 +11,9 @@ export default new Command({
   type: ApplicationCommandType.ChatInput,
   async run({ interaction }) {
     if (!interaction.isCommand()) return;
-
     let now_time = Date.now();
     const embed = embeddesc(`**Calculando ping...**`, interaction);
-    const embed2 = embeddesc(
-      `🕑 **Tempo de resposta: ${Date.now() - now_time}ms** \n🌍 **WebSocket: ${
-        client.ws.ping
-      }ms**`, interaction
-    );
+    
     const row = buttonsRow([
       {
         disabled: false,
@@ -29,7 +24,13 @@ export default new Command({
       }
     ])
     interaction.reply({ embeds: [embed] }).then(() => {
-      interaction.editReply({ embeds: [embed2], components: [row] });
+      const embed2 = embeddesc(
+        `🕑 **Tempo de resposta: ${
+          Date.now() - now_time
+        }ms** \n🌍 **WebSocket: ${client.ws.ping}ms**`,
+        interaction
+      );
+      interaction.editReply({ embeds: [embed2]});
     });
   },
 });

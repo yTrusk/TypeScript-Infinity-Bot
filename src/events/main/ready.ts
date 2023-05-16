@@ -10,9 +10,9 @@ export default new Event({
   once: true,
   run() {
     const { commands, buttons, selects, modals } = client;
-    console.log(`Exibindo informações...`.rainbow);
+    console.log(`Exibindo informações...`);
     setTimeout(() => {
-      console.log(`⚙ Configurando comandos...`.red);
+      console.log(`⚙ Configurando comandos...`);
     }, 1500);
     setTimeout(async () => {
       console.log(`Comandos indentificados: ${commands.size}`.cyan);
@@ -34,7 +34,7 @@ export default new Event({
           .forEach(async (fileName) => {
             if (commands.size > 0) {
               setTimeout(() => {
-                console.log(fileName.green);
+                console.log(`[Commands] - ${fileName} loaded`.green);
               }, 500);
             } else {
               console.log(`Comandos carregados: Não encontrado`.red);
@@ -42,30 +42,13 @@ export default new Event({
           });
       });
     }, 7000);
-    setTimeout(() => {
-      if (buttons.size !== 0) {
-        console.log(`Buttons carregados: ${buttons.size}`.green);
-      } else {
-        console.log(`Buttons carregados: Não encontrado`.red);
-      }
-
-      if (selects.size !== 0) {
-        console.log(`Selects Menus carregados: ${selects.size}`.green);
-      } else {
-        console.log(`Selects Menus carregados: Não encontrado`.red);
-      }
-
-      if (modals.size !== 0) {
-        console.log(`Modals carregados: ${modals.size}`.green);
-      } else {
-        console.log(`Modals carregados: Não encontrado`.red);
-      }
-    }, 9000);
 
     let canal = client.channels.cache.get("1074489520965296251") as VoiceChannel;
     if (!canal)
-      return console.log(`❌ Não foi possivél entrar no canal de voz.`.red);
-  
+      return console.log(
+        `❌ Não foi possivél entrar no canal de voz.
+      ✅ Logado no bot: ${client.user?.username}`.red
+      );
     try {
       joinVoiceChannel({
         channelId: canal.id,
@@ -75,7 +58,10 @@ export default new Event({
       console.log(`✅ Entramos no canal de voz com sucesso.
       ✅ Logado no bot: ${client.user?.username}`);
     } catch (e) {
-      console.log(`❌ Não foi possivél entrar no canal de voz.`.red);
+      console.log(
+        `❌ Não foi possivél entrar no canal de voz.
+      ✅ Logado no bot: ${client.user?.username}`.red
+      );
     }    
   },
 });

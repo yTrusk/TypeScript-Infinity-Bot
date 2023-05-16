@@ -2,7 +2,7 @@ import { ActionRowBuilder, ApplicationCommandOptionType, ApplicationCommandType,
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
 import { PrismaClient } from "@prisma/client";
-import { userCreate } from "../../functions/functions";
+import { handle, userCreate } from "../../functions/functions";
 const prisma = new PrismaClient();
 
 export default new Command({
@@ -30,8 +30,9 @@ export default new Command({
       },
     });
     if (!userGuild) {
-      await userCreate(interaction.guildId, user.id)
-    }
+const [user, userError] = await handle(
+  userCreate(interaction.guild?.id, interaction.user.id)
+);    }
       let conta = user?.createdAt.toLocaleString();
       let id = user?.id;
       let tag = user?.tag;

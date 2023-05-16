@@ -36,10 +36,16 @@ export default new Command({
     if (!interaction.isCommand()) return;
     const userr = options.getUser("usuário") as User;
     const gid = interaction.guild as Guild;
-    const test = await prisma.config.findUnique({
-      where: { guild_id: gid.id as string },
-    });
-    const sla = test?.logstaff as string;
+     const guildid = interaction.guild?.id as string;
+        const test = await prisma.guild.findUnique({
+          where: {
+            guild_id: guildid,
+          },
+          include: {
+            config: true,
+          },
+        });
+    const sla = test?.config?.logstaff as string;
     const ch = gid.channels.cache.find((c) => c.id === sla) as TextChannel;
     const user = gid.members.cache.get(userr.id) as GuildMember;
     const member = gid.members.cache.get(user.id);

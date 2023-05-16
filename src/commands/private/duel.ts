@@ -13,6 +13,7 @@ import {
   buttonsRow,
   embed1,
   embeddesc,
+  handle,
   userCreate,
 } from "../../functions/functions";
 const prisma = new PrismaClient();
@@ -44,16 +45,16 @@ export default new Command({
   ],
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
-    interaction.deferReply({});
+    await interaction.deferReply({});
     let user2 = options.getUser("usuário") as User;
-    let user = interaction.user as User;
+    let users = interaction.user as User;
     let q = options.getNumber("quantidade") as number;
     const gid = interaction.guildId as string;
     let userGuild = await prisma.user.findUnique({
       where: {
         guild_id_user_id: {
           guild_id: interaction.guildId as string,
-          user_id: user?.id as string,
+          user_id: users?.id as string,
         },
       },
     });
@@ -66,27 +67,29 @@ export default new Command({
       },
     });
     if (!userGuild) {
-      userGuild = await userCreate(interaction.guild?.id as string, user?.id);
+      const [user, userError] = await handle(
+        userCreate(interaction.guild?.id as string, users?.id)
+      );
     }
-    const userGuildBalance = userGuild.balance;
+    const userGuildBalance = userGuild?.balance as number
     if (!userGuild2) {
-      userGuild2 = await userCreate(interaction.guild?.id as string, user2?.id);
+      userGuild = await userCreate(interaction.guild?.id as string, user2?.id);
     }
-    const userGuild2Balance = userGuild2.balance;
+    const userGuild2Balance = userGuild2?.balance as number
 
-    if (userGuild.balance < q) {
+    if (userGuildBalance < q) {
       interaction.editReply({
         content: `Você não possui moedas suficientes para desafiar.`,
       });
       return;
-    } else if (userGuild2.balance < q) {
+    } else if (userGuild2Balance < q) {
       interaction.editReply({
         content: `O usuário mencionado, não há moedas o suficiente para aceitar.`,
       });
       return;
     } else {
-      if (!cooldowns[user.id]) cooldowns[user.id] = { lastCmd: null };
-      let ultimoCmd = cooldowns[user.id].lastCmd;
+      if (!cooldowns[users.id]) cooldowns[users.id] = { lastCmd: null };
+      let ultimoCmd = cooldowns[users.id].lastCmd;
       let timeout = ms("30s"); // Coloque em ms o tempo
       if (ultimoCmd !== null && timeout - (Date.now() - ultimoCmd) > 0) {
         let time = Math.ceil((timeout - (Date.now() - ultimoCmd)) / 1000);
@@ -100,11 +103,11 @@ export default new Command({
         interaction.editReply({ embeds: [embed_err] });
         return;
       } else {
-        cooldowns[user.id].lastCmd = Date.now();
+        cooldowns[users.id].lastCmd = Date.now();
       }
       const embed = embed1(
         `<:Modicon:1065654040874188870> Duelo de Apostas`,
-        `<:mais:1084631761406931024> **Desafiante:** ${user} \n<:menos:1084631141945966722> **Desafiado:** ${user2}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\``
+        `<:mais:1084631761406931024> **Desafiante:** ${users} \n<:menos:1084631141945966722> **Desafiado:** ${user2}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\``
       );
       const row = buttonsRow([
         {
@@ -159,7 +162,7 @@ export default new Command({
               where: {
                 guild_id_user_id: {
                   guild_id: gid,
-                  user_id: user?.id as string,
+                  user_id: users?.id as string,
                 },
               },
               data: {
@@ -179,7 +182,7 @@ export default new Command({
             });
             const embed = embed1(
               `<:Modicon:1065654040874188870> Duelo finalizado`,
-              `<:trofeu:1095798926927462472> **Ganhador:** ${user} \n🦆 **Perdedor:** ${user2}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\` `
+              `<:trofeu:1095798926927462472> **Ganhador:** ${users} \n🦆 **Perdedor:** ${user2}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\` `
             );
             interaction.editReply({ embeds: [embed], components: [row2] });
           } else {
@@ -187,7 +190,7 @@ export default new Command({
               where: {
                 guild_id_user_id: {
                   guild_id: gid,
-                  user_id: user?.id as string,
+                  user_id: users?.id as string,
                 },
               },
               data: {
@@ -207,7 +210,7 @@ export default new Command({
             });
             const embed = embed1(
               `<:Modicon:1065654040874188870> Duelo finalizado`,
-              `<:trofeu:1095798926927462472> **Ganhador:** ${user2} \n🦆 **Perdedor:** ${user}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\` `
+              `<:trofeu:1095798926927462472> **Ganhador:** ${user2} \n🦆 **Perdedor:** ${users}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\` `
             );
             interaction.editReply({ embeds: [embed], components: [row2] });
           }

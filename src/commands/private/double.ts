@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, ApplicationCommandType, EmbedBuilder, Gui
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
 import { PrismaClient } from "@prisma/client";
-import { embed1, embeddesc, userCreate } from "../../functions/functions";
+import { embed1, embeddesc, handle, userCreate } from "../../functions/functions";
 const prisma = new PrismaClient();
 import ms from "ms";
 interface Cooldown {
@@ -24,12 +24,12 @@ export default new Command({
   ],
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
-    const user = interaction.user as User
+    const users = interaction.user as User
     const gid = interaction.guild as Guild
     const q = options.getNumber("quantidade") as number
-    let userg = await prisma.user.findUnique({ where: { guild_id_user_id: { guild_id: gid.id as string, user_id: user.id as string } } })
+    let userg = await prisma.user.findUnique({ where: { guild_id_user_id: { guild_id: gid.id as string, user_id: users.id as string } } })
     if (!userg) {
-      await userCreate(gid.id as string, user.id as string)
+      const [user, userError] = await handle(userCreate(gid.id, users.id));
     }
     const bal = userg?.balance as number
     if (q < 10) {
@@ -65,20 +65,20 @@ export default new Command({
         await interaction.reply({embeds: [embed1s]})
                   let quantia = Math.ceil(Math.random() * 10);
         if (quantia < 6) {
-          await prisma.user.update({ where: { guild_id_user_id: { guild_id: gid.id as string, user_id: user.id as string } }, data: { balance: bal - q } })
+          await prisma.user.update({ where: { guild_id_user_id: { guild_id: gid.id as string, user_id: users.id as string } }, data: { balance: bal - q } })
           const embedlose = embed1(
             `<a:errado:1084631043757310043> Lose`,
             `**Você perdeu** \`${q}\``
           );
           await interaction.editReply({ embeds: [embedlose] })
-          user.send({embeds: [embedlose]})
+          users.send({embeds: [embedlose]})
         } else {
           const q2 = q * 2;
             await prisma.user.update({
               where: {
                 guild_id_user_id: {
                   guild_id: gid.id as string,
-                  user_id: user.id as string,
+                  user_id: users.id as string,
                 },
               },
               data: { balance: bal + q2 },
@@ -88,7 +88,7 @@ export default new Command({
               `**Você ganhou** \`${q2}\``
             );
           await interaction.editReply({ embeds: [embedwin] });
-          user.send({ embeds: [embedwin] });
+          users.send({ embeds: [embedwin] });
               }
       }
     }

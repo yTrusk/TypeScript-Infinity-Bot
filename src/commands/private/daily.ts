@@ -10,7 +10,7 @@ interface Cooldown {
 }
 
 const cooldowns: { [userId: string]: Cooldown } = {};
-import { embed1, embeddesc, userCreate } from "../../functions/functions";
+import { embed1, embeddesc, handle, userCreate } from "../../functions/functions";
 
 export default new Command({
   name: "daily",
@@ -55,9 +55,11 @@ export default new Command({
           },
         },
       });
+      const bal = userGuild?.balance as number
       if (!userGuild) {
-        userGuild = await userCreate(interaction, userid?.id);
-      }
+const [user, userError] = await handle(
+  userCreate(interaction.guild?.id, interaction.user.id)
+);      }
       await prisma.user.update({
         where: {
           guild_id_user_id: {
@@ -66,7 +68,7 @@ export default new Command({
           },
         },
         data: {
-          balance: userGuild.balance + quantia,
+          balance: bal + quantia,
         },
       });
       interaction.editReply({ embeds: [resgatado] });

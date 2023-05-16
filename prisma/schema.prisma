@@ -19,6 +19,14 @@ model User {
   @@unique([guild_id, user_id])
 }
 
+model UserProfile {
+    id String @id @unique @default(uuid())
+    user_id String @unique
+    dateexpires DateTime
+        premium Boolean
+
+}
+
 model Sugestions {
     id String @id @unique @default(cuid())
 
@@ -48,7 +56,7 @@ model Guild {
   guild_id String @unique
 
   products Products[]
-  config Config[]
+  config Config?
 }
 
 model Config {
@@ -63,7 +71,7 @@ model Config {
   canal_voz String
 
   guild Guild @relation(fields: [guild_id], references: [id])
-  guild_id String  
+  guild_id String @unique  
 
   @@index([guild_id])
 }

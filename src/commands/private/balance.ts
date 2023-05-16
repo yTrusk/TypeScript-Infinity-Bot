@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, EmbedBuilder, User } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
-import {embed1, embeddesc, userCreate} from "../../functions/functions"
+import {embed1, embeddesc, handle, userCreate} from "../../functions/functions"
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -25,8 +25,9 @@ export default new Command({
           },
         });
         if (!userGuild) {
-await userCreate(interaction.guildId, user?.id);
-        }
+const [user, userError] = await handle(
+  userCreate(interaction.guild?.id, interaction.user.id)
+);        }
       const embed1s = embeddesc(
         `<:config:1084633909020602420> Consultando saldo...`,
         interaction

@@ -15,6 +15,7 @@ import {
   SelectMenuBuilderClass,
   buttonsRow,
   embeddesc,
+  handle,
   userCreate,
 } from "../../functions/functions";
 const prisma = new PrismaClient();
@@ -27,9 +28,6 @@ export default new Command({
     if (!interaction.isCommand()) return;
 const message = await interaction.deferReply({ephemeral: true})
     const gid = interaction.guild as Guild;
-    const test = await prisma.config.findUnique({
-      where: { guild_id: gid.id as string },
-    });
     let guild = await prisma.guild.findUnique({
       where: {
         guild_id: gid.id as string,
@@ -108,7 +106,9 @@ const message = await interaction.deferReply({ephemeral: true})
           },
         });
         if (!test) {
-          await userCreate(gid.id, interaction.user.id)
+          const [user, userError] = await handle(
+            userCreate(gid.id, interaction.user.id)
+          );
         } 
         await prisma.user.update({
           where: { guild_id_user_id: { guild_id: gid.id as string, user_id: interaction.user.id as string } }, data: {
