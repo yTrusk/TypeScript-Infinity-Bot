@@ -260,22 +260,23 @@ async function verificarUsersPremium() {
 
   for (const usuario of usuarios) {
     let mensagem;
-    if (usuario.premium && new Date(usuario.dateexpires) > new Date()) {
-      await prisma.userProfile.update({
+    let test
+    if ( new Date(usuario.dateexpires) > new Date()) {
+      test = await prisma.userProfile.update({
         where: { id: usuario.id },
         data: { premium: true },
       });
       mensagem = `Usuário ${usuario.id} tem premium ativo`;
     } else {
-      await prisma.userProfile.update({
+      test = await prisma.userProfile.update({
         where: { id: usuario.id },
         data: { premium: false },
       });
       mensagem = `Usuário ${usuario.id} não tem premium ativo`;
     }
+    console.log(mensagem)
   }
 }
-console.log(verificarUsersPremium());
 export {
   configModal,
   embeddesc,
