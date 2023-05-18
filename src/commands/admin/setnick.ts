@@ -9,6 +9,7 @@ export default new Command({
   name: "nickname",
   description: "[Administrador] Redefina o nome de um membro.",
   type: ApplicationCommandType.ChatInput,
+  defaultMemberPermissions: ["Administrator"],
   options: [
     {
       name: "nick",

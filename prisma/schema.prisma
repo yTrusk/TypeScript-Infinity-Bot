@@ -13,8 +13,6 @@ model User {
   guild_id String
   user_id String
   balance Float @default(0.0)
-  nome_prod String
-  preco_prod Float @default(0)
 
   @@unique([guild_id, user_id])
 }

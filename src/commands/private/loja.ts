@@ -7,6 +7,9 @@ import {
   ComponentType,
   ButtonStyle,
   TextChannel,
+  Collection,
+  ButtonInteraction,
+  ChannelType,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
@@ -26,13 +29,13 @@ export default new Command({
   type: ApplicationCommandType.ChatInput,
   async run({ interaction }) {
     if (!interaction.isCommand()) return;
-const message = await interaction.deferReply({ephemeral: true})
+    const message = await interaction.deferReply({ ephemeral: true });
     const gid = interaction.guild as Guild;
     let guild = await prisma.guild.findUnique({
       where: {
         guild_id: gid.id as string,
       },
-      include: { products: true },
+      include: { products: true, config: true },
     });
     if (!guild) {
       guild = await prisma.guild.create({
@@ -43,6 +46,7 @@ const message = await interaction.deferReply({ephemeral: true})
         },
         include: {
           products: true,
+          config: true
         },
       });
     }
@@ -63,6 +67,7 @@ const message = await interaction.deferReply({ephemeral: true})
       },
       select: {
         products: true,
+        config: true,
       },
     });
 
@@ -109,35 +114,90 @@ const message = await interaction.deferReply({ephemeral: true})
           const [user, userError] = await handle(
             userCreate(gid.id, interaction.user.id)
           );
-        } 
-        await prisma.user.update({
-          where: { guild_id_user_id: { guild_id: gid.id as string, user_id: interaction.user.id as string } }, data: {
-            nome_prod: productToGuild?.name,
-            preco_prod: productToGuild?.price
-        }})
-          if (productToGuild) {
-            const embed = new EmbedBuilder()
-              .setColor(`#9600D8`)
-              .setDescription(
-                `${productToGuild.embeddesc}\n**Preço:** ${productToGuild.price}`
-              )
-              .setTitle(`${productToGuild.embedtitle}`);
-            const row = buttonsRow([
-              {
-                id: `comprarbutton`,
-                emoji: `🛒`,
-                label: `Comprar`,
-                style: ButtonStyle.Primary,
-                disabled: false,
-              },
-            ]);
-            await i.reply({
-              embeds: [embed],
-              components: [row],
-              ephemeral: true,
-            });
-          }
         }
+
+        if (productToGuild) {
+          const embed = new EmbedBuilder()
+            .setColor(`#9600D8`)
+            .setDescription(
+              `${productToGuild.embeddesc}\n**Preço:** ${productToGuild.price}`
+            )
+            .setTitle(`${productToGuild.embedtitle}`);
+          const row = buttonsRow([
+            {
+              id: productToGuild.id,
+              emoji: `🛒`,
+              label: `Comprar`,
+              style: ButtonStyle.Primary,
+              disabled: false,
+            },
+          ]);
+          await i.reply({
+            embeds: [embed],
+            components: [row],
+            ephemeral: true,
+          });
+          console.log(productToGuild.id)
+        }
+       
+      }
+    });
+    const collectors = message.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+      time: 1000 * 60,
+    });
+    collectors.on("collect", async (i): Promise<any> => {
+      if (guildProducts) {
+        const productToGuild = await prisma.products.findUnique({where: {id: i.customId}})
+         const userg = await prisma.user.findUnique({
+           where: {
+             guild_id_user_id: {
+               user_id: interaction.user.id as string,
+               guild_id: gid.id as string,
+             },
+           },
+         });
+        const bal = userg?.balance as number;
+        const prodprice = productToGuild?.price as number
+         if (!userg || bal < prodprice || !bal) {
+           interaction.followUp({
+             content: `<a:errado:1084631043757310043> **Você não possui dinheiro suficiente para comprar o produto.**`,
+           });
+           return;
+         } else {
+           const b = productToGuild?.price as number;
+           await prisma.user.update({
+             where: {
+               guild_id_user_id: {
+                 user_id: interaction.user.id as string,
+                 guild_id: gid.id as string,
+               },
+             },
+             data: {
+               balance: bal - b,
+             },
+           });
+           const channelstaff = guildProducts.config?.logstaff as string;
+           const chs = gid.channels.cache.find(
+             (c) => c.type === ChannelType.GuildText && c.id === channelstaff
+           ) as TextChannel;
+           if (chs) {
+             const embedsss = embeddesc(
+               `<a:certo:1084630932885078036> **O usuário comprou o produto:** ${productToGuild?.name} \n**User:** ${interaction.user}`,
+               interaction
+             );
+             await interaction.followUp({
+               content: `<a:certo:1084630932885078036> **Você efetuou a compra com sucesso!**`,
+             });
+             await chs.send({ embeds: [embedsss] });
+           } else {
+             await interaction.followUp({
+               content: `<a:certo:1084630932885078036> **Você efetuou a compra com sucesso!** \n**Produto:** ${productToGuild?.name}`,
+             });
+             return;
+           }
+         }
+      }
     });
   },
 });

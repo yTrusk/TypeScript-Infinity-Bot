@@ -208,13 +208,13 @@ async function configCreate(guildid: any) {
   });
   return guildConfig;
 }
-async function userCreate(guild: any, user: any) {
+async function userCreate(guild: any, user: any, balance?: number) {
+  if(!balance) balance = 0
   const userGuild = await prisma.user.create({
     data: {
       guild_id: guild as string,
       user_id: user as string,
-      nome_prod: "Nenhum",
-      preco_prod: 0,
+      balance: balance
     },
   });
   return userGuild;

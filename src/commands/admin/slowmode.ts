@@ -9,6 +9,7 @@ export default new Command({
   description:
     "[Administrador] Utilize o comando para deixar o chat mais devagar.",
   type: ApplicationCommandType.ChatInput,
+  defaultMemberPermissions: ["Administrator"],
   options: [
     {
       name: `tempo`,
@@ -18,7 +19,7 @@ export default new Command({
       choices: [
         {
           name: `5s`,
-          value: '5s',
+          value: "5s",
         },
         {
           name: `10s`,
@@ -75,19 +76,19 @@ export default new Command({
       description: `Selecione o canal que deseja deixar lento`,
       type: ApplicationCommandOptionType.Channel,
       channel_types: [ChannelType.GuildText],
-      required: false
-    }
+      required: false,
+    },
   ],
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
-    let times = options.get("tempo")?.value as string
-      let canal = options.getChannel("canal") as TextChannel;
-    if (!canal) canal = interaction.channel as TextChannel
-    let d = ms(`${times}`)
+    let times = options.get("tempo")?.value as string;
+    let canal = options.getChannel("canal") as TextChannel;
+    if (!canal) canal = interaction.channel as TextChannel;
+    let d = ms(`${times}`);
     canal.setRateLimitPerUser(d / 1000).then(() => {
       interaction.reply({
         content: `<a:certo:1084630932885078036> **Cooldown do canal definido para:** \`${times}\``,
       });
-    })
+    });
   },
 });

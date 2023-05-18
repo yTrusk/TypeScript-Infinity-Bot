@@ -47,30 +47,40 @@ export default new Command({
         },
       },
     });
-        const bal = userGuild?.balance as number;
+    const bal = userGuild?.balance as number;
 
     if (!userGuild) {
-     const [user, userError] = await handle(
-       userCreate(interaction.guild?.id, interaction.user.id)
-     );
-    }
-    await prisma.user.update({
-      where: {
-        guild_id_user_id: {
-          guild_id: gid.id,
-          user_id: u.id,
+      try {
+        await userCreate(gid.id as string, u.id as string, q)
+      } catch { }
+      interaction.editReply({ embeds: [embed] }).then(async () => {
+        const embed = embeddesc(
+          `<a:certo:1084630932885078036> **Adição de saldo concluida com sucesso.**`,
+          interaction
+        );
+        interaction.editReply({ embeds: [embed] });
+      });
+      return;
+    } else {
+      await prisma.user.update({
+        where: {
+          guild_id_user_id: {
+            guild_id: gid.id,
+            user_id: u.id,
+          },
         },
-      },
-      data: {
-        balance: bal + q,
-      },
-    });
-    interaction.editReply({ embeds: [embed] }).then(async () => {
-      const embed = embeddesc(
-        `<a:certo:1084630932885078036> **Adição de saldo concluida com sucesso.**`,
-        interaction
-      );
-      interaction.editReply({ embeds: [embed] });
-    });
+        data: {
+          balance: bal + q,
+        },
+      });
+      interaction.editReply({ embeds: [embed] }).then(async () => {
+        const embed = embeddesc(
+          `<a:certo:1084630932885078036> **Adição de saldo concluida com sucesso.**`,
+          interaction
+        );
+        interaction.editReply({ embeds: [embed] });
+      });
+      return;
+    }
   },
 });
