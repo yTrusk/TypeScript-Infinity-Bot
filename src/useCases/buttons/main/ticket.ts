@@ -1,8 +1,16 @@
-import { ButtonStyle, ChannelType, Guild, User } from "discord.js";
+import {
+  ButtonStyle,
+  ChannelType,
+  Guild,
+  GuildMember,
+  Message,
+  User,
+} from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import { ticket, embed1, buttonsRow } from "../../../functions/functions";
 import { PrismaClient } from "@prisma/client";
+import { client } from "../../../main";
 const prisma = new PrismaClient();
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
@@ -14,11 +22,15 @@ export default class RecusarDueloClass extends actionEvent {
       },
     });
   }
-  async execute({ client, interaction }: actionEventProps) {
-      if (!interaction.isButton()) return;
-      const u = interaction.user as User;
-      const gid = interaction.guild as Guild;
-      const nome_canal = `🔖-${u.id}`;
+  async execute({ interaction }: actionEventProps) {
+    if (!interaction.isButton()) return;
+    const u = interaction.user as User;
+    const gid = interaction.guild as Guild;
+    const nome_canal = `🔖-${u.id}`;
+    const botmember = interaction.guild?.members.cache.find(
+      (user) => user.id === client.user?.id
+    ) as GuildMember;
+    if (botmember.permissions.has(["ManageChannels", "SendMessages"])) {
       let canal = gid.channels.cache.find((c) => c.name === nome_canal);
       if (canal) {
         interaction.reply({
@@ -60,7 +72,7 @@ export default class RecusarDueloClass extends actionEvent {
             ]);
             chat
               ?.send({ embeds: [embed], components: [closebutton] })
-              .then(async (m) => {
+              .then(async (m: Message) => {
                 await m.pin();
                 try {
                   setTimeout(() => {
@@ -76,5 +88,8 @@ export default class RecusarDueloClass extends actionEvent {
           });
         }
       }
+    } else {
+      interaction.reply({content: `❌ **Erro, não possuo permissões para criar canais ou enviar mensagens.**`}).catch((err) => {console.log(`Servidor: ${interaction.guild?.name}, erro:`, err)})
+    }
   }
 }

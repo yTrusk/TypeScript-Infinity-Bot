@@ -1,9 +1,7 @@
 import { ModalBuilder, TextInputStyle } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import { PrismaClient } from "@prisma/client";
 import { inputBuilder } from "../../../functions/functions";
-const prisma = new PrismaClient();
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
@@ -14,7 +12,7 @@ export default class RecusarDueloClass extends actionEvent {
       },
     });
   }
-  async execute({ client, interaction }: actionEventProps) {
+  async execute({ interaction }: actionEventProps) {
       if (!interaction.isButton()) return;
       const modal = new ModalBuilder()
         .setCustomId(`adicionarmodal`)

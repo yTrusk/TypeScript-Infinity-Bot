@@ -1,8 +1,5 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, EmbedBuilder, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
 import ms from "ms"
 export default new Command({
   name: "slowmode",

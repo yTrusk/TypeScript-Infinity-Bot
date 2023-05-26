@@ -2,11 +2,9 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ChannelType,
-  EmbedBuilder,
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
 import { embeddesc } from "../../functions/functions";
 
 export default new Command({

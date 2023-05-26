@@ -1,7 +1,11 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, TextChannel, VoiceChannel } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  ChannelType,
+  VoiceChannel,
+} from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { joinVoiceChannel } from "@discordjs/voice";
-import { client } from "../../main";
 import { PrismaClient } from "@prisma/client";
 import { configCreate, embeddesc } from "../../functions/functions";
 const prisma = new PrismaClient();
@@ -27,22 +31,27 @@ export default new Command({
         ephemeral: true,
       });
     } else {
-      const gid = interaction.guild?.id as string
+      const gid = interaction.guild?.id as string;
       const xd = await prisma.config.findUnique({ where: { guild_id: gid } });
       if (!xd) {
         await configCreate(gid);
       }
-      const xds = xd?.canal_voz as string
-      const test = interaction.guild?.channels.cache.find(c => c.id === xds) as VoiceChannel
+      const xds = xd?.canal_voz as string;
+      const test = interaction.guild?.channels.cache.find(
+        (c) => c.id === xds
+      ) as VoiceChannel;
       if (test) {
         const embed = embeddesc(
           `<a:errado:1084631043757310043> **Já estou conectado a um canal de voz utilize /desconectar**`,
           interaction
         );
-        interaction.reply({ embeds: [embed], ephemeral: true })
+        interaction.reply({ embeds: [embed], ephemeral: true });
         return;
-      } else if(!test || xd?.canal_voz === '0'){
-        await prisma.config.update({ where: {guild_id: gid}, data: {canal_voz: channel.id as string}})
+      } else if (!test || xd?.canal_voz === "0") {
+        await prisma.config.update({
+          where: { guild_id: gid },
+          data: { canal_voz: channel.id as string },
+        });
         const connection = await joinVoiceChannel({
           channelId: channel.id,
           guildId: channel.guild.id,

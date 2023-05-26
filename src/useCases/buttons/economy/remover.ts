@@ -9,15 +9,12 @@ export default class RecusarDueloClass extends actionEvent {
       event: "remover",
       type: "button",
       guild: {
-          include: {
-            
-        },
+        include: {},
       },
     });
   }
-  async execute({ client, interaction }: actionEventProps) {
+  async execute({ interaction }: actionEventProps) {
     if (!interaction.isButton()) return;
-    //aq ja n sei pensei em algo legal hm
     const modal = new ModalBuilder()
       .setCustomId(`removermodal`)
       .setTitle(`Remova produtos da loja`);

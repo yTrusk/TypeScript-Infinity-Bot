@@ -1,9 +1,5 @@
 import { ApplicationCommandType, EmbedBuilder } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-
 export default new Command({
   name: "avatar-guild",
   description: "[Member] Exibe a foto do servidor.",

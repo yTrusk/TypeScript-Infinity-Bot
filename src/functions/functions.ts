@@ -1,12 +1,9 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonInteraction,
   ButtonStyle,
-  CacheType,
   ChannelType,
   EmbedBuilder,
-  GuildBasedChannel,
   ModalBuilder,
   PermissionFlagsBits,
   StringSelectMenuBuilder,
@@ -50,30 +47,11 @@ function embed1(title: string, desc: string) {
     .setDescription(`${desc}`);
   return embed;
 }
-function embed1img(title: any, desc: any, img: any) {
-  const embed = new EmbedBuilder()
-    .setColor(`#9600D8`)
-    .setTimestamp()
-    .setTitle(`${title}`)
-    .setDescription(`${desc}`)
-    .setImage(`${img}`);
-  return embed;
-}
-function embed2(img: any) {
-  const embed = new EmbedBuilder()
-    .setColor(`#9600D8`)
-    .setTimestamp()
-    .setImage(`${img}`);
-  return embed;
-}
-async function ticket(
-  nome_canal: string,
-  categoria: GuildBasedChannel | undefined,
-  interaction: ButtonInteraction<CacheType>
-) {
+
+async function ticket(nome_canal: string, categoria: any, interaction: any) {
   const channel = await interaction.guild?.channels.create({
     name: nome_canal,
-    parent: `${categoria}`,
+    parent: categoria,
     type: ChannelType.GuildText,
     permissionOverwrites: [
       {
@@ -101,7 +79,7 @@ interface ModalInput {
   input_style: TextInputStyle;
   input_place?: string;
   input_maxleng?: number;
-  input_minleng?: number
+  input_minleng?: number;
 }
 export function inputBuilder(
   props: Array<ModalInput>
@@ -111,7 +89,7 @@ export function inputBuilder(
   props.map((input) => {
     let sla = input.input_place as string;
     if (!sla) sla = `Digite aqui.`;
-    let maxlen = input.input_maxleng
+    let maxlen = input.input_maxleng;
     if (!maxlen) maxlen = 200;
     let minlen = input.input_minleng;
     if (!minlen) minlen = 0;
@@ -123,7 +101,7 @@ export function inputBuilder(
         .setStyle(input.input_style)
         .setPlaceholder(sla)
         .setMaxLength(maxlen)
-      .setMinLength(minlen)
+        .setMinLength(minlen)
     );
     inputs.push(row);
   });
@@ -141,29 +119,30 @@ interface SelectMenuBuilderClassProps {
   customid: string;
   disabled: boolean;
 }
+
 export class SelectMenuBuilderClass {
   public row = new ActionRowBuilder<StringSelectMenuBuilder>(); // menu
-  public menu = new StringSelectMenuBuilder()
+  public menu = new StringSelectMenuBuilder();
 
-  constructor({ customid, disabled} : SelectMenuBuilderClassProps) {
-      this.menu
-        .setCustomId(customid)
-        .setDisabled(disabled)
-        .setPlaceholder(`Selecione uma categoria.`);
+  constructor({ customid, disabled }: SelectMenuBuilderClassProps) {
+    this.menu
+      .setCustomId(customid)
+      .setDisabled(disabled)
+      .setPlaceholder(`Selecione uma categoria.`);
   }
 
   addMenus(props: Array<SelectMenuString>) {
-      props.map((m) => {
-        this.menu.addOptions(
-          new StringSelectMenuOptionBuilder()
-            .setLabel(m.label)
-            .setDescription(m.description)
-            .setValue(m.value)
-        );
-      });
-    }
-    updateInputs(){
-      this.row.addComponents(this.menu);
+    props.map((m) => {
+      this.menu.addOptions(
+        new StringSelectMenuOptionBuilder()
+          .setLabel(m.label)
+          .setDescription(m.description)
+          .setValue(m.value)
+      );
+    });
+  }
+  updateInputs() {
+    this.row.addComponents(this.menu);
   }
 }
 
@@ -209,12 +188,12 @@ async function configCreate(guildid: any) {
   return guildConfig;
 }
 async function userCreate(guild: any, user: any, balance?: number) {
-  if(!balance) balance = 0
+  if (!balance) balance = 0;
   const userGuild = await prisma.user.create({
     data: {
       guild_id: guild as string,
       user_id: user as string,
-      balance: balance
+      balance: balance,
     },
   });
   return userGuild;
@@ -236,56 +215,5 @@ export async function handle<R = AsyncResult, E = AsyncError>(
     return [null, error];
   }
 }
-async function setPremiumExpiration(userId: string, dias: number) {
-  const dataAtual = new Date();
-  const dataExpiracao = new Date(dataAtual.getTime());
-  dataExpiracao.setDate(dataExpiracao.getDate() + dias);
-  const test = await prisma.userProfile.findUnique({
-    where: { user_id: userId },
-  });
-  if (!test) {
-    await prisma.userProfile.create({
-      data: { user_id: userId, premium: true, dateexpires: dataExpiracao },
-    });
-    return;
-  }
-await prisma.userProfile.update({where: {user_id: userId}, data: {dateexpires: dataExpiracao, premium: true}})
-    return console.log(
-      `Usuário ${userId} agora possui premium ativado até ${dataExpiracao}`
-    );
-}
 
-async function verificarUsersPremium() {
-  const usuarios = await prisma.userProfile.findMany();
-
-  for (const usuario of usuarios) {
-    let mensagem;
-    let test
-    if ( new Date(usuario.dateexpires) > new Date()) {
-      test = await prisma.userProfile.update({
-        where: { id: usuario.id },
-        data: { premium: true },
-      });
-      mensagem = `Usuário ${usuario.id} tem premium ativo`;
-    } else {
-      test = await prisma.userProfile.update({
-        where: { id: usuario.id },
-        data: { premium: false },
-      });
-      mensagem = `Usuário ${usuario.id} não tem premium ativo`;
-    }
-    console.log(mensagem)
-  }
-}
-export {
-  configModal,
-  embeddesc,
-  embed1,
-  embed2,
-  ticket,
-  embed1img,
-  configCreate,
-  userCreate,
-  verificarUsersPremium,
-  setPremiumExpiration,
-};
+export { configModal, embeddesc, embed1, ticket, configCreate, userCreate };

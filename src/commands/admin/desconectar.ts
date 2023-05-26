@@ -1,16 +1,15 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, TextChannel, VoiceChannel } from "discord.js";
+import { ApplicationCommandType} from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { joinVoiceChannel } from "@discordjs/voice";
 import { configCreate, embeddesc } from "../../functions/functions";
 import { PrismaClient } from "@prisma/client";
-import { client } from "../../main";
 const prisma = new PrismaClient();
 export default new Command({
   name: "desconectar",
   description: "[Administrador] Me desconecte de um canal de voz",
   type: ApplicationCommandType.ChatInput,
   defaultMemberPermissions: "Administrator",
-  async run({ interaction, options }) {
+  async run({ interaction }) {
     
       const gid = interaction.guild?.id as string;
       const xd = await prisma.config.findUnique({ where: { guild_id: gid } });

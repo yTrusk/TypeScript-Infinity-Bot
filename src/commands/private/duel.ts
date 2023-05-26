@@ -2,12 +2,10 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ButtonStyle,
-  EmbedBuilder,
   TextChannel,
   User,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
 import { PrismaClient } from "@prisma/client";
 import {
   buttonsRow,

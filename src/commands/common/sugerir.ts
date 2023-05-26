@@ -1,16 +1,10 @@
 import {
-  ActionRowBuilder,
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder,
-  Guild,
-  GuildBasedChannel,
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
 import { PrismaClient } from "@prisma/client";
 import { configCreate, embed1, buttonsRow } from "../../functions/functions";
 const prisma = new PrismaClient();

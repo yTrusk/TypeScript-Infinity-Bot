@@ -1,7 +1,6 @@
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  EmbedBuilder,
   Guild,
   GuildMember,
   TextChannel,
@@ -10,7 +9,7 @@ import {
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
 import { PrismaClient } from "@prisma/client";
-import { embeddesc, embed1 } from "../../functions/functions";
+import { embeddesc } from "../../functions/functions";
 const prisma = new PrismaClient();
 
 export default new Command({

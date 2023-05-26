@@ -5,10 +5,6 @@ import {
   User,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-
 export default new Command({
   name: "dm",
   description: "[Administrador] Envie uma mensagem por dm para um membro.",
@@ -32,7 +28,6 @@ export default new Command({
     if (!interaction.isCommand()) return;
     let msg = options.getString("mensagem");
     const user = options.getUser("usuário") as User;
-    let canal = interaction.channel;
 
     const servericon = interaction.guild?.iconURL();
     let embed = new EmbedBuilder()

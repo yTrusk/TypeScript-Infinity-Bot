@@ -2,11 +2,9 @@ import {
   ActionRowBuilder,
   ApplicationCommandType,
   EmbedBuilder,
-  ComponentType,
   StringSelectMenuBuilder,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
 import { PrismaClient, User } from "@prisma/client";
 import { configCreate, handle, userCreate } from "../../functions/functions";
 const prisma = new PrismaClient();
@@ -88,7 +86,7 @@ export default new Command({
           },
         ])
     );
-    const message = await interaction
+    await interaction
       .reply({ embeds: [embedconfig], components: [row], ephemeral: true })
 
         let userGuild = await prisma.user.findUnique({

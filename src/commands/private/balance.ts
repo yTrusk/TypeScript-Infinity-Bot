@@ -1,6 +1,5 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, EmbedBuilder, User } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, User } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
 import {embed1, embeddesc, handle, userCreate} from "../../functions/functions"
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();

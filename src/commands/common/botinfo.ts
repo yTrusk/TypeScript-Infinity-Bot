@@ -1,9 +1,6 @@
 import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-
 export default new Command({
   name: "botinfo",
   description: "[Member] Vejá informaçôes sobre mim.",

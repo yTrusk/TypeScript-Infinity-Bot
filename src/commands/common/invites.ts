@@ -1,9 +1,6 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
 import { embeddesc } from "../../functions/functions";
-const prisma = new PrismaClient();
 
 export default new Command({
   name: "invites",

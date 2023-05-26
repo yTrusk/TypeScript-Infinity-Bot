@@ -1,9 +1,6 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ButtonStyle, ChannelType, EmbedBuilder, Guild, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, ButtonStyle, ChannelType, Guild, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
 import { buttonsRow, embed1, embeddesc } from "../../functions/functions";
-const prisma = new PrismaClient();
 
 export default new Command({
   name: "tickets",
@@ -22,7 +19,6 @@ export default new Command({
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
     const gid = interaction.guild as Guild
-    const s = gid.iconURL() as string
     let canal = options.getChannel("canal") as TextChannel
     if (!canal) canal = interaction.channel as TextChannel
     const emt = embed1(

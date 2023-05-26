@@ -1,6 +1,5 @@
-import { ActionRowBuilder, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, EmbedBuilder, User, UserAvatarFormat, UserFlags } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, EmbedBuilder, User, UserAvatarFormat } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
 import { PrismaClient } from "@prisma/client";
 import { handle, userCreate } from "../../functions/functions";
 const prisma = new PrismaClient();

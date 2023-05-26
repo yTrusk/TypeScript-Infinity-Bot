@@ -1,6 +1,5 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, EmbedBuilder, Guild, GuildMember, TextChannel, User } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, Guild, GuildMember, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
 import { PrismaClient } from "@prisma/client";
 import { embeddesc } from "../../functions/functions";
 const prisma = new PrismaClient();

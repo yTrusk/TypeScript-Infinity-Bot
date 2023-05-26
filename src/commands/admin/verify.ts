@@ -1,9 +1,6 @@
-import { ActionRowBuilder, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, Guild, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, ButtonStyle, ChannelType, Guild, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
 import { buttonsRow, embed1 } from "../../functions/functions";
-const prisma = new PrismaClient();
 
 export default new Command({
   name: "verify-role",

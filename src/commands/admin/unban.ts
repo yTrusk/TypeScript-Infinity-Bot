@@ -10,7 +10,6 @@ import {
     import { PrismaClient } from "@prisma/client";
     import { embeddesc } from "../../functions/functions";
     const prisma = new PrismaClient();
-
     export default new Command({
       name: "unban",
       description: "De ban a um membro utilizando o comando.",

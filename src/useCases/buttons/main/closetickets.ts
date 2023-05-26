@@ -11,19 +11,19 @@ export default class RecusarDueloClass extends actionEvent {
       },
     });
   }
-  async execute({ client, interaction }: actionEventProps) {
-      if (!interaction.isButton()) return;
-      interaction.reply({
-        content: `Olá ${interaction.user}, este ticket será excluído em 5 segundos.`,
-      });
-      try {
-        setTimeout(() => {
-          interaction.channel?.delete().catch((e) => {
-            return;
-          });
-        }, 5000);
-      } catch (e) {
-        return;
-      }
+  async execute({ interaction }: actionEventProps) {
+    if (!interaction.isButton()) return;
+    interaction.reply({
+      content: `Olá ${interaction.user}, este ticket será excluído em 5 segundos.`,
+    });
+    try {
+      setTimeout(() => {
+        interaction.channel?.delete().catch((e) => {
+          return;
+        });
+      }, 5000);
+    } catch (e) {
+      return;
+    }
   }
 }

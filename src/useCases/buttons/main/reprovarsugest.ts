@@ -16,7 +16,7 @@ export default class RecusarDueloClass extends actionEvent {
       },
     });
   }
-  async execute({ client, interaction }: actionEventProps) {
+  async execute({ interaction }: actionEventProps) {
       if (!interaction.isButton()) return;
        await interaction.deferReply({ ephemeral: true });
 
@@ -67,8 +67,6 @@ export default class RecusarDueloClass extends actionEvent {
 
            const somas = (positives + negatives) as number;
            const somes = 100 / somas;
-
-           const positivePorcentage = somas / positives;
            const aprovados = somes * positives;
            const reprovados = somes * negatives;
 
@@ -97,10 +95,9 @@ export default class RecusarDueloClass extends actionEvent {
            const em = embeddesc(`🗑️ **Você retirou seu voto.**`, interaction);
            interaction.followUp({
              ephemeral: true,
-             embeds: [em], // kk
+             embeds: [em],
            });
          } else {
-           // não votou
            const sugestionUpdated = await prisma.sugestions.update({
              where: {
                id: sugestion.id,
@@ -127,8 +124,6 @@ export default class RecusarDueloClass extends actionEvent {
 
            const somas = (positives + negatives) as number;
            const somes = 100 / somas;
-
-           const positivePorcentage = somas / positives;
            const aprovados = somes * positives;
            const reprovados = somes * negatives;
 

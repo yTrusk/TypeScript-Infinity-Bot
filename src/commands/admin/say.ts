@@ -1,7 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, EmbedBuilder, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
-
 export default new Command({
   name: "say",
   description: "[Administrador] Comando de fala.",
