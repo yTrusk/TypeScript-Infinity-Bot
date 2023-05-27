@@ -17,14 +17,6 @@ model User {
   @@unique([guild_id, user_id])
 }
 
-model UserProfile {
-    id String @id @unique @default(uuid())
-    user_id String @unique
-    dateexpires DateTime
-        premium Boolean
-
-}
-
 model Sugestions {
     id String @id @unique @default(cuid())
 
@@ -52,7 +44,8 @@ model Guild {
   id String @id @unique @default(cuid())
   guild_name String?
   guild_id String @unique
-
+    dateexpires DateTime
+        premium Boolean
   products Products[]
   config Config?
 }

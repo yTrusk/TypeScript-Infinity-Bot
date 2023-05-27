@@ -1,8 +1,6 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, Guild, User } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
-import { embed1, embeddesc, handle, userCreate } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { embed1, embeddesc, finduser, handle, updateuser, userCreate } from "../../functions/functions";
 import ms from "ms";
 interface Cooldown {
   lastCmd: number | null;
@@ -26,7 +24,7 @@ export default new Command({
     const users = interaction.user as User
     const gid = interaction.guild as Guild
     const q = options.getNumber("quantidade") as number
-    let userg = await prisma.user.findUnique({ where: { guild_id_user_id: { guild_id: gid.id as string, user_id: users.id as string } } })
+    let userg = await finduser({ guildid: gid.id as string, userid: users.id as string})
     if (!userg) {
       const [user, userError] = await handle(userCreate(gid.id, users.id));
     }
@@ -42,7 +40,7 @@ export default new Command({
         const userid = interaction.user as User;
         if (!cooldowns[userid.id]) cooldowns[userid.id] = { lastCmd: null };
         let ultimoCmd = cooldowns[userid.id].lastCmd;
-        let timeout = ms("20s"); // Coloque em ms o tempo
+        let timeout = ms("20s");
         if (ultimoCmd !== null && timeout - (Date.now() - ultimoCmd) > 0) {
           let time = Math.ceil((timeout - (Date.now() - ultimoCmd)) / 1000);
           let resta = `${time} segundos`;
@@ -64,7 +62,7 @@ export default new Command({
         await interaction.reply({embeds: [embed1s]})
                   let quantia = Math.ceil(Math.random() * 10);
         if (quantia < 6) {
-          await prisma.user.update({ where: { guild_id_user_id: { guild_id: gid.id as string, user_id: users.id as string } }, data: { balance: bal - q } })
+          await updateuser({guildid: gid.id as string, userid: users.id as string, dataconfig: "balance", newdatavalue: bal - q})
           const embedlose = embed1(
             `<a:errado:1084631043757310043> Lose`,
             `**Você perdeu** \`${q}\``
@@ -73,15 +71,7 @@ export default new Command({
           users.send({embeds: [embedlose]})
         } else {
           const q2 = q * 2;
-            await prisma.user.update({
-              where: {
-                guild_id_user_id: {
-                  guild_id: gid.id as string,
-                  user_id: users.id as string,
-                },
-              },
-              data: { balance: bal + q2 },
-            });
+          await updateuser({guildid: gid.id as string, userid: users.id as string, dataconfig: "balance", newdatavalue: bal + q2})
             const embedwin = embed1(
               `<a:certo:1084630932885078036> Win`,
               `**Você ganhou** \`${q2}\``

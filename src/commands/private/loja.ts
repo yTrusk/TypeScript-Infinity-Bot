@@ -8,7 +8,6 @@ import {
   ChannelType,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
 import {
   SelectMenuBuilderClass,
   buttonsRow,
@@ -16,7 +15,7 @@ import {
   handle,
   userCreate,
 } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../main";
 
 export default new Command({
   name: "loja",
@@ -26,18 +25,20 @@ export default new Command({
     if (!interaction.isCommand()) return;
     const message = await interaction.deferReply({ ephemeral: true });
     const gid = interaction.guild as Guild;
-    let guild = await prisma.guild.findUnique({
+    let guild = await client.prisma.guild.findUnique({
       where: {
         guild_id: gid.id as string,
       },
       include: { products: true, config: true },
     });
     if (!guild) {
-      guild = await prisma.guild.create({
+      guild = await client.prisma.guild.create({
         data: {
           guild_id: gid.id,
           guild_name: gid.name,
           products: {},
+          dateexpires: new Date(),
+          premium: false
         },
         include: {
           products: true,
@@ -56,7 +57,7 @@ export default new Command({
       disabled: false,
     });
 
-    const guildProducts = await prisma.guild.findUnique({
+    const guildProducts = await client.prisma.guild.findUnique({
       where: {
         guild_id: interaction.guild?.id,
       },
@@ -97,7 +98,7 @@ export default new Command({
         const productToGuild = guildProducts.products.find(
           (x) => x.id === i.values[0]
         );
-        const test = await prisma.user.findUnique({
+        const test = await client.prisma.user.findUnique({
           where: {
             guild_id_user_id: {
               guild_id: gid.id as string,
@@ -143,8 +144,8 @@ export default new Command({
     });
     collectors.on("collect", async (i): Promise<any> => {
       if (guildProducts) {
-        const productToGuild = await prisma.products.findUnique({where: {id: i.customId}})
-         const userg = await prisma.user.findUnique({
+        const productToGuild = await client.prisma.products.findUnique({where: {id: i.customId}})
+         const userg = await client.prisma.user.findUnique({
            where: {
              guild_id_user_id: {
                user_id: interaction.user.id as string,
@@ -161,7 +162,7 @@ export default new Command({
            return;
          } else {
            const b = productToGuild?.price as number;
-           await prisma.user.update({
+           await client.prisma.user.update({
              where: {
                guild_id_user_id: {
                  user_id: interaction.user.id as string,

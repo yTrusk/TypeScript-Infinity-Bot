@@ -1,13 +1,14 @@
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  EmbedBuilder,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
-import { embeddesc, userCreate } from "../../functions/functions";
-const prisma = new PrismaClient();
+import {
+  embeddesc,
+  finduser,
+  updateuser,
+  userCreate,
+} from "../../functions/functions";
 
 export default new Command({
   name: "remove",
@@ -30,33 +31,39 @@ export default new Command({
   ],
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
+    await interaction.deferReply({});
     const user = options.getUser("usuário");
     const many = options.getNumber("quantidade") as number;
-    const userguild = await client.prisma.user.findUnique({
-      where: {
-        guild_id_user_id: {
-          guild_id: interaction.guild?.id as string,
-          user_id: user?.id as string,
-        },
-      },
+    const userguild = await finduser({
+      guildid: interaction.guild?.id as string,
+      userid: user?.id as string,
     });
     if (!userguild) {
       await userCreate(interaction.guild?.id, user?.id);
     }
     const bal = userguild?.balance as number;
-    const userguildupdated = await client.prisma.user.update({
-      where: {
-        guild_id_user_id: {
-          guild_id: interaction.guild?.id as string,
-          user_id: user?.id as string,
-        },
-      },
-      data: { balance: bal - many },
-    });
-    const embed = embeddesc(
-      ` Remoção de saldo concluida com sucesso.\nSaldo do usuário: ${userguildupdated.balance}`,
-      interaction
-    );
-    interaction.reply({ embeds: [embed] });
+    if (bal === 0) {
+      const embed = embeddesc(
+        `<a:errado:1084631043757310043> **Erro, o usuário selecionado possui 0 de saldo, não é possivel remover mais.**`,
+        interaction
+      );
+      return interaction.editReply({ embeds: [embed] });
+    } else {
+      const soma = bal - many;
+      let q;
+      if (bal - many < 0) q = 0;
+      if (bal - many > 0) q = soma;
+      const userguildupdated = await updateuser({
+        userid: user?.id as string,
+        guildid: interaction.guild?.id as string,
+        dataconfig: "balance",
+        newdatavalue: q,
+      });
+      const embed = embeddesc(
+        `<a:certo:1084630932885078036> **Remoção de saldo concluida com sucesso.**\n<:coins:1095800360829980762> **Saldo do usuário:** \`${userguildupdated.balance}\``,
+        interaction
+      );
+      interaction.editReply({ embeds: [embed] });
+    }
   },
 });

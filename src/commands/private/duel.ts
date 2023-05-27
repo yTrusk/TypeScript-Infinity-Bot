@@ -6,16 +6,15 @@ import {
   User,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
 import {
   buttonsRow,
   embed1,
   embeddesc,
+  finduser,
   handle,
+  updateuser,
   userCreate,
 } from "../../functions/functions";
-const prisma = new PrismaClient();
-
 import ms from "ms";
 interface Cooldown {
   lastCmd: number | null;
@@ -48,47 +47,39 @@ export default new Command({
     let users = interaction.user as User;
     let q = options.getNumber("quantidade") as number;
     const gid = interaction.guildId as string;
-    let userGuild = await prisma.user.findUnique({
-      where: {
-        guild_id_user_id: {
-          guild_id: interaction.guildId as string,
-          user_id: users?.id as string,
-        },
-      },
+    let userGuild = await finduser({
+      guildid: interaction.guild?.id as string,
+      userid: users?.id,
     });
-    let userGuild2 = await prisma.user.findUnique({
-      where: {
-        guild_id_user_id: {
-          guild_id: interaction.guildId as string,
-          user_id: user2?.id as string,
-        },
-      },
+    let userGuild2 = await finduser({
+      guildid: interaction.guild?.id as string,
+      userid: user2?.id as string,
     });
     if (!userGuild) {
       const [user, userError] = await handle(
         userCreate(interaction.guild?.id as string, users?.id)
       );
     }
-    const userGuildBalance = userGuild?.balance as number
+    const userGuildBalance = userGuild?.balance as number;
     if (!userGuild2) {
       userGuild = await userCreate(interaction.guild?.id as string, user2?.id);
     }
-    const userGuild2Balance = userGuild2?.balance as number
+    const userGuild2Balance = userGuild2?.balance as number;
 
     if (userGuildBalance < q) {
       interaction.editReply({
-        content: `Você não possui moedas suficientes para desafiar.`,
+        content: `**Você não possui moedas suficientes para desafiar.**`,
       });
       return;
     } else if (userGuild2Balance < q) {
       interaction.editReply({
-        content: `O usuário mencionado, não há moedas o suficiente para aceitar.`,
+        content: `**O usuário mencionado, não há moedas o suficiente para aceitar.**`,
       });
       return;
     } else {
       if (!cooldowns[users.id]) cooldowns[users.id] = { lastCmd: null };
       let ultimoCmd = cooldowns[users.id].lastCmd;
-      let timeout = ms("30s"); // Coloque em ms o tempo
+      let timeout = ms("30s");
       if (ultimoCmd !== null && timeout - (Date.now() - ultimoCmd) > 0) {
         let time = Math.ceil((timeout - (Date.now() - ultimoCmd)) / 1000);
         let resta = `${time} segundos`;
@@ -156,27 +147,17 @@ export default new Command({
         } else if (i.customId === "aceitarduelo") {
           let roll = Math.ceil(Math.random() * 10);
           if (roll < 6) {
-            await prisma.user.update({
-              where: {
-                guild_id_user_id: {
-                  guild_id: gid,
-                  user_id: users?.id as string,
-                },
-              },
-              data: {
-                balance: userGuildBalance + q,
-              },
+            await updateuser({
+              guildid: gid as string,
+              userid: users?.id as string,
+              dataconfig: "balance",
+              newdatavalue: userGuildBalance + q,
             });
-            await prisma.user.update({
-              where: {
-                guild_id_user_id: {
-                  guild_id: gid,
-                  user_id: user2?.id as string,
-                },
-              },
-              data: {
-                balance: userGuild2Balance - q,
-              },
+            await updateuser({
+              guildid: gid as string,
+              userid: user2?.id as string,
+              dataconfig: "balance",
+              newdatavalue: userGuild2Balance - q,
             });
             const embed = embed1(
               `<:Modicon:1065654040874188870> Duelo finalizado`,
@@ -184,27 +165,17 @@ export default new Command({
             );
             interaction.editReply({ embeds: [embed], components: [row2] });
           } else {
-            await prisma.user.update({
-              where: {
-                guild_id_user_id: {
-                  guild_id: gid,
-                  user_id: users?.id as string,
-                },
-              },
-              data: {
-                balance: userGuildBalance - q,
-              },
+            await updateuser({
+              guildid: gid as string,
+              userid: users?.id as string,
+              dataconfig: "balance",
+              newdatavalue: userGuildBalance - q,
             });
-            await prisma.user.update({
-              where: {
-                guild_id_user_id: {
-                  guild_id: gid,
-                  user_id: user2?.id as string,
-                },
-              },
-              data: {
-                balance: userGuild2Balance + q,
-              },
+            await updateuser({
+              guildid: gid as string,
+              userid: user2?.id as string,
+              dataconfig: "balance",
+              newdatavalue: userGuild2Balance + q,
             });
             const embed = embed1(
               `<:Modicon:1065654040874188870> Duelo finalizado`,

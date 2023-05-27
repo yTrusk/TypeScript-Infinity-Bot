@@ -5,9 +5,12 @@ import {
   User,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
-import { embed1, handle, userCreate } from "../../functions/functions";
-const prisma = new PrismaClient();
+import {
+  embed1,
+  finduser,
+  updateuser,
+  userCreate,
+} from "../../functions/functions";
 
 export default new Command({
   name: "pay",
@@ -43,21 +46,13 @@ export default new Command({
       let msg = options.getString("mensagem");
       if (!msg) msg = "Nenhuma mensagem inserida.";
       const gid = interaction.guild as Guild;
-      const userrBalances = await prisma.user.findUnique({
-        where: {
-          guild_id_user_id: {
-            guild_id: gid.id as string,
-            user_id: userr.id as string,
-          },
-        },
+      const userrBalances = await finduser({
+        guildid: gid.id as string,
+        userid: userr.id as string,
       });
-      const userBalances = await prisma.user.findUnique({
-        where: {
-          guild_id_user_id: {
-            guild_id: gid.id as string,
-            user_id: user.id as string,
-          },
-        },
+      const userBalances = await finduser({
+        guildid: gid.id as string,
+        userid: user.id as string,
       });
       if (!userrBalances) {
         try {
@@ -84,15 +79,24 @@ export default new Command({
         interaction.editReply({ embeds: [embed_erro] });
         return;
       } else {
-        if(!user1balance || isNaN(user1balance) === true || user1balance === null) user1balance = 0
-        const soma = (user1balance + quantidade);
-        await prisma.user.update({
-          where: { guild_id_user_id: { guild_id: gid.id, user_id: userr.id } },
-          data: { balance: soma},
+        if (
+          !user1balance ||
+          isNaN(user1balance) === true ||
+          user1balance === null
+        )
+          user1balance = 0;
+        const soma = user1balance + quantidade;
+        await updateuser({
+          guildid: gid.id as string,
+          userid: userr.id as string,
+          dataconfig: "balance",
+          newdatavalue: soma,
         });
-        await prisma.user.update({
-          where: { guild_id_user_id: { guild_id: gid.id, user_id: user.id } },
-          data: { balance: user2balance - quantidade },
+        await updateuser({
+          guildid: gid.id as string,
+          userid: user.id as string,
+          dataconfig: "balance",
+          newdatavalue: user2balance - quantidade,
         });
         const embed = embed1(
           `<a:certo:1084630932885078036> Transação concluida.`,

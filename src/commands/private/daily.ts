@@ -1,15 +1,20 @@
-import { ApplicationCommandType, EmbedBuilder } from "discord.js";
+import { ApplicationCommandType } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
 import { User } from "discord.js";
-import ms from "ms"
+import ms from "ms";
 interface Cooldown {
   lastCmd: number | null;
 }
 
 const cooldowns: { [userId: string]: Cooldown } = {};
-import { embed1, embeddesc, handle, userCreate } from "../../functions/functions";
+import {
+  embed1,
+  embeddesc,
+  finduser,
+  handle,
+  updateuser,
+  userCreate,
+} from "../../functions/functions";
 
 export default new Command({
   name: "daily",
@@ -46,29 +51,21 @@ export default new Command({
       `<:dinheiro:1084628513707016253> **Você resgatou** \`${quantia} space coins\` **em seu daily.**\n \n<:banco:1079896026124664903> **Utilize /saldo para verificar seu saldo.**`
     );
     interaction.reply({ embeds: [embed1s] }).then(async () => {
-      let userGuild = await prisma.user.findUnique({
-        where: {
-          guild_id_user_id: {
-            guild_id: interaction.guildId as string,
-            user_id: userid?.id as string,
-          },
-        },
+      let userGuild = await finduser({
+        guildid: interaction.guild?.id as string,
+        userid: userid.id as string,
       });
-      const bal = userGuild?.balance as number
       if (!userGuild) {
-const [user, userError] = await handle(
-  userCreate(interaction.guild?.id, interaction.user.id)
-);      }
-      await prisma.user.update({
-        where: {
-          guild_id_user_id: {
-            guild_id: interaction.guildId as string,
-            user_id: userid?.id,
-          },
-        },
-        data: {
-          balance: bal + quantia,
-        },
+        const [user, userError] = await handle(
+          userCreate(interaction.guild?.id, interaction.user.id)
+        );
+      }
+      const bal = userGuild?.balance as number;
+      await updateuser({
+        guildid: interaction.guild?.id as string,
+        userid: userid.id as string,
+        dataconfig: "balance",
+        newdatavalue: bal + quantia,
       });
       interaction.editReply({ embeds: [resgatado] });
     });
