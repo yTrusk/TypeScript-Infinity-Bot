@@ -1,8 +1,7 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, Guild, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
 import { embeddesc } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../main";
 
 export default new Command({
   name: "unlock",
@@ -24,7 +23,7 @@ export default new Command({
     let ch = options.getChannel("canal") as TextChannel;
     if (!ch) ch = interaction.channel as TextChannel;
     const gid = interaction.guild as Guild;
-    const sla = await prisma.config.findUnique({
+    const sla = await client.prisma.config.findUnique({
       where: { guild_id: gid.id as string },
     });
     const st = sla?.logstaff as string;

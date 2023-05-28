@@ -1,10 +1,6 @@
-import { EmbedBuilder, ButtonStyle } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import { configModal, embeddesc, buttonsRow } from "../../../functions/functions";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient()
 
 export default class selectConfigClass extends actionEvent {
     constructor(client: ExtendedClient) {

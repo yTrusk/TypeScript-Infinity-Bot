@@ -6,9 +6,8 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { joinVoiceChannel } from "@discordjs/voice";
-import { PrismaClient } from "@prisma/client";
 import { configCreate, embeddesc } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../main";
 export default new Command({
   name: "conectar",
   description: "[Administrador] Me conecte a um canal de voz",
@@ -32,7 +31,7 @@ export default new Command({
       });
     } else {
       const gid = interaction.guild?.id as string;
-      const xd = await prisma.config.findUnique({ where: { guild_id: gid } });
+      const xd = await client.prisma.config.findUnique({ where: { guild_id: gid } });
       if (!xd) {
         await configCreate(gid);
       }
@@ -48,7 +47,7 @@ export default new Command({
         interaction.reply({ embeds: [embed], ephemeral: true });
         return;
       } else if (!test || xd?.canal_voz === "0") {
-        await prisma.config.update({
+        await client.prisma.config.update({
           where: { guild_id: gid },
           data: { canal_voz: channel.id as string },
         });

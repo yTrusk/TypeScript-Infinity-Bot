@@ -4,7 +4,6 @@ import {
   ButtonStyle,
   ChannelType,
   EmbedBuilder,
-  Interaction,
   ModalBuilder,
   PermissionFlagsBits,
   StringSelectMenuBuilder,
@@ -12,9 +11,8 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { client } from "../main";
-const prisma = new PrismaClient();
 
 function configModal(customId: any, title: any, label1: any) {
   const modal = new ModalBuilder().setCustomId(customId).setTitle(title);
@@ -173,7 +171,7 @@ export function buttonsRow(
   return buttonbuilder;
 }
 async function configCreate(guildid: any) {
-  let guildConfig = await prisma.config.create({
+  let guildConfig = await client.prisma.config.create({
     data: {
       guild_id: `${guildid}`,
       logstaff: "0",
@@ -190,7 +188,7 @@ async function configCreate(guildid: any) {
 }
 async function userCreate(guild: any, user: any, balance?: number) {
   if (!balance) balance = 0;
-  const userGuild = await prisma.user.create({
+  const userGuild = await client.prisma.user.create({
     data: {
       guild_id: guild as string,
       user_id: user as string,
@@ -266,7 +264,6 @@ export async function createGuild(guildid: any, guildname: any) {
     },
     include: {
       config: true,
-      products: true,
     },
   });
   return guildcreate;
@@ -276,16 +273,16 @@ export async function setPremiumExpiration(guildid: string, dias: number) {
   const dataAtual = new Date();
   const dataExpiracao = new Date(dataAtual.getTime());
   dataExpiracao.setDate(dataExpiracao.getDate() + dias);
-  const test = await prisma.guild.findUnique({
+  const test = await client.prisma.guild.findUnique({
     where: { guild_id: guildid },
   });
   if (!test) {
-    await prisma.guild.create({
+    await client.prisma.guild.create({
       data: { guild_id: guildid, premium: true, dateexpires: dataExpiracao },
     });
     return;
   }
-  await prisma.guild.update({
+  await client.prisma.guild.update({
     where: { guild_id: guildid },
     data: { dateexpires: dataExpiracao, premium: true },
   });
@@ -295,19 +292,19 @@ export async function setPremiumExpiration(guildid: string, dias: number) {
 }
 
 export async function verificarUsersPremium() {
-  const usuarios = await prisma.guild.findMany();
+  const usuarios = await client.prisma.guild.findMany();
 
   for (const usuario of usuarios) {
     let mensagem;
     let test;
     if (new Date(usuario.dateexpires) > new Date()) {
-      test = await prisma.guild.update({
+      test = await client.prisma.guild.update({
         where: { id: usuario.id },
         data: { premium: true },
       });
       mensagem = `O servidor: ${usuario.guild_name} tem premium ativo`;
     } else {
-      test = await prisma.guild.update({
+      test = await client.prisma.guild.update({
         where: { id: usuario.id },
         data: { premium: false },
       });

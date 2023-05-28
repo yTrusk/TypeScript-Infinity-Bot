@@ -1,12 +1,11 @@
 import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder } from "discord.js";
-import { PrismaClient } from "@prisma/client";
 import { configCreate} from "../../functions/functions";
-const prisma = new PrismaClient()
+import { client } from "../../main";
 export default new Event({
     name: "guildMemberAdd",
    async run(member) {
-       const configs = await prisma.config.findUnique({
+       const configs = await client.prisma.config.findUnique({
            where: {
                guild_id: member.guild?.id
            }

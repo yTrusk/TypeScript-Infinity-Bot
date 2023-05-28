@@ -1,8 +1,7 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, TextChannel, User } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
 import { embed1, embeddesc } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../main";
 
 export default new Command({
   name: "avaliar-staff",
@@ -31,7 +30,7 @@ export default new Command({
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
     const gid = interaction.guild?.id as string
-    const prs = await prisma.config.findUnique({ where: { guild_id: gid } })
+    const prs = await client.prisma.config.findUnique({ where: { guild_id: gid } })
     const cst = prs?.refstaff;
     const chref = prs?.logstaff as string
     const canalsend = interaction.guild?.channels.cache.find(c => c.id === chref) as TextChannel

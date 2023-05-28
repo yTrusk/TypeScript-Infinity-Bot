@@ -1,8 +1,7 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, Guild, GuildMember, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
 import { embeddesc } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../main";
 
 export default new Command({
   name: "kick",
@@ -26,7 +25,7 @@ export default new Command({
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
     const gid = interaction.guild as Guild
-    const sla = await prisma.config.findUnique({ where: { guild_id: gid.id as string } })
+    const sla = await client.prisma.config.findUnique({ where: { guild_id: gid.id as string } })
     const member = options.getMember(`usuário`) as GuildMember
     let motivo = options.getString("motivo") 
     if (!motivo) motivo = "Não informado.";

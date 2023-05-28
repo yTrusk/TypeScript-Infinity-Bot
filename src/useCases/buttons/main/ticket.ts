@@ -9,9 +9,7 @@ import {
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import { ticket, embed1, buttonsRow } from "../../../functions/functions";
-import { PrismaClient } from "@prisma/client";
 import { client } from "../../../main";
-const prisma = new PrismaClient();
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
@@ -38,7 +36,7 @@ export default class RecusarDueloClass extends actionEvent {
           ephemeral: true,
         });
       } else {
-        const sla = await prisma.config.findUnique({
+        const sla = await client.prisma.config.findUnique({
           where: { guild_id: gid.id as string },
         });
         const slas = sla?.cateticket as string;

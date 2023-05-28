@@ -101,9 +101,6 @@ export default new Command({
          const [user, userError] =  await handle<User>(
             userCreate(interaction.guild?.id, interaction.user.id)
           );
-          if(userError){
-            // erro ao criar o usuario
-          }
         }
         const guildid = interaction.guild?.id as string;
         let guildConfig = await prisma.guild.findUnique({

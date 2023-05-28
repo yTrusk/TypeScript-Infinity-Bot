@@ -1,8 +1,7 @@
 import { ActionRowBuilder, ApplicationCommandOptionType, ApplicationCommandType, ButtonBuilder, ButtonStyle, EmbedBuilder, User, UserAvatarFormat } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
 import { handle, userCreate } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../main";
 
 export default new Command({
   name: "perfil",
@@ -20,7 +19,7 @@ export default new Command({
     if (!interaction.isCommand()) return;
     let user = options.getUser("usuário");
     if (!user) user = interaction.user as User;
-    let userGuild = await prisma.user.findUnique({
+    let userGuild = await client.prisma.user.findUnique({
       where: {
         guild_id_user_id: {
           guild_id: interaction.guildId as string,

@@ -1,15 +1,13 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder } from "discord.js";
-import { PrismaClient } from "@prisma/client";
 import { configCreate } from "../../functions/functions";
-const prisma = new PrismaClient();
 
 export default new Event({
     name: "threadDelete",
     async run(thread) {
         const guildid = thread.guild?.id as string;
-        let guildConfig = await prisma.config.findUnique({
+        let guildConfig = await client.prisma.config.findUnique({
             where: {
                 guild_id: guildid,
             },

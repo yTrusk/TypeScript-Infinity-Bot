@@ -1,9 +1,8 @@
 import { ButtonStyle, EmbedBuilder } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import { PrismaClient } from "@prisma/client";
 import { buttonsRow, embeddesc } from "../../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../../main";
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
@@ -18,7 +17,7 @@ export default class RecusarDueloClass extends actionEvent {
     if (!interaction.isButton()) return;
     await interaction.deferReply({ ephemeral: true });
 
-    const sugestion = await prisma.sugestions.findUnique({
+    const sugestion = await client.prisma.sugestions.findUnique({
       where: {
         message_id: interaction.message.id,
       },
@@ -37,7 +36,7 @@ export default class RecusarDueloClass extends actionEvent {
         const getUserVoteId = sugestion.votes.find(
           (v) => v.user_id == interaction.user.id
         )?.id;
-        const voteUpdate = await prisma.sugestions.update({
+        const voteUpdate = await client.prisma.sugestions.update({
           where: {
             id: sugestion.id,
           },
@@ -95,7 +94,7 @@ export default class RecusarDueloClass extends actionEvent {
           embeds: [em],
         });
       } else {
-        const sugestionUpdated = await prisma.sugestions.update({
+        const sugestionUpdated = await client.prisma.sugestions.update({
           where: {
             id: sugestion.id,
           },

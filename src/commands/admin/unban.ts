@@ -7,9 +7,7 @@ import {
     } from "discord.js";
     import { Command } from "../../configs/types/Command";
     import { client } from "../../main";
-    import { PrismaClient } from "@prisma/client";
     import { embeddesc } from "../../functions/functions";
-    const prisma = new PrismaClient();
     export default new Command({
       name: "unban",
       description: "De ban a um membro utilizando o comando.",
@@ -33,7 +31,7 @@ import {
         if (!interaction.isCommand()) return;
         const userr = options.getUser("usuário") as User;
         const gid = interaction.guild as Guild;
-        const test = await prisma.config.findUnique({
+        const test = await client.prisma.config.findUnique({
           where: { guild_id: gid.id as string },
         });
         const sla = test?.logstaff as string;

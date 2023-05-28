@@ -5,9 +5,8 @@ import {
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient } from "@prisma/client";
 import { configCreate, embed1, buttonsRow } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../main";
 
 export default new Command({
   name: "sugerir",
@@ -27,7 +26,7 @@ export default new Command({
     let sugestao = options.getString("sugestão");
     const guildid = interaction.guild?.id as string;
 
-    let guildConfig = await prisma.config.findUnique({
+    let guildConfig = await client.prisma.config.findUnique({
       where: {
         guild_id: guildid,
       },
@@ -98,7 +97,7 @@ export default new Command({
           embeds: [embed],
           components: [row],
         });
-        await prisma.sugestions.create({
+        await client.prisma.sugestions.create({
           data: {
             message_id: message.id,
             votes: {}

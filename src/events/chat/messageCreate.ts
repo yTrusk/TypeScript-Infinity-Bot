@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { PermissionFlagsBits } from "discord.js";
 import { configCreate } from "../../functions/functions";
-const prisma = new PrismaClient();
 export default new Event({
   name: "messageCreate",
   async run(message) {
@@ -11,7 +9,7 @@ export default new Event({
       return;
     }
     const guildid = message.guild?.id as string;
-    let guildConfig = await prisma.config.findUnique({
+    let guildConfig = await client.prisma.config.findUnique({
       where: {
         guild_id: guildid,
       },

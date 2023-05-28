@@ -2,7 +2,6 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   EmbedBuilder,
-  User,
   WebhookClient,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";

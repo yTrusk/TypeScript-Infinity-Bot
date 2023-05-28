@@ -8,9 +8,7 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
-import { PrismaClient } from "@prisma/client";
 import { embeddesc } from "../../functions/functions";
-const prisma = new PrismaClient();
 
 export default new Command({
   name: "ban",
@@ -36,7 +34,7 @@ export default new Command({
     const userr = options.getUser("usuário") as User;
     const gid = interaction.guild as Guild;
      const guildid = interaction.guild?.id as string;
-        const test = await prisma.guild.findUnique({
+        const test = await client.prisma.guild.findUnique({
           where: {
             guild_id: guildid,
           },
@@ -47,7 +45,6 @@ export default new Command({
     const sla = test?.config?.logstaff as string;
     const ch = gid.channels.cache.find((c) => c.id === sla) as TextChannel;
     const user = gid.members.cache.get(userr.id) as GuildMember;
-    const member = gid.members.cache.get(user.id);
     let motivo = options.getString("motivo") as string;
     const embederro = embeddesc(
       `<a:errado:1084631043757310043> **Não foi possivel executar o banimento, verifique se o usuário está no servidor ou tem um cargo mais alto que o meu.**`,
