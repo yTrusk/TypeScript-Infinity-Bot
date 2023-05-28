@@ -1,7 +1,7 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder, GuildChannel } from "discord.js";
-import { configCreate } from "../../functions/functions";
+import { configCreate, errorreport, handle } from "../../functions/functions";
 export default new Event({
   name: "channelDelete",
   async run(channel) {
@@ -13,7 +13,8 @@ export default new Event({
       },
     });
     if (!guildConfig) {
-      await configCreate(guildid);
+      const [user, userError] = await handle(configCreate(guildid));
+      await errorreport(userError);
     }
     let canals = channels.guild?.channels.cache.find(
       (c) => c.id === guildConfig?.logstaff

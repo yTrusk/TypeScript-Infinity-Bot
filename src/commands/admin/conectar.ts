@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { joinVoiceChannel } from "@discordjs/voice";
-import { configCreate, embeddesc } from "../../functions/functions";
+import { configCreate, embeddesc, errorreport, handle } from "../../functions/functions";
 import { client } from "../../main";
 export default new Command({
   name: "conectar",
@@ -33,7 +33,8 @@ export default new Command({
       const gid = interaction.guild?.id as string;
       const xd = await client.prisma.config.findUnique({ where: { guild_id: gid } });
       if (!xd) {
-        await configCreate(gid);
+        const [user, userError] = await handle(configCreate(gid))
+        await errorreport(userError)
       }
       const xds = xd?.canal_voz as string;
       const test = interaction.guild?.channels.cache.find(

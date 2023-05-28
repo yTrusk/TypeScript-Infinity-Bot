@@ -8,6 +8,7 @@ import {
   PermissionFlagsBits,
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
+  TextChannel,
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
@@ -324,8 +325,11 @@ export async function verificarUsersPremium() {
   }
 }
 
-export async function createguilderror(error: any) {
-  const embed = embeddesc(`Erro recebido createguild/delete: ${error}`);
-  return embed;
+export async function errorreport(error: any) {
+  const ho = client.channels.cache.find(
+    (c) => c.id === "1100184382309924966"
+  ) as TextChannel;
+  const embed = embeddesc(`Erro recebido: ${error}`);
+  return ho.send({ embeds: [embed] });
 }
 export { configModal, embeddesc, embed1, ticket, configCreate, userCreate };

@@ -1,7 +1,7 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { PermissionFlagsBits } from "discord.js";
-import { configCreate } from "../../functions/functions";
+import { configCreate, errorreport, handle } from "../../functions/functions";
 export default new Event({
   name: "messageCreate",
   async run(message) {
@@ -15,8 +15,9 @@ export default new Event({
       },
     });
     if (!guildConfig) {
-      const set = await configCreate(guildid);
-      return set;
+      const [user, userError] = await handle(configCreate(guildid))
+      await errorreport(userError)
+      return;
     }
     const confirmar = guildConfig.antlk;
     if (confirmar === "y") {

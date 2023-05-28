@@ -6,7 +6,12 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { PrismaClient, User } from "@prisma/client";
-import { configCreate, handle, userCreate } from "../../functions/functions";
+import {
+  configCreate,
+  errorreport,
+  handle,
+  userCreate,
+} from "../../functions/functions";
 const prisma = new PrismaClient();
 export default new Command({
   name: "config",
@@ -86,34 +91,39 @@ export default new Command({
           },
         ])
     );
-    await interaction
-      .reply({ embeds: [embedconfig], components: [row], ephemeral: true })
+    await interaction.reply({
+      embeds: [embedconfig],
+      components: [row],
+      ephemeral: true,
+    });
 
-        let userGuild = await prisma.user.findUnique({
-          where: {
-            guild_id_user_id: {
-              guild_id: interaction.guildId as string,
-              user_id: interaction.user?.id as string,
-            },
-          },
-        });
-        if (!userGuild) {
-         const [user, userError] =  await handle<User>(
-            userCreate(interaction.guild?.id, interaction.user.id)
-          );
-        }
-        const guildid = interaction.guild?.id as string;
-        let guildConfig = await prisma.guild.findUnique({
-          where: {
-            guild_id: guildid,
-          }, include:{
-            config: true
-          }
-        });
-        if (!guildConfig?.config) {
-          await configCreate(guildid);
-        } else {
-          return;
-        }
+    let userGuild = await prisma.user.findUnique({
+      where: {
+        guild_id_user_id: {
+          guild_id: interaction.guildId as string,
+          user_id: interaction.user?.id as string,
+        },
+      },
+    });
+    if (!userGuild) {
+      const [user, userError] = await handle<User>(
+        userCreate(interaction.guild?.id, interaction.user.id)
+      );
+    }
+    const guildid = interaction.guild?.id as string;
+    let guildConfig = await prisma.guild.findUnique({
+      where: {
+        guild_id: guildid,
+      },
+      include: {
+        config: true,
+      },
+    });
+    if (!guildConfig?.config) {
+      const [user, userError] = await handle(configCreate(guildid));
+      await errorreport(userError);
+    } else {
+      return;
+    }
   },
 });
