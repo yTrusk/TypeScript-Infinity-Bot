@@ -24,19 +24,30 @@ function configModal(customId: any, title: any, label1: any) {
   modal.addComponents(rbx);
   return modal;
 }
-function embeddesc(description: any, interaction: any) {
-  const embed = new EmbedBuilder()
-    .setAuthor({
-      name: interaction.user?.tag,
-      iconURL: interaction.user?.displayAvatarURL(),
-    })
-    .setDescription(description)
-    .setColor(`#9600D8`)
-    .setFooter({
-      text: "Infinity System",
-      iconURL: client.user?.displayAvatarURL(),
-    });
-  return embed;
+function embeddesc(description: any, interaction?: any) {
+  if (interaction) {
+    const embed = new EmbedBuilder()
+      .setAuthor({
+        name: interaction.user?.tag,
+        iconURL: interaction.user?.displayAvatarURL(),
+      })
+      .setDescription(description)
+      .setColor(`#9600D8`)
+      .setFooter({
+        text: "Infinity System",
+        iconURL: client.user?.displayAvatarURL(),
+      });
+    return embed;
+  } else {
+    const embed = new EmbedBuilder()
+      .setDescription(description)
+      .setColor(`#9600D8`)
+      .setFooter({
+        text: "Infinity System",
+        iconURL: client.user?.displayAvatarURL(),
+      });
+    return embed;
+  }
 }
 function embed1(title: string, desc: string) {
   const embed = new EmbedBuilder()
@@ -311,5 +322,10 @@ export async function verificarUsersPremium() {
       mensagem = `O servidor: ${usuario.guild_name} não tem premium ativo`;
     }
   }
+}
+
+export async function createguilderror(error: any) {
+  const embed = embeddesc(`Erro recebido createguild/delete: ${error}`);
+  return embed;
 }
 export { configModal, embeddesc, embed1, ticket, configCreate, userCreate };

@@ -1,18 +1,29 @@
 import { Event } from "../../configs/types/event";
-import { WebhookClient } from "discord.js";
-import { createGuild, embed1 } from "../../functions/functions";
+import { TextChannel, WebhookClient } from "discord.js";
+import {
+  createGuild,
+  createguilderror,
+  embed1,
+} from "../../functions/functions";
 import { client } from "../../main";
 export default new Event({
   name: "guildCreate",
   async run(guild) {
-    await createGuild(guild.id, guild.name);
+    try {
+      await createGuild(guild.id, guild.name);
+    } catch {
+      async (err: any) => {
+        const embeds = await createguilderror(err);
+        ho.send({ embeds: [embeds] });
+      };
+    }
     const embed = embed1(
-      `<:world:1112182741652484117> | ${guild.name} (${guild.id})`,
-      `Fui adicionado no servidor: ${guild.name} com ${guild.memberCount} membros, totalizando ${client.guilds.cache.size} servidores e ${client.users.cache.size}.`
+      `<a:planeta:1084627835408363640> | ${guild.name} (${guild.id})`,
+      `<:tabela:1084631840528281701> **Fui adicionado no servidor:** \`${guild.name}\` \n<:cliente:1084634375997632582> **Membros:** \`${guild.memberCount}.\` \n<:info:1084952883818143815> **Totalizando** \`${client.guilds.cache.size}\` **servidores e** \`${client.users.cache.size}\` **usuários.**`
     );
-    const ho = new WebhookClient({
-      url: `https://discord.com/api/webhooks/1112053655613472850/pxRvHDHTYbeqZ3MhchXiy7TBrnhqirrhyHIem0yRjhWwegQ9Q1LkrO9iw7Ouj8Xm1Onl`,
-    });
+    const ho = client.channels.cache.find(
+      (c) => c.id === "1100184382309924966"
+    ) as TextChannel;
     ho.send({ embeds: [embed] });
   },
 });

@@ -47,8 +47,8 @@ export default new Command({
           if (time == 0) resta = "alguns milisegundos";
           if (time == 1) resta = "1 segundo";
           const embed_err = embed1(
-            `❌ Erro, daily já resgatado!`,
-            `Vagabundo querendo trapacear né? Espera \`${time}s\` para resgatar o daily novamente!`
+            `❌ Erro, double em cooldown!`,
+            `Vagabundo querendo trapacear né? Espera \`${time}s\` para usar o double novamente!`
           );
           interaction.reply({ embeds: [embed_err], ephemeral: true });
           return;

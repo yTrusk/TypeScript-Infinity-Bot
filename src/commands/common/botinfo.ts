@@ -1,4 +1,10 @@
-import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import {
+  ActionRowBuilder,
+  ApplicationCommandType,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+} from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
 export default new Command({
@@ -47,6 +53,11 @@ export default new Command({
         {
           name: `🏓 **Meu ping:**`,
           value: `\`${ping}ms\` `,
+          inline: true,
+        },
+        {
+          name: `👻 **Usuários:**`,
+          value: `\`${client.users.cache.size}\``,
           inline: true,
         }
       );
