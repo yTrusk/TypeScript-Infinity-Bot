@@ -8,7 +8,12 @@ import {
 } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import { ticket, embed1, buttonsRow } from "../../../functions/functions";
+import {
+  ticket,
+  embed1,
+  buttonsRow,
+  errorreport,
+} from "../../../functions/functions";
 import { client } from "../../../main";
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
@@ -87,7 +92,15 @@ export default class RecusarDueloClass extends actionEvent {
         }
       }
     } else {
-      interaction.reply({content: `❌ **Erro, não possuo permissões para criar canais ou enviar mensagens.**`}).catch((err) => {console.log(`Servidor: ${interaction.guild?.name}, erro:`, err)})
+      interaction
+        .reply({
+          content: `<a:errado:1084631043757310043> **Erro, não possuo permissões para criar canais ou enviar mensagens.**`,
+        })
+        .catch(async (err) => {
+          if (err !== null) {
+            await errorreport(err);
+          }
+        });
     }
   }
 }

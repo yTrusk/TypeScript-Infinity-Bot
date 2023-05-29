@@ -10,6 +10,7 @@ const cooldowns: { [userId: string]: Cooldown } = {};
 import {
   embed1,
   embeddesc,
+  errorreport,
   finduser,
   handle,
   updateuser,
@@ -25,14 +26,14 @@ export default new Command({
     const userid = interaction.user as User;
     if (!cooldowns[userid.id]) cooldowns[userid.id] = { lastCmd: null };
     let ultimoCmd = cooldowns[userid.id].lastCmd;
-    let timeout = ms("1 day"); // Coloque em ms o tempo
+    let timeout = ms("1 day");
     if (ultimoCmd !== null && timeout - (Date.now() - ultimoCmd) > 0) {
       let time = Math.ceil((timeout - (Date.now() - ultimoCmd)) / 1000);
       let resta = `${time} segundos`;
       if (time == 0) resta = "alguns milisegundos";
       if (time == 1) resta = "1 segundo";
       const embed_err = embed1(
-        `❌ Erro, daily já resgatado!`,
+        `<a:errado:1084631043757310043> Erro, daily já resgatado!`,
         `Vagabundo querendo trapacear né? Espera \`${time}\` para resgatar o daily novamente!`
       );
       interaction.reply({ embeds: [embed_err], ephemeral: true });
@@ -59,6 +60,9 @@ export default new Command({
         const [user, userError] = await handle(
           userCreate(interaction.guild?.id, interaction.user.id)
         );
+        if (userError !== null) {
+          await errorreport(userError);
+        }
       }
       const bal = userGuild?.balance as number;
       await updateuser({

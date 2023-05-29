@@ -144,7 +144,7 @@ export default class RecusarDueloClass extends actionEvent {
            ]);
            await interaction.message.edit({ components: [row] });
            const embed = new EmbedBuilder().setDescription(
-             `❌ **Você reprovou essa sugestão.**`
+             `<a:errado:1084631043757310043> **Você reprovou essa sugestão.**`
            );
            interaction.editReply({
              embeds: [embed],

@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { embeddesc } from "../../functions/functions";
+import { client } from "../../main";
 
 export default new Command({
   name: "nickname",
@@ -30,7 +31,15 @@ export default new Command({
     if (!interaction.isCommand()) return;
     const nick = options.getString("nick");
     const boy = options.getMember("usuário") as GuildMember;
-    const gid = interaction.guild as Guild;
+    let clientmember = interaction.guild?.members.cache.find(
+      (u) => u.id === client.user?.id
+    ) as GuildMember;
+    if (!clientmember.permissions.has(["ManageNicknames"])) {
+      return interaction.reply({
+        content: `<a:errado:1084631043757310043> **Erro, não possuo permissão suficiente.**`,
+        ephemeral: true,
+      });
+    }
     const embed = embeddesc(
       `<a:certo:1084630932885078036> **Nick do usuário alterado com sucesso !** \n**Nick novo:** ${nick} \n**Nick antigo:** \`${boy.user.username}\``,
       interaction

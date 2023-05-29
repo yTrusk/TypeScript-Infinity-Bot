@@ -1,6 +1,13 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, TextChannel } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  ChannelType,
+  GuildMember,
+  TextChannel,
+} from "discord.js";
 import { Command } from "../../configs/types/Command";
-import ms from "ms"
+import ms from "ms";
+import { client } from "../../main";
 export default new Command({
   name: "slowmode",
   description:
@@ -81,6 +88,15 @@ export default new Command({
     let times = options.get("tempo")?.value as string;
     let canal = options.getChannel("canal") as TextChannel;
     if (!canal) canal = interaction.channel as TextChannel;
+    let clientmember = interaction.guild?.members.cache.find(
+      (u) => u.id === client.user?.id
+    ) as GuildMember;
+    if (!clientmember.permissions.has(["ManageChannels"])) {
+      return interaction.reply({
+        content: `<a:errado:1084631043757310043> **Erro, não possuo permissão suficiente.**`,
+        ephemeral: true,
+      });
+    }
     let d = ms(`${times}`);
     canal.setRateLimitPerUser(d / 1000).then(() => {
       interaction.reply({

@@ -3,8 +3,10 @@ import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import {
   configCreate,
+  embedlogs,
   errorreport,
   handle,
+  logs,
 } from "../../../functions/functions";
 
 export default class RecusarDueloClass extends actionEvent {
@@ -25,7 +27,7 @@ export default class RecusarDueloClass extends actionEvent {
     );
     if (!canals) {
       interaction.reply({
-        content: `❌ **O id informado não existe nas categorias**`,
+        content: `<a:errado:1084631043757310043> **O id informado não existe nas categorias**`,
         ephemeral: true,
       });
     } else {
@@ -37,9 +39,7 @@ export default class RecusarDueloClass extends actionEvent {
       });
       if (!guildConfig) {
         const [user, userError] = await handle(configCreate(guildid));
-        if (userError === null) {
-          await errorreport(user);
-        } else {
+        if (userError !== null) {
           await errorreport(userError);
         }
       }
@@ -51,6 +51,8 @@ export default class RecusarDueloClass extends actionEvent {
           cateticket: id,
         },
       });
+      const embed = embedlogs(`Categoria`, `${id}`);
+      await logs(embed);
       interaction
         .reply({
           content: `**Categoria setado em:** <#${id}>`,

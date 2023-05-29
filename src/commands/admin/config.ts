@@ -8,6 +8,7 @@ import { Command } from "../../configs/types/Command";
 import { PrismaClient, User } from "@prisma/client";
 import {
   configCreate,
+  createGuild,
   errorreport,
   handle,
   userCreate,
@@ -17,7 +18,7 @@ export default new Command({
   name: "config",
   description: "[Administrador] Configure meus sistemas.",
   type: ApplicationCommandType.ChatInput,
-  defaultMemberPermissions: "Administrator",
+  defaultMemberPermissions: "ManageGuild",
   async run({ interaction }) {
     const servericon = interaction.guild?.iconURL();
 
@@ -109,6 +110,9 @@ export default new Command({
       const [user, userError] = await handle<User>(
         userCreate(interaction.guild?.id, interaction.user.id)
       );
+      if (userError !== null) {
+        await errorreport(userError);
+      }
     }
     const guildid = interaction.guild?.id as string;
     let guildConfig = await prisma.guild.findUnique({
@@ -119,11 +123,11 @@ export default new Command({
         config: true,
       },
     });
-    if (!guildConfig?.config) {
-      const [user, userError] = await handle(configCreate(guildid));
-      if (userError === null) {
-        await errorreport(user);
-      } else {
+    if (!guildConfig) {
+      const [user, userError] = await handle(
+        createGuild(guildid, interaction.guild?.name)
+      );
+      if (userError !== null) {
         await errorreport(userError);
       }
     } else {

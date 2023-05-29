@@ -141,7 +141,7 @@ export default class RecusarDueloClass extends actionEvent {
         ]);
         await interaction.message.edit({ components: [row] });
         const embed = new EmbedBuilder().setDescription(
-          `✅ Você aprovou essa sugestão.`
+          `<a:certo:1084630932885078036> Você aprovou essa sugestão.`
         );
         interaction.editReply({
           embeds: [embed],

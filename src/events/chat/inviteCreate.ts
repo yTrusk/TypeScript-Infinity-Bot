@@ -1,24 +1,29 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder, Guild } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
+import {
+  configCreate,
+  embedlogs,
+  errorreport,
+  handle,
+  logs,
+} from "../../functions/functions";
 export default new Event({
   name: "inviteCreate",
   async run(invite) {
     if (invite.guild instanceof Guild) {
-      const guildid = invite.guild?.id as string;
+      const guildid = invite.guild as Guild;
       let guildConfig = await client.prisma.config.findUnique({
         where: {
-          guild_id: guildid,
+          guild_id: guildid.id as string,
         },
       });
       if (!guildConfig) {
-        const [user, userError] = await handle(configCreate(guildid))
-        if (userError === null) {
-          await errorreport(user)
-        } else {
+        const [user, userError] = await handle(configCreate(guildid));
+        if (userError !== null) {
           await errorreport(userError);
-        }      }
+        }
+      }
       let canals = invite.guild?.channels.cache.find(
         (c) => c.id === guildConfig?.logstaff
       );

@@ -6,7 +6,12 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { joinVoiceChannel } from "@discordjs/voice";
-import { configCreate, embeddesc, errorreport, handle } from "../../functions/functions";
+import {
+  configCreate,
+  embeddesc,
+  errorreport,
+  handle,
+} from "../../functions/functions";
 import { client } from "../../main";
 export default new Command({
   name: "conectar",
@@ -31,14 +36,15 @@ export default new Command({
       });
     } else {
       const gid = interaction.guild?.id as string;
-      const xd = await client.prisma.config.findUnique({ where: { guild_id: gid } });
+      const xd = await client.prisma.config.findUnique({
+        where: { guild_id: gid },
+      });
       if (!xd) {
-        const [user, userError] = await handle(configCreate(gid))
-        if (userError === null) {
-          await errorreport(user)
-        } else {
+        const [user, userError] = await handle(configCreate(gid));
+        if (userError !== null) {
           await errorreport(userError);
-        }      }
+        }
+      }
       const xds = xd?.canal_voz as string;
       const test = interaction.guild?.channels.cache.find(
         (c) => c.id === xds
@@ -72,11 +78,12 @@ export default new Command({
           .then(() => {
             return connection;
           })
-          .catch((err) => {
+          .catch(async (err) => {
             interaction.reply({
               content: `<a:errado:1084631043757310043> **Ocorreu um erro ao tentar se conectar com o canal de voz Erro:** \n${err}`,
               ephemeral: true,
             });
+            await errorreport(err)
           });
         return;
       }

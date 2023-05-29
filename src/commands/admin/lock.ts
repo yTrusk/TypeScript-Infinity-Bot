@@ -3,6 +3,7 @@ import {
   ApplicationCommandType,
   ChannelType,
   Guild,
+  GuildMember,
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
@@ -31,6 +32,15 @@ export default new Command({
     const sla = await client.prisma.config.findUnique({
       where: { guild_id: gid.id as string },
     });
+    let clientmember = interaction.guild?.members.cache.find(
+      (u) => u.id === client.user?.id
+    ) as GuildMember;
+    if (!clientmember.permissions.has(["Administrator"])) {
+      return interaction.reply({
+        content: `<a:errado:1084631043757310043> **Erro, não possuo permissão suficiente.**`,
+        ephemeral: true,
+      });
+    }
     const st = sla?.logstaff as string;
     const chst = gid.channels.cache.find((c) => c.id === st) as TextChannel;
     if (!chst) {

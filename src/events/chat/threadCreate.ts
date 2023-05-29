@@ -14,9 +14,7 @@ export default new Event({
     });
     if (!guildConfig) {
       const [user, userError] = await handle(configCreate(guildid));
-      if (userError === null) {
-        await errorreport(user);
-      } else {
+      if (userError !== null) {
         await errorreport(userError);
       }
     }

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, Guild, User } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { embed1, embeddesc, finduser, handle, updateuser, userCreate } from "../../functions/functions";
+import { embed1, embeddesc, errorreport, finduser, handle, updateuser, userCreate } from "../../functions/functions";
 import ms from "ms";
 interface Cooldown {
   lastCmd: number | null;
@@ -27,6 +27,9 @@ export default new Command({
     let userg = await finduser({ guildid: gid.id as string, userid: users.id as string})
     if (!userg) {
       const [user, userError] = await handle(userCreate(gid.id, users.id));
+      if (userError !== null) {
+        await errorreport(userError);
+      }
     }
     const bal = userg?.balance as number
     if (q < 10) {
@@ -47,7 +50,7 @@ export default new Command({
           if (time == 0) resta = "alguns milisegundos";
           if (time == 1) resta = "1 segundo";
           const embed_err = embed1(
-            `❌ Erro, double em cooldown!`,
+            `<a:errado:1084631043757310043> Erro, double em cooldown!`,
             `Vagabundo querendo trapacear né? Espera \`${time}s\` para usar o double novamente!`
           );
           interaction.reply({ embeds: [embed_err], ephemeral: true });

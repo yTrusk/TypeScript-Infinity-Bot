@@ -1,6 +1,12 @@
 import { Event } from "../../configs/types/event";
 import { TextChannel } from "discord.js";
-import { errorreport, embed1, handle } from "../../functions/functions";
+import {
+  errorreport,
+  embed1,
+  handle,
+  embedlogs,
+  logs,
+} from "../../functions/functions";
 import { client } from "../../main";
 export default new Event({
   name: "guildDelete",
@@ -8,9 +14,7 @@ export default new Event({
     const [user, userError] = await handle(
       client.prisma.guild.delete({ where: { guild_id: guild.id } })
     );
-    if (userError === null) {
-      await errorreport(user);
-    } else {
+    if (userError !== null) {
       await errorreport(userError);
     }
     const embed = embed1(
@@ -18,7 +22,7 @@ export default new Event({
       `<:tabela:1084631840528281701> **Fui removido do servidor:** \`${guild.name}\` \n<:cliente:1084634375997632582> **Membros:** \`${guild.memberCount}.\` \n<:info:1084952883818143815> **Totalizando** \`${client.guilds.cache.size}\` **servidores e** \`${client.users.cache.size}\` **usuários.**`
     );
     const ho = client.channels.cache.find(
-      (c) => c.id === "1100184382309924966"
+      (c) => c.id === "1112534964181942293"
     ) as TextChannel;
     ho.send({ embeds: [embed] });
   },

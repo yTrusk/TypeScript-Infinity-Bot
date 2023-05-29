@@ -23,7 +23,7 @@ export * from "colors";
 import { PrismaClient } from "@prisma/client";
 const fileCondition = (fileName: string) =>
   fileName.endsWith(".ts") || fileName.endsWith(".js");
-  
+
 dotenv.config();
 
 export class ExtendedClient extends Client {
@@ -63,13 +63,10 @@ export class ExtendedClient extends Client {
     this.application?.commands
       .set(commands)
       .then(() => {
-        console.log(`(Commands) Carregando comandos (/) da aplicação`.rainbow);
-        setTimeout(() => {
-          console.log(
-            "✅ (Commands) Os comandos (/) da aplicação foram carregados com sucesso."
-              .green
-          );
-        }, 5000);
+        console.log(
+          "✅ (Commands) Os comandos (/) da aplicação foram carregados com sucesso."
+            .green
+        );
       })
       .catch((err) => {
         console.log(
@@ -126,8 +123,10 @@ export class ExtendedClient extends Client {
   }
   private registerActions() {
     const dir = path.join(__dirname, "../useCases");
-    readdirSync(dir).forEach(async (dirs) => { // useCases/buttons  useCases/menus
-      readdirSync(`${dir}/${dirs}`).forEach(async (sub) => { // useCases/buttons/economy 
+    readdirSync(dir).forEach(async (dirs) => {
+      // useCases/buttons  useCases/menus
+      readdirSync(`${dir}/${dirs}`).forEach(async (sub) => {
+        // useCases/buttons/economy
         const events = readdirSync(
           `${dir}${sep}${dirs}${sep}${sub}/${sep}`
         ).filter((files) => files.endsWith(".ts") || files.endsWith(".js"));
@@ -139,7 +138,7 @@ export class ExtendedClient extends Client {
             console.log(`[Action] - ${action.config.event} loaded`);
             this.infinityActions.set(action.config.event, action);
           } catch (err) {
-            console.log(`Ocorreu um erro ao carregar uma ação!`)
+            console.log(`Ocorreu um erro ao carregar uma ação!`);
           }
         }
       });

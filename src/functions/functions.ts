@@ -305,7 +305,6 @@ export async function setPremiumExpiration(guildid: string, dias: number) {
 
 export async function verificarUsersPremium() {
   const usuarios = await client.prisma.guild.findMany();
-
   for (const usuario of usuarios) {
     let mensagem;
     let test;
@@ -327,9 +326,36 @@ export async function verificarUsersPremium() {
 
 export async function errorreport(error: any) {
   const ho = client.channels.cache.find(
-    (c) => c.id === "1100184382309924966"
+    (c) => c.id === "1112534964181942293"
   ) as TextChannel;
-  const embed = embeddesc(`Erro recebido: ${error}`);
+  const embed = embeddesc(`${error}`);
+  return ho.send({ embeds: [embed] });
+}
+export function embedlogs(
+  name: any,
+  channelid?: any,
+  eventlog?: any,
+  serverid?: any
+) {
+  if (!channelid) channelid = "Não informado";
+  if (eventlog === "y") {
+    const embed = embed1(
+      `<a:planeta:1084627835408363640> | Event`,
+      `<a:certo:1084630932885078036> **Event: \`${name}\`**\n<:info:1084952883818143815> **Server:** \`${channelid}\`(${serverid})`
+    );
+    return embed;
+  } else {
+    const embed = embed1(
+      `<a:planeta:1084627835408363640> | Logs`,
+      `<a:certo:1084630932885078036> **Log: \`${name}\`**\n<:info:1084952883818143815> **Canal:** \`${channelid}\``
+    );
+    return embed;
+  }
+}
+export async function logs(embed: EmbedBuilder) {
+  const ho = client.channels.cache.find(
+    (c) => c.id === "1112534964181942293"
+  ) as TextChannel;
   return ho.send({ embeds: [embed] });
 }
 export { configModal, embeddesc, embed1, ticket, configCreate, userCreate };

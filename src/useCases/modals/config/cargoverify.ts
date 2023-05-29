@@ -2,8 +2,10 @@ import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import {
   configCreate,
+  embedlogs,
   errorreport,
   handle,
+  logs,
 } from "../../../functions/functions";
 
 export default class RecusarDueloClass extends actionEvent {
@@ -22,7 +24,7 @@ export default class RecusarDueloClass extends actionEvent {
     let canals = interaction.guild?.roles.cache.find((c) => c.id === id);
     if (!canals) {
       interaction.reply({
-        content: `❌ **O id informado não existem nos cargos.**`,
+        content: `<a:errado:1084631043757310043> **O id informado não existem nos cargos.**`,
         ephemeral: true,
       });
     } else {
@@ -34,11 +36,10 @@ export default class RecusarDueloClass extends actionEvent {
       });
       if (!guildConfig) {
         const [user, userError] = await handle(configCreate(guildid));
-        if (userError === null) {
-          await errorreport(user)
-        } else {
+        if (userError !== null) {
           await errorreport(userError);
-        }      }
+        }
+      }
       const set = await client.prisma.config.update({
         where: {
           guild_id: interaction.guild?.id,
@@ -47,6 +48,8 @@ export default class RecusarDueloClass extends actionEvent {
           cargoverify: id,
         },
       });
+      const embed = embedlogs(`Cargo verificação`, `${id}`);
+      await logs(embed);
       interaction
         .reply({
           content: `**Cargo de verificação setado:** <@${id}>`,

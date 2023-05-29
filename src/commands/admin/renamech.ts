@@ -3,9 +3,11 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ChannelType,
+  GuildMember,
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
+import { client } from "../../main";
 export default new Command({
   name: "rename-channel",
   description: "[Administrador] Troque o nome de um canal.",
@@ -31,7 +33,15 @@ export default new Command({
     const name = options.getString("nome") as string;
     let c = options.getChannel("canal") as TextChannel;
     if (!c) c = interaction.channel as TextChannel;
-
+    let clientmember = interaction.guild?.members.cache.find(
+      (u) => u.id === client.user?.id
+    ) as GuildMember;
+    if (!clientmember.permissions.has(["Administrator"])) {
+      return interaction.reply({
+        content: `<a:errado:1084631043757310043> **Erro, não possuo permissão suficiente para trocar o nome do canal.**`,
+        ephemeral: true,
+      });
+    }
     try {
       c.setName(name).then(() => {
         interaction.reply({
@@ -42,7 +52,7 @@ export default new Command({
     } catch {
       () => {
         interaction.reply({
-          content: `❌ **Erro ao tentar trocar o nome do canal, verifique se tenho as permissões necessarias.**`,
+          content: `<a:errado:1084631043757310043> **Erro ao tentar trocar o nome do canal, verifique se tenho as permissões necessarias.**`,
           ephemeral: true,
         });
       };

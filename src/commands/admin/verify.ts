@@ -1,4 +1,11 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ButtonStyle, ChannelType, Guild, TextChannel } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  ButtonStyle,
+  ChannelType,
+  Guild,
+  TextChannel,
+} from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { buttonsRow, embed1 } from "../../functions/functions";
 
@@ -29,7 +36,7 @@ export default new Command({
     const row = buttonsRow([
       {
         id: `verification`,
-        emoji: `✅`,
+        emoji: `<a:certo:1084630932885078036>`,
         label: `Verifique-se`,
         disabled: false,
         style: ButtonStyle.Success,
@@ -37,7 +44,7 @@ export default new Command({
     ]);
     interaction
       .reply({
-        content: `✅ **Painel de verificação enviado com sucesso!**`,
+        content: `<a:certo:1084630932885078036> **Painel de verificação enviado com sucesso!**`,
         ephemeral: true,
       })
       .then(() => {

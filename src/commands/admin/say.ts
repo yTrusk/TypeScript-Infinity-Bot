@@ -1,4 +1,9 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, EmbedBuilder, TextChannel } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  EmbedBuilder,
+  TextChannel,
+} from "discord.js";
 import { Command } from "../../configs/types/Command";
 export default new Command({
   name: "say",
@@ -43,7 +48,7 @@ export default new Command({
         .setDescription(desc)
         .setTitle(title);
       interaction.reply({
-        content: `✅ Sua mensagem foi enviada com sucesso!`,
+        content: `<a:certo:1084630932885078036> Sua mensagem foi enviada com sucesso!`,
         ephemeral: true,
       });
       await ch.send({ embeds: [embed1] });
@@ -54,7 +59,7 @@ export default new Command({
         .setTitle(title)
         .setImage(img);
       interaction.reply({
-        content: `✅ Sua mensagem foi enviada com sucesso!`,
+        content: `<a:certo:1084630932885078036> Sua mensagem foi enviada com sucesso!`,
         ephemeral: true,
       });
       await ch.send({ embeds: [embed2] });

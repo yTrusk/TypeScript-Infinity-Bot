@@ -20,9 +20,7 @@ export default new Command({
     });
     if (!xd) {
       const [user, userError] = await handle(configCreate(gid));
-      if (userError === null) {
-        await errorreport(user);
-      } else {
+      if (userError !== null) {
         await errorreport(userError);
       }
     }

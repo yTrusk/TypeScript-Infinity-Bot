@@ -10,7 +10,7 @@ export default class selectConfigClass extends actionEvent {
             type: 'selectmenu',
         })
    }
-   async execute({ client, interaction, guild }: actionEventProps){
+   async execute({ client, interaction }: actionEventProps){
         if(!interaction.isStringSelectMenu()) return;
 
         let op = interaction.values[0];

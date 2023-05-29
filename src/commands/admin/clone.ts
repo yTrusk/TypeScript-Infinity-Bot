@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, Guild, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, Guild, GuildMember, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { embeddesc } from "../../functions/functions";
 import { client } from "../../main";
@@ -29,6 +29,15 @@ export default new Command({
       `<a:certo:1084630932885078036> **Canal criado com sucesso** \n**Author:** ${interaction.user?.username}`,
       interaction
     );
+    let clientmember = interaction.guild?.members.cache.find(
+      (u) => u.id === client.user?.id
+    ) as GuildMember;
+    if (!clientmember.permissions.has(["ManageChannels"])) {
+      return interaction.reply({
+        content: `<a:errado:1084631043757310043> **Erro, não possuo permissão suficiente para criar um canal.**`,
+        ephemeral: true,
+      });
+    }
     if (chstf) {
       var posicion = ch.position
       ch.clone().then(async (canal) => {

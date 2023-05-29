@@ -2,10 +2,12 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ChannelType,
+  GuildMember,
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { embeddesc } from "../../functions/functions";
+import { client } from "../../main";
 
 export default new Command({
   name: "clear",
@@ -33,6 +35,15 @@ export default new Command({
     let c = options.getChannel("canal") as TextChannel;
     if (q === null) return;
     if (!c) c = interaction.channel as TextChannel;
+    let clientmember = interaction.guild?.members.cache.find(
+      (u) => u.id === client.user?.id
+    ) as GuildMember;
+    if (!clientmember.permissions.has(["ManageMessages"])) {
+      return interaction.reply({
+        content: `<a:errado:1084631043757310043> **Erro, não possuo permissão suficiente para apagar as mensagens do canal.**`,
+        ephemeral: true,
+      });
+    }
     if (q > 100) {
       interaction.reply({
         content: `Você não pode apagar mais de 100 mensagens por vez.`,

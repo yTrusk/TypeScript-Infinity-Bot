@@ -2,6 +2,7 @@ import { ApplicationCommandType, Guild, User } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import {
   embed1,
+  errorreport,
   finduser,
   handle,
   updateuser,
@@ -28,6 +29,9 @@ export default new Command({
     });
     if (!userg) {
       const [user, userError] = await handle(userCreate(gid.id, users.id));
+      if (userError !== null) {
+        await errorreport(userError);
+      }
     }
     const bal = userg?.balance as number;
     if (bal < 300) {
@@ -46,7 +50,7 @@ export default new Command({
         if (time == 0) resta = "alguns milisegundos";
         if (time == 1) resta = "1 segundo";
         const embed_err = embed1(
-          `❌ Erro, roleta em cooldown!`,
+          `<a:errado:1084631043757310043> Erro, roleta em cooldown!`,
           `Vagabundo querendo trapacear né? Espera \`${time}s\` para usar a roleta novamente!`
         );
         interaction.reply({ embeds: [embed_err], ephemeral: true });

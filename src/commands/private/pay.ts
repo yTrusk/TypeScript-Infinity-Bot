@@ -7,6 +7,7 @@ import {
 import { Command } from "../../configs/types/Command";
 import {
   embed1,
+  errorreport,
   finduser,
   updateuser,
   userCreate,
@@ -57,12 +58,24 @@ export default new Command({
       if (!userrBalances) {
         try {
           await userCreate(gid.id as string, userr.id as string);
-        } catch {}
+        } catch {
+          async (userError: any) => {
+            if (userError !== null) {
+              await errorreport(userError);
+            }
+          };
+        }
       }
       if (!userBalances) {
         try {
           await userCreate(gid.id as string, user.id as string);
-        } catch {}
+        } catch {
+          async (userError: any) => {
+            if (userError !== null) {
+              await errorreport(userError);
+            }
+          };
+        }
       }
       let user1balance = userrBalances?.balance as number;
       const user2balance = userBalances?.balance as number;

@@ -2,8 +2,10 @@ import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import {
   configCreate,
+  embedlogs,
   errorreport,
   handle,
+  logs,
 } from "../../../functions/functions";
 
 export default class RecusarDueloClass extends actionEvent {
@@ -25,13 +27,14 @@ export default class RecusarDueloClass extends actionEvent {
         guild_id: guildid,
       },
     });
+    const embed = embedlogs(`Ant link Modulo`);
+    await logs(embed);
     if (!guildConfig) {
       const [user, userError] = await handle(configCreate(guildid));
-      if (userError === null) {
-        await errorreport(user)
-      } else {
+      if (userError !== null) {
         await errorreport(userError);
-      }    }
+      }
+    }
     if (id === "y") {
       const set = await client.prisma.config.update({
         where: {

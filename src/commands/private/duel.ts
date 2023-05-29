@@ -10,6 +10,7 @@ import {
   buttonsRow,
   embed1,
   embeddesc,
+  errorreport,
   finduser,
   handle,
   updateuser,
@@ -59,6 +60,9 @@ export default new Command({
       const [user, userError] = await handle(
         userCreate(interaction.guild?.id as string, users?.id)
       );
+      if (userError !== null) {
+        await errorreport(userError);
+      }
     }
     const userGuildBalance = userGuild?.balance as number;
     if (!userGuild2) {
@@ -86,7 +90,7 @@ export default new Command({
         if (time == 0) resta = "alguns milisegundos";
         if (time == 1) resta = "1 segundo";
         const embed_err = embed1(
-          `❌ Erro, duelo em cooldown!`,
+          `<a:errado:1084631043757310043> Erro, duelo em cooldown!`,
           `Vagabundo querendo trapacear né? Espera \`${time}\` para duelar novamente!`
         );
         interaction.editReply({ embeds: [embed_err] });

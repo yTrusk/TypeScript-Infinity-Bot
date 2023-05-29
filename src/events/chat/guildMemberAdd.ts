@@ -1,6 +1,12 @@
 import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
+import {
+  configCreate,
+  embedlogs,
+  errorreport,
+  handle,
+  logs,
+} from "../../functions/functions";
 import { client } from "../../main";
 export default new Event({
   name: "guildMemberAdd",
@@ -13,9 +19,7 @@ export default new Event({
     if (!configs) {
       const guildid = member.guild.id;
       const [user, userError] = await handle(configCreate(guildid));
-      if (userError === null) {
-        await errorreport(user)
-      } else {
+      if (userError !== null) {
         await errorreport(userError);
       }
     }

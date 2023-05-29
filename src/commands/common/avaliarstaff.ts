@@ -46,7 +46,7 @@ export default new Command({
       `<:moderador:1065653834430546010> **Staff:** ${user}\n<:tabela:1084631840528281701> **Nota de atendimento:** \`${num}\` \n<:cupom:1084631807502319637> **Opinião sobre atendimento:** \`\`\`${op}\`\`\` \n`
     );
     if (!canalsend2) {
-      interaction.reply({ content: `❌ **O canal de referencias staff não foi setado.**`, ephemeral: true })
+      interaction.reply({ content: `<a:errado:1084631043757310043> **O canal de referencias staff não foi setado.**`, ephemeral: true })
       return;
     }
     if (num > 10 || num < 1) {

@@ -7,6 +7,7 @@ import { Command } from "../../configs/types/Command";
 import {
   embed1,
   embeddesc,
+  errorreport,
   finduser,
   handle,
   userCreate,
@@ -36,6 +37,9 @@ export default new Command({
       const [user, userError] = await handle(
         userCreate(interaction.guild?.id, interaction.user.id)
       );
+      if (userError !== null) {
+        await errorreport(userError);
+      }
     }
     const embed1s = embeddesc(
       `<:config:1084633909020602420> Consultando saldo...`,

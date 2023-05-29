@@ -5,7 +5,9 @@ import {
 import { Command } from "../../configs/types/Command";
 import {
   embeddesc,
+  errorreport,
   finduser,
+  handle,
   updateuser,
   userCreate,
 } from "../../functions/functions";
@@ -32,14 +34,19 @@ export default new Command({
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
     await interaction.deferReply({});
-    const user = options.getUser("usuário");
+    const users = options.getUser("usuário");
     const many = options.getNumber("quantidade") as number;
     const userguild = await finduser({
       guildid: interaction.guild?.id as string,
-      userid: user?.id as string,
+      userid: users?.id as string,
     });
     if (!userguild) {
-      await userCreate(interaction.guild?.id, user?.id);
+      const [user, userError] = await handle(
+        userCreate(interaction.guild?.id, users?.id)
+      );
+      if (userError !== null) {
+        await errorreport(userError);
+      }
     }
     const bal = userguild?.balance as number;
     if (bal === 0) {
@@ -54,7 +61,7 @@ export default new Command({
       if (bal - many < 0) q = 0;
       if (bal - many > 0) q = soma;
       const userguildupdated = await updateuser({
-        userid: user?.id as string,
+        userid: users?.id as string,
         guildid: interaction.guild?.id as string,
         dataconfig: "balance",
         newdatavalue: q,

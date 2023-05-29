@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, Guild, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, Guild, GuildMember, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { embeddesc } from "../../functions/functions";
 import { client } from "../../main";
@@ -28,6 +28,15 @@ export default new Command({
     });
     const st = sla?.logstaff as string;
     const chst = gid.channels.cache.find((c) => c.id === st) as TextChannel;
+    let clientmember = interaction.guild?.members.cache.find(
+      (u) => u.id === client.user?.id
+    ) as GuildMember;
+    if (!clientmember.permissions.has(["Administrator"])) {
+      return interaction.reply({
+        content: `<a:errado:1084631043757310043> **Erro, não possuo permissão suficiente.**`,
+        ephemeral: true,
+      });
+    }
     if (!chst) {
       await ch.permissionOverwrites.edit(gid.id as string, {
         SendMessages: true,

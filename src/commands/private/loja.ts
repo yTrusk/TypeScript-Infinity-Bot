@@ -133,7 +133,6 @@ export default new Command({
             components: [row],
             ephemeral: true,
           });
-          console.log(productToGuild.id)
         }
        
       }

@@ -1,7 +1,6 @@
-import { Guild } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-
+import { embed1, logs } from "../../../functions/functions";
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
@@ -13,32 +12,35 @@ export default class RecusarDueloClass extends actionEvent {
     });
   }
   async execute({ client, interaction }: actionEventProps) {
-      if (!interaction.isModalSubmit()) return;
-      const product_name = interaction.fields.getTextInputValue(
-        "nomeremover"
-      ) as string;
-      const gid = interaction.guild as Guild;
-
-      const isExistsProductName = await client.prisma.products.findFirst({
-        where: { name: product_name },
+    if (!interaction.isModalSubmit()) return;
+    const product_name = interaction.fields.getTextInputValue(
+      "nomeremover"
+    ) as string;
+    const isExistsProductName = await client.prisma.products.findFirst({
+      where: { name: product_name },
+    });
+    if (isExistsProductName) {
+      await client.prisma.products.delete({
+        where: {
+          id: isExistsProductName.id,
+        },
       });
-      if (isExistsProductName) {
-        await client.prisma.products.delete({
-          where: {
-            id: isExistsProductName.id,
-          },
-        });
-        interaction.reply({
-          content: "produto deletado",
-          ephemeral: true,
-        });
-        return;
-      } else {
-        interaction.reply({
-          content: `Não foi encontrado nenhum produto com esse nome no banco de dados.`,
-          ephemeral: true,
-        });
-        return;
-      }
+      const embed = embed1(
+        `<a:planeta:1084627835408363640> - Produto criado (Economia)`,
+        `<:tabela:1084631840528281701> **- Nome do produto:** \`${isExistsProductName.name}\` \n<:dinheiro:1084628513707016253> **- Preço do produto:** \`${isExistsProductName.price}\` `
+      );
+      await logs(embed);
+      interaction.reply({
+        content: "produto deletado",
+        ephemeral: true,
+      });
+      return;
+    } else {
+      interaction.reply({
+        content: `Não foi encontrado nenhum produto com esse nome no banco de dados.`,
+        ephemeral: true,
+      });
+      return;
+    }
   }
 }

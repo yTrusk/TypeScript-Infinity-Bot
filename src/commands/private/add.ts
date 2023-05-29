@@ -8,6 +8,7 @@ import { Command } from "../../configs/types/Command";
 import {
   createGuild,
   embeddesc,
+  errorreport,
   finduser,
   updateuser,
   userCreate,
@@ -40,7 +41,15 @@ export default new Command({
       where: { guild_id: interaction.guild?.id as string },
     });
     if (!guildpremium) {
-      await createGuild(interaction.guild?.id, interaction.guild?.name);
+      try {
+        await createGuild(interaction.guild?.id, interaction.guild?.name);
+      } catch {
+        async (userError: any) => {
+          if (userError !== null) {
+            await errorreport(userError);
+          }
+        };
+      }
     }
     if (guildpremium?.premium === true) {
       const q = options.getNumber("quantidade") as number;

@@ -43,7 +43,7 @@ export default new Command({
 
     if (guildConfig.logsugest === "0") {
       interaction.reply({
-        content: `❌ **Erro, canal de sugestões não configurado.**`,
+        content: `<a:errado:1084631043757310043> **Erro, canal de sugestões não configurado.**`,
         ephemeral: true,
       });
     } else {
@@ -52,7 +52,7 @@ export default new Command({
       );
       if (!canals) {
         interaction.reply({
-          content: `❌ **Erro, canal de sugestões não configurado.**`,
+          content: `<a:errado:1084631043757310043> **Erro, canal de sugestões não configurado.**`,
           ephemeral: true,
         });
       } else {
@@ -80,7 +80,7 @@ export default new Command({
         ]);
 
         interaction.reply({
-          content: `✅ Sua sugestão foi enviada com sucesso.`,
+          content: `<a:certo:1084630932885078036> Sua sugestão foi enviada com sucesso.`,
           ephemeral: true,
         });
         try {
@@ -100,7 +100,7 @@ export default new Command({
         await client.prisma.sugestions.create({
           data: {
             message_id: message.id,
-            votes: {}
+            votes: {},
           },
         });
       }
