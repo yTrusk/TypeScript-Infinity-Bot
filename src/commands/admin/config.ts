@@ -121,7 +121,11 @@ export default new Command({
     });
     if (!guildConfig?.config) {
       const [user, userError] = await handle(configCreate(guildid));
-      await errorreport(userError);
+      if (userError === null) {
+        await errorreport(user);
+      } else {
+        await errorreport(userError);
+      }
     } else {
       return;
     }

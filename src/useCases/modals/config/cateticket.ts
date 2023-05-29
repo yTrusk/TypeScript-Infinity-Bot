@@ -10,7 +10,7 @@ import {
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
-      event: "",
+      event: "cateticket",
       type: "modal",
       guild: {
         include: {},
@@ -37,7 +37,11 @@ export default class RecusarDueloClass extends actionEvent {
       });
       if (!guildConfig) {
         const [user, userError] = await handle(configCreate(guildid));
-        await errorreport(userError);
+        if (userError === null) {
+          await errorreport(user);
+        } else {
+          await errorreport(userError);
+        }
       }
       const set = await client.prisma.config.update({
         where: {

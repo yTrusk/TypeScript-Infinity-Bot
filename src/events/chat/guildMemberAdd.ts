@@ -13,7 +13,11 @@ export default new Event({
     if (!configs) {
       const guildid = member.guild.id;
       const [user, userError] = await handle(configCreate(guildid));
-      await errorreport(userError);
+      if (userError === null) {
+        await errorreport(user)
+      } else {
+        await errorreport(userError);
+      }
     }
     const test = configs?.logsbv as string;
     const channels = member.guild?.channels.cache.get(test) as TextChannel;

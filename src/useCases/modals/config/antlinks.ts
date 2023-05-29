@@ -27,8 +27,11 @@ export default class RecusarDueloClass extends actionEvent {
     });
     if (!guildConfig) {
       const [user, userError] = await handle(configCreate(guildid));
-      await errorreport(userError);
-    }
+      if (userError === null) {
+        await errorreport(user)
+      } else {
+        await errorreport(userError);
+      }    }
     if (id === "y") {
       const set = await client.prisma.config.update({
         where: {

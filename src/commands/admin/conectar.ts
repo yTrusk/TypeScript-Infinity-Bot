@@ -34,8 +34,11 @@ export default new Command({
       const xd = await client.prisma.config.findUnique({ where: { guild_id: gid } });
       if (!xd) {
         const [user, userError] = await handle(configCreate(gid))
-        await errorreport(userError)
-      }
+        if (userError === null) {
+          await errorreport(user)
+        } else {
+          await errorreport(userError);
+        }      }
       const xds = xd?.canal_voz as string;
       const test = interaction.guild?.channels.cache.find(
         (c) => c.id === xds

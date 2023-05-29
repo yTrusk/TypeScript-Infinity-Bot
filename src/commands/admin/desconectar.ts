@@ -1,7 +1,12 @@
 import { ApplicationCommandType } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { joinVoiceChannel } from "@discordjs/voice";
-import { configCreate, embeddesc, errorreport, handle } from "../../functions/functions";
+import {
+  configCreate,
+  embeddesc,
+  errorreport,
+  handle,
+} from "../../functions/functions";
 import { client } from "../../main";
 export default new Command({
   name: "desconectar",
@@ -14,8 +19,13 @@ export default new Command({
       where: { guild_id: gid },
     });
     if (!xd) {
-      const [user, userError] = await handle(configCreate(gid))
-      await errorreport(userError)    }
+      const [user, userError] = await handle(configCreate(gid));
+      if (userError === null) {
+        await errorreport(user);
+      } else {
+        await errorreport(userError);
+      }
+    }
     const xds = xd?.canal_voz as string;
     const test = interaction.guild?.channels.cache.find((c) => c.id === xds);
     if (test) {

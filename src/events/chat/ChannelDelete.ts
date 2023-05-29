@@ -14,8 +14,11 @@ export default new Event({
     });
     if (!guildConfig) {
       const [user, userError] = await handle(configCreate(guildid));
-      await errorreport(userError);
-    }
+      if (userError === null) {
+        await errorreport(user)
+      } else {
+        await errorreport(userError);
+      }    }
     let canals = channels.guild?.channels.cache.find(
       (c) => c.id === guildConfig?.logstaff
     );

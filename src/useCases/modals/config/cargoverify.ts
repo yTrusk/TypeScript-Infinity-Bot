@@ -1,11 +1,15 @@
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import { configCreate, errorreport, handle } from "../../../functions/functions";
+import {
+  configCreate,
+  errorreport,
+  handle,
+} from "../../../functions/functions";
 
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
-      event: "",
+      event: "cargoverify",
       type: "modal",
       guild: {
         include: {},
@@ -30,8 +34,11 @@ export default class RecusarDueloClass extends actionEvent {
       });
       if (!guildConfig) {
         const [user, userError] = await handle(configCreate(guildid));
-        await errorreport(userError);
-      }
+        if (userError === null) {
+          await errorreport(user)
+        } else {
+          await errorreport(userError);
+        }      }
       const set = await client.prisma.config.update({
         where: {
           guild_id: interaction.guild?.id,

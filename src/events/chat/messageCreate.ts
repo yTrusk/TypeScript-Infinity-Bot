@@ -15,8 +15,12 @@ export default new Event({
       },
     });
     if (!guildConfig) {
-      const [user, userError] = await handle(configCreate(guildid))
-      await errorreport(userError)
+      const [user, userError] = await handle(configCreate(guildid));
+      if (userError === null) {
+        await errorreport(user);
+      } else {
+        await errorreport(userError);
+      }
       return;
     }
     const confirmar = guildConfig.antlk;
