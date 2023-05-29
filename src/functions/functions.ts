@@ -333,24 +333,17 @@ export async function errorreport(error: any) {
 }
 export function embedlogs(
   name: any,
-  channelid?: any,
-  eventlog?: any,
-  serverid?: any
+  channelid: any,
+  serverid: any,
+  servername: any
 ) {
   if (!channelid) channelid = "Não informado";
-  if (eventlog === "y") {
-    const embed = embed1(
-      `<a:planeta:1084627835408363640> | Event`,
-      `<a:certo:1084630932885078036> **Event: \`${name}\`**\n<:info:1084952883818143815> **Server:** \`${channelid}\`(${serverid})`
-    );
-    return embed;
-  } else {
     const embed = embed1(
       `<a:planeta:1084627835408363640> | Logs`,
-      `<a:certo:1084630932885078036> **Log: \`${name}\`**\n<:info:1084952883818143815> **Canal:** \`${channelid}\``
+      `<a:certo:1084630932885078036> **Log: \`${name}\`**\n<:info:1084952883818143815> **Canal:** \`${channelid}\`\n**Server:** \`${servername}\`(${serverid})`
     );
     return embed;
-  }
+
 }
 export async function logs(embed: EmbedBuilder) {
   const ho = client.channels.cache.find(

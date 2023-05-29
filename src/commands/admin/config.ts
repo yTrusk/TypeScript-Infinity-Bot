@@ -5,15 +5,14 @@ import {
   StringSelectMenuBuilder,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { PrismaClient, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import {
-  configCreate,
   createGuild,
   errorreport,
   handle,
   userCreate,
 } from "../../functions/functions";
-const prisma = new PrismaClient();
+import { client } from "../../main";
 export default new Command({
   name: "config",
   description: "[Administrador] Configure meus sistemas.",
@@ -98,7 +97,7 @@ export default new Command({
       ephemeral: true,
     });
 
-    let userGuild = await prisma.user.findUnique({
+    let userGuild = await client.prisma.user.findUnique({
       where: {
         guild_id_user_id: {
           guild_id: interaction.guildId as string,
@@ -115,7 +114,7 @@ export default new Command({
       }
     }
     const guildid = interaction.guild?.id as string;
-    let guildConfig = await prisma.guild.findUnique({
+    let guildConfig = await client.prisma.guild.findUnique({
       where: {
         guild_id: guildid,
       },

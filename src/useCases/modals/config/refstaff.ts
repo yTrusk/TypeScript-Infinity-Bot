@@ -48,7 +48,7 @@ export default class RecusarDueloClass extends actionEvent {
           refstaff: id,
         },
       });
-      const embed = embedlogs(`Ref staff`, `${id}`);
+      const embed = embedlogs(`Ref staff`, id, interaction.guild?.id, interaction.guild?.name);
       await logs(embed);
       interaction
         .reply({

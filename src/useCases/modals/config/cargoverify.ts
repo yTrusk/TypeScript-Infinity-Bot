@@ -48,7 +48,7 @@ export default class RecusarDueloClass extends actionEvent {
           cargoverify: id,
         },
       });
-      const embed = embedlogs(`Cargo verificação`, `${id}`);
+      const embed = embedlogs(`Cargo verificação`, id, interaction.guild?.id, interaction.guild?.name);
       await logs(embed);
       interaction
         .reply({

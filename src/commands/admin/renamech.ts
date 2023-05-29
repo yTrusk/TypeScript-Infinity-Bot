@@ -1,4 +1,3 @@
-//trocar nome de canal
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,

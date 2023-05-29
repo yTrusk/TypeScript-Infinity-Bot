@@ -1,7 +1,6 @@
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  Guild,
   GuildMember,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
