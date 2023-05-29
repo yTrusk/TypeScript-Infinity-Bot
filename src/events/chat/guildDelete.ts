@@ -1,12 +1,6 @@
 import { Event } from "../../configs/types/event";
 import { TextChannel } from "discord.js";
-import {
-  errorreport,
-  embed1,
-  handle,
-  embedlogs,
-  logs,
-} from "../../functions/functions";
+import { errorreport, embed1, handle } from "../../functions/functions";
 import { client } from "../../main";
 export default new Event({
   name: "guildDelete",

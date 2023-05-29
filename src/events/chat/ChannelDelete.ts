@@ -1,13 +1,7 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder, GuildChannel } from "discord.js";
-import {
-  configCreate,
-  embedlogs,
-  errorreport,
-  handle,
-  logs,
-} from "../../functions/functions";
+import { configCreate, errorreport, handle } from "../../functions/functions";
 export default new Event({
   name: "channelDelete",
   async run(channel) {

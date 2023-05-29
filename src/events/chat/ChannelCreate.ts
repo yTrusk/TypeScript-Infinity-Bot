@@ -3,10 +3,8 @@ import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder } from "discord.js";
 import {
   configCreate,
-  embedlogs,
   errorreport,
   handle,
-  logs,
 } from "../../functions/functions";
 export default new Event({
   name: "channelCreate",

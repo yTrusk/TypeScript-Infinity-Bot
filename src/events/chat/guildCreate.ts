@@ -5,8 +5,6 @@ import {
   errorreport,
   embed1,
   handle,
-  embedlogs,
-  logs,
 } from "../../functions/functions";
 import { client } from "../../main";
 export default new Event({
