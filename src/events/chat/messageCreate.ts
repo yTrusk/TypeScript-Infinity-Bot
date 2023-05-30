@@ -1,7 +1,6 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { PermissionFlagsBits } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
 export default new Event({
   name: "messageCreate",
   async run(message) {

@@ -6,9 +6,9 @@ import {
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { embeddesc } from "../../functions/functions";
+import { embeddesc, errorreport } from "../../functions/functions";
 import { client } from "../../main";
-
+import { RESTJSONErrorCodes } from "discord.js";
 export default new Command({
   name: "clear",
   description:
@@ -60,12 +60,22 @@ export default new Command({
       interaction
         .reply({ embeds: [embedfazendo], ephemeral: true })
         .then(async () => {
-          await c.bulkDelete(q);
-          const embedfinish = embeddesc(
-            `<a:certo:1084630932885078036> **Limpeza concluida.**`,
-            interaction
-          );
-          interaction.editReply({ embeds: [embedfinish] });
+          try {
+            await c.bulkDelete(q);
+            const embedfinish = embeddesc(
+              `<a:certo:1084630932885078036> **Limpeza concluída.**`,
+              interaction
+            );
+            return interaction.editReply({ embeds: [embedfinish] });
+          } catch (err: any) {
+            if (err.code !== 50034) {
+              await errorreport(err);
+            }
+            const em = embeddesc(
+              `<a:errado:1084631043757310043> **Erro ao tentar limpar as mensagens do canal:** ${c}`
+            );
+            return interaction.editReply({ embeds: [em] });
+          }
         });
     }
   },
