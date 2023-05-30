@@ -18,7 +18,7 @@ export default new Command({
         }ms** \n🌍 **WebSocket: ${client.ws.ping}ms**`,
         interaction
       );
-      interaction.editReply({ embeds: [embed2] });
+      interaction.reply({ embeds: [embed2] });
     });
   },
 });

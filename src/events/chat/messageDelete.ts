@@ -1,7 +1,6 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
 
 export default new Event({
   name: "messageDelete",
@@ -13,12 +12,6 @@ export default new Event({
         guild_id: guildid,
       },
     });
-    if (!guildConfig) {
-      const [user, userError] = await handle(configCreate(guildid));
-      if (userError !== null) {
-        await errorreport(userError);
-      }
-    }
     let canals = message.guild?.channels.cache.find(
       (c) => c.id === guildConfig?.logstaff
     );

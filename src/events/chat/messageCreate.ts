@@ -14,14 +14,7 @@ export default new Event({
         guild_id: guildid,
       },
     });
-    if (!guildConfig) {
-      const [user, userError] = await handle(configCreate(guildid));
-      if (userError !== null) {
-        await errorreport(userError);
-      }
-      return;
-    }
-    const confirmar = guildConfig.antlk;
+    const confirmar = guildConfig?.antlk;
     if (confirmar === "y") {
       if (message.member?.permissions.has(PermissionFlagsBits.Administrator))
         return;

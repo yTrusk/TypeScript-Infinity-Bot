@@ -1,5 +1,5 @@
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder } from "discord.js";
+import { TextChannel, EmbedBuilder, Role } from "discord.js";
 import {
   configCreate,
   errorreport,
@@ -31,6 +31,14 @@ export default new Event({
       .setDescription(
         `**Olá ${member.user.username}! Seja bem-vindo(a) ao nosso servidor ${member.guild.name}. Espero que se divirta conosco!**\n**Agora temos ${member.guild.memberCount} membros no servidor.**`
       );
-    channels.send({ embeds: [embed] });
+    channels.send({ embeds: [embed] }).then(async () => {
+      const role = configs?.autorole as string
+      const realrole = member.guild.roles.cache.find(c => c.id === role) as Role
+      if (realrole) {
+        return member.roles.add(realrole)
+      } else {
+        return;
+      }
+    })
   },
 });

@@ -194,6 +194,7 @@ async function configCreate(guildid: any) {
       cargoverify: "0",
       cateticket: "0",
       canal_voz: "0",
+      autorole: "0",
     },
   });
   return guildConfig;
@@ -326,7 +327,7 @@ export async function verificarUsersPremium() {
 
 export async function errorreport(error: any) {
   const ho = client.channels.cache.find(
-    (c) => c.id === "1112534964181942293"
+    (c) => c.id === "1113178570236375100"
   ) as TextChannel;
   const embed = embeddesc(`${error}`);
   return ho.send({ embeds: [embed] });
@@ -338,12 +339,11 @@ export function embedlogs(
   servername: any
 ) {
   if (!channelid) channelid = "Não informado";
-    const embed = embed1(
-      `<a:planeta:1084627835408363640> | Logs`,
-      `<a:certo:1084630932885078036> **Log: \`${name}\`**\n<:info:1084952883818143815> **Canal:** \`${channelid}\`\n**Server:** \`${servername}\`(${serverid})`
-    );
-    return embed;
-
+  const embed = embed1(
+    `<a:planeta:1084627835408363640> | Logs`,
+    `<a:certo:1084630932885078036> **Log: \`${name}\`**\n<:info:1084952883818143815> **Canal:** \`${channelid}\`\n**Server:** \`${servername}\`(${serverid})`
+  );
+  return embed;
 }
 export async function logs(embed: EmbedBuilder) {
   const ho = client.channels.cache.find(

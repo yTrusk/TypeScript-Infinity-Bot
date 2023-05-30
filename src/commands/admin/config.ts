@@ -89,6 +89,12 @@ export default new Command({
             value: "op9",
             emoji: "<:dinheiro:1084628513707016253>",
           },
+          {
+            label: "Auto role",
+            description: "Configure o cargo automatico.",
+            value: "op10",
+            emoji: "<:alert:1084951668648591461>",
+          },
         ])
     );
     await interaction.reply({

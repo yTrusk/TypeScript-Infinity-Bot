@@ -60,6 +60,7 @@ model Config {
   cargoverify String
   cateticket String
   canal_voz String
+  autorole String
 
   guild Guild @relation(fields: [guild_id], references: [id])
   guild_id String @unique  
