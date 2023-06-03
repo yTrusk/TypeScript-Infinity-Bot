@@ -2,8 +2,8 @@ import { Guild } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import {
+  EmbedCreator,
   createGuild,
-  embed1,
   errorreport,
   handle,
   logs,
@@ -57,11 +57,8 @@ export default class RecusarDueloClass extends actionEvent {
           },
         },
       });
-      const embed = embed1(
-        `<a:planeta:1084627835408363640> - Produto criado (Economia)`,
-        `<:tabela:1084631840528281701> **- Nome do produto:** \`${prodname}\` \n<:dinheiro:1084628513707016253> **- Preço do produto:** \`${price}\` `
-      );
-      await logs(embed)
+      const embed = await EmbedCreator({title: `<a:planeta:1084627835408363640> - Produto criado (Economia)`, description: `<:tabela:1084631840528281701> **- Nome do produto:** \`${prodname}\` \n<:dinheiro:1084628513707016253> **- Preço do produto:** \`${price}\``})
+      await logs(embed);
       interaction.editReply({ content: `Produto criado` });
     } else {
       interaction.editReply({

@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
-import { embeddesc } from "../../functions/functions";
+import { EmbedCreator } from "../../functions/functions";
 
 export default new Command({
   name: "ban",
@@ -46,10 +46,7 @@ export default new Command({
     const ch = gid.channels.cache.find((c) => c.id === sla) as TextChannel;
     const user = gid.members.cache.get(userr.id) as GuildMember;
     let motivo = options.getString("motivo") as string;
-    const embederro = embeddesc(
-      `<a:errado:1084631043757310043> **Não foi possivel executar o banimento, verifique se o usuário está no servidor ou tem um cargo mais alto que o meu.**`,
-      interaction
-    );
+    const embederro = await EmbedCreator({description: `<a:errado:1084631043757310043> **Não foi possivel executar o banimento, verifique se o usuário está no servidor ou tem um cargo mais alto que o meu.`})
     if (interaction.user?.id === userr.id) {
       interaction.reply({
         content: `<a:errado:1084631043757310043> **Você não pode se banir.**`,
@@ -63,10 +60,7 @@ export default new Command({
       return;
     }
     if (!motivo) motivo = "Não informado." as string;
-    const embed = embeddesc(
-      `<a:carregando:1084633391820980254> **Carregando banimento...**`,
-      interaction
-    );
+    const embed = await EmbedCreator({description: `<a:carregando:1084633391820980254> **Carregando banimento...**`})
     interaction.reply({ embeds: [embed] }).then(async () => {
       if (ch) {
         try {
@@ -75,10 +69,7 @@ export default new Command({
           interaction.editReply({ embeds: [embederro] });
           return;
         }
-        const embed = embeddesc(
-          `<:alert:1084951668648591461> **O usuário: ${user} foi banido com sucesso!**\n\n<:config:1084633909020602420> **Motivo:** \`${motivo}\` \n<a:planeta:1084627835408363640> **Servidor:** \`${gid.name}\`\n<:moderador:1065653834430546010> **Autor:** \`${interaction.user.username}\``,
-          interaction
-        );
+        const embed = await EmbedCreator({description: `<:alert:1084951668648591461> **O usuário: ${user} foi banido com sucesso!**\n\n<:config:1084633909020602420> **Motivo:** \`${motivo}\` \n<a:planeta:1084627835408363640> **Servidor:** \`${gid.name}\`\n<:moderador:1065653834430546010> **Autor:** \`${interaction.user.username}\``})
         await interaction.editReply({ embeds: [embed] });
         ch.send({ embeds: [embed] });
         return;
@@ -89,10 +80,7 @@ export default new Command({
           interaction.editReply({ embeds: [embederro] });
           return;
         }
-        const embed = embeddesc(
-          `<:alert:1084951668648591461> **O usuário: ${user} foi banido com sucesso!**\n\n<:config:1084633909020602420> **Motivo:** \`${motivo}\` \n<a:planeta:1084627835408363640> **Servidor:** \`${gid.name}\`\n<:moderador:1065653834430546010> **Autor:** \`${interaction.user.username}\``,
-          interaction
-        );
+        const embed = await EmbedCreator({description: `<:alert:1084951668648591461> **O usuário: ${user} foi banido com sucesso!**\n\n<:config:1084633909020602420> **Motivo:** \`${motivo}\` \n<a:planeta:1084627835408363640> **Servidor:** \`${gid.name}\`\n<:moderador:1065653834430546010> **Autor:** \`${interaction.user.username}\``})
         await interaction.editReply({ embeds: [embed] });
         return;
       }

@@ -1,15 +1,18 @@
 import {
-  ActionRowBuilder,
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder,
   User,
   UserAvatarFormat,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { errorreport, handle, userCreate } from "../../functions/functions";
+import {
+  EmbedCreator,
+  buttonCreator,
+  errorreport,
+  handle,
+  userCreate,
+} from "../../functions/functions";
 import { client } from "../../main";
 
 export default new Command({
@@ -26,6 +29,7 @@ export default new Command({
   ],
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
+    await interaction.deferReply({});
     let user = options.getUser("usuário");
     if (!user) user = interaction.user as User;
     let userGuild = await client.prisma.user.findUnique({
@@ -47,7 +51,6 @@ export default new Command({
     let conta = user?.createdAt.toLocaleString();
     let id = user?.id;
     let tag = user?.tag;
-    let bot = user?.bot;
     let flag2 = {
       Staff: "<:moderador:1065653834430546010>",
       Partner: "<:partner:1065651364832759919>",
@@ -82,18 +85,12 @@ export default new Command({
       : null;
     if (!flags) flags = "Sem badges";
 
-    let embed = new EmbedBuilder()
-      .setColor("#9600D8")
-      .setAuthor({
-        name: user?.username,
-        iconURL: user?.displayAvatarURL(),
-      })
-      .setThumbnail(user?.displayAvatarURL())
-      .setTitle(`${user?.username}#${user?.discriminator} ${flags}`)
-      .setDescription(
-        "<:cliente:1084634375997632582> **Informações do Usuário:**"
-      )
-      .addFields(
+    const embed = await EmbedCreator({
+      author: [{ name: user?.username, iconurl: user?.displayAvatarURL() }],
+      title: `${user?.username}#${user?.discriminator} ${flags}`,
+      description: `<:cliente:1084634375997632582> **Informações do Usuário:**`,
+      thumbnail: user?.displayAvatarURL(),
+      fields: [
         {
           name: `<a:starss:1084635127163920454> Tag:`,
           value: `\`${tag}\``,
@@ -118,17 +115,19 @@ export default new Command({
           name: `<:caixa:1084628554668572692> Space coins:`,
           value: `\`${userGuild?.balance}\``,
           inline: false,
-        }
-      );
+        },
+      ],
+    });
 
-    let botao = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      new ButtonBuilder()
-        .setURL(user?.displayAvatarURL() as UserAvatarFormat)
-        .setEmoji("<:info:1084952883818143815>")
-        .setStyle(ButtonStyle.Link)
-        .setLabel(`Ver avatar de ${user?.username}.`)
-    );
+    const botao = buttonCreator([
+      {
+        url: user?.displayAvatarURL() as UserAvatarFormat,
+        emoji: `<:info:1084952883818143815>`,
+        style: ButtonStyle.Link,
+        label: `Ver avatar de ${user?.username}.`,
+      },
+    ]);
 
-    interaction.reply({ embeds: [embed], components: [botao] });
+    interaction.editReply({ embeds: [embed], components: [botao] });
   },
 });

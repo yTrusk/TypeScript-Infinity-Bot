@@ -1,7 +1,12 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
+import { TextChannel } from "discord.js";
+import {
+  EmbedCreator,
+  configCreate,
+  errorreport,
+  handle,
+} from "../../functions/functions";
 
 export default new Event({
   name: "messageUpdate",
@@ -28,14 +33,15 @@ export default new Event({
     } else {
       const stf = guildConfig?.logstaff as string;
       const channels = client.channels.cache.get(stf) as TextChannel;
-      const embed = new EmbedBuilder()
-        .setAuthor({
-          name: message.author?.tag || "Usuário não informado.",
-          iconURL: message.author?.avatarURL() || undefined,
-        })
-        .setDescription(
-          `**📝 Mensagem de texto editada. \nMensagem editada:** \`\`\`${message}\`\`\``
-        );
+      const embed = await EmbedCreator({
+        description: `**📝 Mensagem de texto editada. \nMensagem editada:** \`\`\`${message}\`\`\``,
+        author: [
+          {
+            name: message.author?.tag || "Usuário não informado.",
+            iconurl: message.author?.avatarURL() || undefined,
+          },
+        ],
+      });
       await channels.send({ embeds: [embed] });
     }
   },

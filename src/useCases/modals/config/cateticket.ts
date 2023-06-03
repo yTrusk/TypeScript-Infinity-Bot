@@ -51,7 +51,7 @@ export default class RecusarDueloClass extends actionEvent {
           cateticket: id,
         },
       });
-      const embed = embedlogs(`Categoria`, id, interaction.guild?.id, interaction.guild?.name);
+      const embed = await embedlogs(`Categoria`, id, interaction.guild?.id, interaction.guild?.name);
       await logs(embed);
       interaction
         .editReply({

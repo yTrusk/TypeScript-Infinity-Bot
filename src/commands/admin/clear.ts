@@ -6,7 +6,7 @@ import {
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { embeddesc, errorreport } from "../../functions/functions";
+import { EmbedCreator, errorreport } from "../../functions/functions";
 import { client } from "../../main";
 export default new Command({
   name: "clear",
@@ -52,27 +52,19 @@ export default new Command({
         content: `Você não pode apagar menos que 1 mensagem por vez.`,
       });
     } else {
-      const embedfazendo = embeddesc(
-        `<:config:1084633909020602420> **Preparando a limpeza...**`,
-        interaction
-      );
+      const embedfazendo = await EmbedCreator({description: `<:config:1084633909020602420> **Preparando a limpeza...**`})
       interaction
         .reply({ embeds: [embedfazendo], ephemeral: true })
         .then(async () => {
           try {
             await c.bulkDelete(q);
-            const embedfinish = embeddesc(
-              `<a:certo:1084630932885078036> **Limpeza concluída.**`,
-              interaction
-            );
+            const embedfinish = await EmbedCreator({description: `<a:certo:1084630932885078036> **Limpeza concluída.**`})
             return interaction.editReply({ embeds: [embedfinish] });
           } catch (err: any) {
             if (err.code !== 50034) {
               await errorreport(err);
             }
-            const em = embeddesc(
-              `<a:errado:1084631043757310043> **Erro ao tentar limpar as mensagens do canal:** ${c}`
-            );
+            const em = await EmbedCreator({description: `<a:errado:1084631043757310043> **Erro ao tentar limpar as mensagens do canal:** ${c}`})
             return interaction.editReply({ embeds: [em] });
           }
         });

@@ -6,8 +6,8 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import {
+  EmbedCreator,
   createGuild,
-  embeddesc,
   errorreport,
   finduser,
   updateuser,
@@ -53,10 +53,7 @@ export default new Command({
     }
     if (guildpremium?.premium === true) {
       const q = options.getNumber("quantidade") as number;
-      const embed = embeddesc(
-        `<a:carregando:1084633391820980254> **Processando adição de saldo...**`,
-        interaction
-      );
+      const embed = await EmbedCreator({description: `<a:carregando:1084633391820980254> **Processando adição de saldo...**`})
       const gid = interaction.guild as Guild;
       let userGuild = await finduser({
         guildid: interaction.guild?.id as string,
@@ -68,10 +65,7 @@ export default new Command({
           await userCreate(gid.id as string, u.id as string, q);
         } catch {}
         interaction.editReply({ embeds: [embed] }).then(async () => {
-          const embed = embeddesc(
-            `<a:certo:1084630932885078036> **Adição de saldo concluida com sucesso.**`,
-            interaction
-          );
+          const embed = await EmbedCreator({description: `<a:certo:1084630932885078036> **Adição de saldo concluida com sucesso.**`})
           interaction.editReply({ embeds: [embed] });
         });
         return;
@@ -83,10 +77,7 @@ export default new Command({
           newdatavalue: bal + q,
         });
         interaction.editReply({ embeds: [embed] }).then(async () => {
-          const embed = embeddesc(
-            `<a:certo:1084630932885078036> **Adição de saldo concluida com sucesso.**`,
-            interaction
-          );
+          const embed = await EmbedCreator({description: `<a:certo:1084630932885078036> **Adição de saldo concluida com sucesso.**`})
           interaction.editReply({ embeds: [embed] });
         });
         return;

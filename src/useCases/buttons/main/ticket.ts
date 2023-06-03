@@ -8,12 +8,7 @@ import {
 } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import {
-  ticket,
-  embed1,
-  buttonsRow,
-  errorreport,
-} from "../../../functions/functions";
+import { ticket, errorreport, EmbedCreator, buttonCreator } from "../../../functions/functions";
 import { client } from "../../../main";
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
@@ -27,7 +22,7 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ interaction }: actionEventProps) {
     if (!interaction.isButton()) return;
-    await interaction.deferReply({ephemeral: true})
+    await interaction.deferReply({ ephemeral: true });
     const u = interaction.user as User;
     const gid = interaction.guild as Guild;
     const nome_canal = `🔖-${u.id}`;
@@ -58,11 +53,8 @@ export default class RecusarDueloClass extends actionEvent {
             await interaction.editReply({
               content: `Olá **${interaction.user.username}**, seu ticket foi aberto em ${chat}.`,
             });
-            const embed = embed1(
-              `Ticket de: ${interaction.user.username}`,
-              `**Olá ${interaction.user}, você abriu um ticket.**\n **Aguarde um momento para ser atendido por nossos staffs / moderadores, não tenha pressa e nem fique marcando a nossa equipe para que possamos ajudar a todos.**`
-            );
-            const closebutton = buttonsRow([
+            const embed = await EmbedCreator({ title: `Ticket de: ${interaction.user.username}`, description: `**Olá ${interaction.user}, você abriu um ticket.**\n **Aguarde um momento para ser atendido por nossos staffs / moderadores, não tenha pressa e nem fique marcando a nossa equipe para que possamos ajudar a todos.**` })
+            const closebutton = buttonCreator([
               {
                 id: `close_ticket`,
                 emoji: `🔒`,

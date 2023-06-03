@@ -1,7 +1,12 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
+import { TextChannel } from "discord.js";
+import {
+  EmbedCreator,
+  configCreate,
+  errorreport,
+  handle,
+} from "../../functions/functions";
 
 export default new Event({
   name: "threadCreate",
@@ -26,9 +31,9 @@ export default new Event({
     } else {
       const stf = guildConfig?.logstaff as string;
       const channels = client.channels.cache.get(stf) as TextChannel;
-      const embed = new EmbedBuilder().setDescription(
-        `**Thread criada:** ${thread} \n`
-      );
+      const embed = await EmbedCreator({
+        description: `**Thread criada:** ${thread}`,
+      });
       channels.send({ embeds: [embed] });
     }
   },

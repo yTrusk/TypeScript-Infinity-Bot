@@ -7,7 +7,7 @@ import {
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { buttonsRow, embed1, embeddesc } from "../../functions/functions";
+import { EmbedCreator, buttonCreator } from "../../functions/functions";
 
 export default new Command({
   name: "tickets",
@@ -28,23 +28,15 @@ export default new Command({
     const gid = interaction.guild as Guild;
     let canal = options.getChannel("canal") as TextChannel;
     if (!canal) canal = interaction.channel as TextChannel;
-    const emt = embed1(
-      `Ticket System ${gid.name}`,
-      `**> Olá caso precise de ajuda ou queira fazer alguma denuncia sem nenhum outro membro saber abra um ticket** \n\n ** > Clique no botão abaixo para abrir o ticket**`
-    );
-    const row = buttonsRow([
-      {
-        id: `ticket_system`,
-        label: `Abrir ticket`,
-        emoji: `🎫`,
-        disabled: false,
-        style: ButtonStyle.Primary,
-      },
-    ]);
-    const eph = embeddesc(
-      `Olá ${interaction.user}, o sistema foi adicionado em ${canal} com sucesso.`,
-      interaction
-    );
+    const emt = await EmbedCreator({
+      title: `Ticket System ${gid.name}`,
+      description: `**> Olá caso precise de ajuda ou queira fazer alguma denuncia sem nenhum outro membro saber abra um ticket** \n\n ** > Clique no botão abaixo para abrir o ticket**`,
+    });
+    const row = buttonCreator([{id: `ticket_system`, label: `Abrir ticket`, emoji: `🎫`, style: ButtonStyle.Primary}])
+
+    const eph = await EmbedCreator({
+      description: `**Olá ${interaction.user}, o sistema foi adicionado em ${canal} com sucesso.**`,
+    });
     await interaction.reply({ embeds: [eph], ephemeral: true });
     canal.send({ embeds: [emt], components: [row] });
   },

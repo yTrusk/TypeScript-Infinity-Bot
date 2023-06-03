@@ -7,8 +7,8 @@ import {
 import { Command } from "../../configs/types/Command";
 import { joinVoiceChannel } from "@discordjs/voice";
 import {
+  EmbedCreator,
   configCreate,
-  embeddesc,
   errorreport,
   handle,
 } from "../../functions/functions";
@@ -50,10 +50,9 @@ export default new Command({
         (c) => c.id === xds
       ) as VoiceChannel;
       if (test) {
-        const embed = embeddesc(
-          `<a:errado:1084631043757310043> **Já estou conectado a um canal de voz utilize /desconectar**`,
-          interaction
-        );
+        const embed = await EmbedCreator({
+          description: `<a:errado:1084631043757310043> **Já estou conectado a um canal de voz utilize /desconectar**`,
+        });
         interaction.reply({ embeds: [embed], ephemeral: true });
         return;
       } else if (!test || xd?.canal_voz === "0") {
@@ -66,10 +65,7 @@ export default new Command({
           guildId: channel.guild.id,
           adapterCreator: channel.guild.voiceAdapterCreator,
         });
-        const em = embeddesc(
-          `<a:certo:1084630932885078036> **Me conectei com sucesso ao canal !**`,
-          interaction
-        );
+        const em = await EmbedCreator({ description: `<a:certo:1084630932885078036> **Me conectei com sucesso ao canal !**` });
         interaction
           .reply({
             embeds: [em],
@@ -83,7 +79,7 @@ export default new Command({
               content: `<a:errado:1084631043757310043> **Ocorreu um erro ao tentar se conectar com o canal de voz Erro:** \n${err}`,
               ephemeral: true,
             });
-            await errorreport(err)
+            await errorreport(err);
           });
         return;
       }

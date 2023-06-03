@@ -1,7 +1,7 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder, Guild } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
+import { TextChannel, Guild } from "discord.js";
+import { EmbedCreator, configCreate, errorreport, handle } from "../../functions/functions";
 
 export default new Event({
   name: "roleCreate",
@@ -27,9 +27,7 @@ export default new Event({
       } else {
         const stf = guildConfig?.logstaff as string;
         const channels = client.channels.cache.get(stf) as TextChannel;
-        const embed = new EmbedBuilder().setDescription(
-          `**🔮 Cargo criado. \nCargo:**\n ${role} `
-        );
+        const embed = await EmbedCreator({description: `**🔮 Cargo criado. \nCargo:**\n ${role}`})
         await channels.send({ embeds: [embed] });
       }
     }

@@ -8,8 +8,7 @@ interface Cooldown {
 
 const cooldowns: { [userId: string]: Cooldown } = {};
 import {
-  embed1,
-  embeddesc,
+  EmbedCreator,
   errorreport,
   finduser,
   handle,
@@ -32,25 +31,19 @@ export default new Command({
       let resta = `${time} segundos`;
       if (time == 0) resta = "alguns milisegundos";
       if (time == 1) resta = "1 segundo";
-      const embed_err = embed1(
-        `<a:errado:1084631043757310043> Erro, daily já resgatado!`,
-        `Vagabundo querendo trapacear né? Espera \`${time}\` para resgatar o daily novamente!`
-      );
+      const embed_err = await EmbedCreator({
+        title: `<a:errado:1084631043757310043> Erro, daily já resgatado!`,
+        description: `Vagabundo querendo trapacear né? Espera \`${time}\` para resgatar o daily novamente!`,
+      });
       interaction.reply({ embeds: [embed_err], ephemeral: true });
       return;
     } else {
       cooldowns[userid.id].lastCmd = Date.now();
     }
-    const embed1s = embeddesc(
-      `<a:carregando:1084633391820980254> **Carregando daily...**`,
-      interaction
-    );
+    const embed1s = await EmbedCreator({description: `<a:carregando:1084633391820980254> **Carregando daily...**`})
     let quantia = Math.ceil(Math.random() * 2000);
     if (quantia < 500) quantia = quantia + 500;
-    const resgatado = embed1(
-      `<:coins:1095800360829980762> Daily Resgatado!`,
-      `<:dinheiro:1084628513707016253> **Você resgatou** \`${quantia} space coins\` **em seu daily.**\n \n<:banco:1079896026124664903> **Utilize /saldo para verificar seu saldo.**`
-    );
+    const resgatado = await EmbedCreator({title: `<:coins:1095800360829980762> Daily Resgatado!`, description: `<:dinheiro:1084628513707016253> **Você resgatou** \`${quantia} space coins\` **em seu daily.**\n \n<:banco:1079896026124664903> **Utilize /saldo para verificar seu saldo.**`})
     interaction.reply({ embeds: [embed1s] }).then(async () => {
       let userGuild = await finduser({
         guildid: interaction.guild?.id as string,

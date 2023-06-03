@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import {
-  embed1,
+  EmbedCreator,
   errorreport,
   finduser,
   updateuser,
@@ -85,10 +85,7 @@ export default new Command({
       }
       if (user2balance < quantidade) {
         let emoji = `<a:errado:1084631043757310043>`;
-        const embed_erro = embed1(
-          `${emoji} Erro`,
-          `${emoji} **Você não pode enviar mais do que possui.**`
-        );
+        const embed_erro = await EmbedCreator({title: `${emoji} Erro`, description: `${emoji} **Você não pode enviar mais do que possui.**`})
         interaction.editReply({ embeds: [embed_erro] });
         return;
       } else {
@@ -111,15 +108,9 @@ export default new Command({
           dataconfig: "balance",
           newdatavalue: user2balance - quantidade,
         });
-        const embed = embed1(
-          `<a:certo:1084630932885078036> Transação concluida.`,
-          `**Você enviou** \`${quantidade} space coins\` **para o** ${userr}.`
-        );
+        const embed = await EmbedCreator({title: `<a:certo:1084630932885078036> Transação concluida.`, description: `**Você enviou** \`${quantidade} space coins\` **para o** ${userr}.`})
         interaction.editReply({ embeds: [embed] }).then(async () => {
-          const msgemb = embed1(
-            `<:dinheiro:1084628513707016253> Você recebeu um pagamento!`,
-            `<:cliente:1084634375997632582> **Usuário que te enviou:** ${user} \n<:coins:1095800360829980762> **Quantidade:** \`${quantidade}\` \n<:tabela:1084631840528281701> **Mensagem enviada:** \`\`\`${msg}\`\`\``
-          );
+          const msgemb = await EmbedCreator({title: `<:dinheiro:1084628513707016253> Você recebeu um pagamento!`, description: `<:cliente:1084634375997632582> **Usuário que te enviou:** ${user} \n<:coins:1095800360829980762> **Quantidade:** \`${quantidade}\` \n<:tabela:1084631840528281701> **Mensagem enviada:** \`\`\`${msg}\`\`\``})
           await interaction.user.send({ embeds: [embed] }).catch((err) => {
             let emoji = `<a:errado:1084631043757310043>`;
             interaction.channel?.send({

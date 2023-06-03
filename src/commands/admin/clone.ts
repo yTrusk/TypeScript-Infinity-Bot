@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, ChannelType, Guild, GuildMember, TextChannel } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { embeddesc } from "../../functions/functions";
+import { EmbedCreator } from "../../functions/functions";
 import { client } from "../../main";
 
 export default new Command({
@@ -25,10 +25,7 @@ export default new Command({
     const sla = await client.prisma.config.findUnique({ where: { guild_id: gid.id as string } })
     const stf = sla?.logstaff as string
     const chstf = gid.channels.cache.find(c => c.id === stf) as TextChannel
-    const embed = embeddesc(
-      `<a:certo:1084630932885078036> **Canal criado com sucesso** \n**Author:** ${interaction.user?.username}`,
-      interaction
-    );
+    const embed = await EmbedCreator({description: `<a:certo:1084630932885078036> **Canal criado com sucesso** \n**Author:** ${interaction.user?.username}`})
     let clientmember = interaction.guild?.members.cache.find(
       (u) => u.id === client.user?.id
     ) as GuildMember;

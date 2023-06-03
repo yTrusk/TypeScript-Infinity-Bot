@@ -1,6 +1,6 @@
 import {
-  APIEmbed,
   ActionRowBuilder,
+  AnyComponentBuilder,
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
@@ -26,39 +26,6 @@ function configModal(customId: any, title: any, label1: any) {
   const rbx = new ActionRowBuilder<TextInputBuilder>().addComponents(rbxacc);
   modal.addComponents(rbx);
   return modal;
-}
-function embeddesc(description: any, interaction?: any) {
-  if (interaction) {
-    const embed = new EmbedBuilder()
-      .setAuthor({
-        name: interaction.user?.tag,
-        iconURL: interaction.user?.displayAvatarURL(),
-      })
-      .setDescription(description)
-      .setColor(`#9600D8`)
-      .setFooter({
-        text: "Infinity System",
-        iconURL: client.user?.displayAvatarURL(),
-      });
-    return embed;
-  } else {
-    const embed = new EmbedBuilder()
-      .setDescription(description)
-      .setColor(`#9600D8`)
-      .setFooter({
-        text: "Infinity System",
-        iconURL: client.user?.displayAvatarURL(),
-      });
-    return embed;
-  }
-}
-function embed1(title: string, desc: string) {
-  const embed = new EmbedBuilder()
-    .setColor(`#9600D8`)
-    .setTimestamp()
-    .setTitle(`${title}`)
-    .setDescription(`${desc}`);
-  return embed;
 }
 
 async function ticket(nome_canal: string, categoria: any, interaction: any) {
@@ -159,31 +126,6 @@ export class SelectMenuBuilderClass {
   }
 }
 
-interface buttonRowProps {
-  id: string;
-  emoji: string;
-  label: string;
-  style: ButtonStyle;
-  disabled: boolean;
-}
-export function buttonsRow(
-  props: Array<buttonRowProps>
-): ActionRowBuilder<ButtonBuilder> {
-  const buttonbuilder = new ActionRowBuilder<ButtonBuilder>();
-  const buttons = [] as Array<ButtonBuilder>;
-  props.map((button) => {
-    buttons.push(
-      new ButtonBuilder()
-        .setCustomId(button.id)
-        .setEmoji(button.emoji)
-        .setLabel(button.label)
-        .setStyle(button.style)
-        .setDisabled(button.disabled)
-    );
-  });
-  buttonbuilder.addComponents(buttons);
-  return buttonbuilder;
-}
 async function configCreate(guildid: any) {
   let guildConfig = await client.prisma.config.create({
     data: {
@@ -331,20 +273,20 @@ export async function errorreport(error: any) {
   const ho = client.channels.cache.find(
     (c) => c.id === "1113178570236375100"
   ) as TextChannel;
-  const embed = embeddesc(`${error}`);
+  const embed = await EmbedCreator({ description: `${error}` });
   return ho.send({ embeds: [embed] });
 }
-export function embedlogs(
+export async function embedlogs(
   name: any,
   channelid: any,
   serverid: any,
   servername: any
 ) {
   if (!channelid) channelid = "Não informado";
-  const embed = embed1(
-    `<a:planeta:1084627835408363640> | Logs`,
-    `<a:certo:1084630932885078036> **Log: \`${name}\`**\n<:info:1084952883818143815> **Canal:** \`${channelid}\`\n**Server:** \`${servername}\`(${serverid})`
-  );
+  const embed = await EmbedCreator({
+    title: `<a:planeta:1084627835408363640> | Logs`,
+    description: `<a:certo:1084630932885078036> **Log: \`${name}\`**\n<:info:1084952883818143815> **Canal:** \`${channelid}\`\n**Server:** \`${servername}\`(${serverid})`,
+  });
   return embed;
 }
 export async function logs(embed: EmbedBuilder) {
@@ -353,12 +295,56 @@ export async function logs(embed: EmbedBuilder) {
   ) as TextChannel;
   return ho.send({ embeds: [embed] });
 }
+
+interface buttonRowPropsV2 {
+  id?: string;
+  emoji?: string;
+  style?: ButtonStyle;
+  label?: string;
+  disabled?: boolean;
+  url?: string;
+}
+
+export function buttonCreator(props: buttonRowPropsV2[]) {
+  const buttons: AnyComponentBuilder[] = props.map((prop) => {
+    const buttonbuilder = new ButtonBuilder().setStyle(
+      prop.style || ButtonStyle.Primary
+    );
+    if (prop.id) {
+      buttonbuilder.setCustomId(prop.id);
+    }
+    if (prop.disabled !== undefined) {
+      buttonbuilder.setDisabled(prop.disabled);
+    }
+    if (prop.emoji) {
+      buttonbuilder.setEmoji(prop.emoji);
+    }
+    if (prop.label) {
+      buttonbuilder.setLabel(prop.label);
+    }
+    if (prop.url) {
+      buttonbuilder.setURL(prop.url);
+    }
+    return buttonbuilder as AnyComponentBuilder;
+  });
+  const actionRow = new ActionRowBuilder().addComponents(...buttons);
+  const convertActionRowToJSON = (actionRow: ActionRowBuilder): any => {
+    return JSON.parse(JSON.stringify(actionRow));
+  };
+
+  const botao = convertActionRowToJSON(actionRow);
+  return botao;
+}
+
 interface fieldsProps {
   name: string;
   value: string;
   inline: boolean;
 }
-
+interface authorProps {
+  name: string;
+  iconurl?: string;
+}
 interface embedcreatorProps {
   description?: string;
   title?: string;
@@ -366,11 +352,10 @@ interface embedcreatorProps {
   thumbnail?: string;
   image?: string;
   fields?: fieldsProps[];
+  author?: authorProps[];
 }
 
-export async function EmbedCreator(
-  props: embedcreatorProps
-) {
+export async function EmbedCreator(props: embedcreatorProps) {
   const embed = new EmbedBuilder()
     .setColor((props.color as ColorResolvable) || ("9600D8" as ColorResolvable))
     .setFooter({
@@ -393,12 +378,17 @@ export async function EmbedCreator(
       });
     });
   }
+  if (props.author) {
+    props.author.forEach((auth) => {
+      embed.setAuthor({ name: auth.name, iconURL: auth.iconurl || undefined });
+    });
+  }
   if (props.image) {
-    embed.setImage(props.image);
+    embed.setImage(props.image || null);
   }
   if (props.thumbnail) {
-    embed.setImage(props.image as string);
+    embed.setImage((props.image as string) || null);
   }
-  return embed ;
+  return embed;
 }
-export { configModal, embeddesc, embed1, ticket, configCreate, userCreate };
+export { configModal, ticket, configCreate, userCreate };

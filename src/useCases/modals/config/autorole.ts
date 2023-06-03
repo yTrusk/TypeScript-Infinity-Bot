@@ -48,7 +48,7 @@ export default class RecusarDueloClass extends actionEvent {
           autorole: id,
         },
       });
-      const embed = embedlogs(
+      const embed = await embedlogs(
         `Cargo verificação`,
         id,
         interaction.guild?.id,

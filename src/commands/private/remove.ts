@@ -4,7 +4,7 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import {
-  embeddesc,
+  EmbedCreator,
   errorreport,
   finduser,
   handle,
@@ -50,10 +50,7 @@ export default new Command({
     }
     const bal = userguild?.balance as number;
     if (bal === 0) {
-      const embed = embeddesc(
-        `<a:errado:1084631043757310043> **Erro, o usuário selecionado possui 0 de saldo, não é possivel remover mais.**`,
-        interaction
-      );
+      const embed = await EmbedCreator({description: `<a:errado:1084631043757310043> **Erro, o usuário selecionado possui 0 de saldo, não é possivel remover mais.**`})
       return interaction.editReply({ embeds: [embed] });
     } else {
       const soma = bal - many;
@@ -66,10 +63,7 @@ export default new Command({
         dataconfig: "balance",
         newdatavalue: q,
       });
-      const embed = embeddesc(
-        `<a:certo:1084630932885078036> **Remoção de saldo concluida com sucesso.**\n<:coins:1095800360829980762> **Saldo do usuário:** \`${userguildupdated.balance}\``,
-        interaction
-      );
+      const embed = await EmbedCreator({description: `<a:certo:1084630932885078036> **Remoção de saldo concluida com sucesso.**\n<:coins:1095800360829980762> **Saldo do usuário:** \`${userguildupdated.balance}\``})
       interaction.editReply({ embeds: [embed] });
     }
   },

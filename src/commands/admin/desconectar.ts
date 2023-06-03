@@ -1,12 +1,7 @@
 import { ApplicationCommandType } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { joinVoiceChannel } from "@discordjs/voice";
-import {
-  configCreate,
-  embeddesc,
-  errorreport,
-  handle,
-} from "../../functions/functions";
+import { EmbedCreator, configCreate, errorreport, handle } from "../../functions/functions";
 import { client } from "../../main";
 export default new Command({
   name: "desconectar",
@@ -37,16 +32,10 @@ export default new Command({
         adapterCreator: test.guild.voiceAdapterCreator,
       });
       await connection.destroy();
-      const em = embeddesc(
-        `<a:certo:1084630932885078036> **Me desconectei do canal de voz com sucesso!**`,
-        interaction
-      );
+      const em = await EmbedCreator({description: `<a:certo:1084630932885078036> **Me desconectei do canal de voz com sucesso!**`})
       interaction.reply({ embeds: [em], ephemeral: true });
     } else {
-      const embed = embeddesc(
-        `<a:errado:1084631043757310043> **Não estou conectado a um canal de voz.**`,
-        interaction
-      );
+      const embed = await EmbedCreator({description: `<a:errado:1084631043757310043> **Não estou conectado a um canal de voz.**`})
       interaction.reply({ embeds: [embed], ephemeral: true });
       return;
     }

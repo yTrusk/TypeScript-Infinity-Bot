@@ -1,10 +1,10 @@
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  EmbedBuilder,
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
+import { EmbedCreator } from "../../functions/functions";
 export default new Command({
   name: "say",
   description: "[Administrador] Comando de fala.",
@@ -43,21 +43,21 @@ export default new Command({
     const img = options.getString("imagem");
     if (ch === null) return;
     if (!img) {
-      const embed1 = new EmbedBuilder()
-        .setColor(`#fc0808`)
-        .setDescription(desc)
-        .setTitle(title);
+      const embed1 = await EmbedCreator({
+        title: `${title}`,
+        description: `${desc}`,
+      });
       interaction.reply({
         content: `<a:certo:1084630932885078036> Sua mensagem foi enviada com sucesso!`,
         ephemeral: true,
       });
       await ch.send({ embeds: [embed1] });
     } else {
-      const embed2 = new EmbedBuilder()
-        .setColor(`#fc0808`)
-        .setDescription(desc)
-        .setTitle(title)
-        .setImage(img);
+      const embed2 = await EmbedCreator({
+        title: `${title}`,
+        description: `${desc}`,
+        image: `${img}`,
+      });
       interaction.reply({
         content: `<a:certo:1084630932885078036> Sua mensagem foi enviada com sucesso!`,
         ephemeral: true,

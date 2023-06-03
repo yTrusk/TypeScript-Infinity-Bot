@@ -1,12 +1,7 @@
-import {
-  ActionRowBuilder,
-  ApplicationCommandType,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-} from "discord.js";
+import { ApplicationCommandType, ButtonStyle } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
+import { EmbedCreator, buttonCreator } from "../../functions/functions";
 export default new Command({
   name: "botinfo",
   description: "[Member] Vejá informaçôes sobre mim.",
@@ -16,15 +11,10 @@ export default new Command({
     let nome = client.user?.username;
     let servidores = client.guilds.cache.size;
     let ping = client.ws.ping;
-    let avatar = client.user?.displayAvatarURL();
 
-    let embed = new EmbedBuilder()
-
-      .setColor("#9600D8")
-      .setFooter({ text: "Infinity System", iconURL: avatar })
-      .setTitle(` 🌍 Vejá Minhas Informações abaixo:`)
-      .setThumbnail(avatar || null)
-      .setFields(
+    const embed = await EmbedCreator({
+      title: `🌍 Vejá Minhas Informações abaixo:`,
+      fields: [
         {
           name: `🤖 **Meu nome:**`,
           value: `\`${nome}\` `,
@@ -59,23 +49,23 @@ export default new Command({
           name: `👻 **Usuários:**`,
           value: `\`${client.users.cache.size}\``,
           inline: true,
-        }
-      );
-    let botao = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      new ButtonBuilder()
-        .setURL(
-          `https://discord.com/api/oauth2/authorize?client_id=1081613624713424907&permissions=8&scope=bot`
-        )
-        .setEmoji("🤖")
-        .setStyle(ButtonStyle.Link)
-        .setLabel(`Me convide!.`),
-      new ButtonBuilder()
-        .setLabel("Server Principal")
-        .setEmoji(`🔮`)
-        .setURL(`https://discord.gg/JztukqVskq`)
-        .setStyle(ButtonStyle.Link)
-    );
-
+        },
+      ],
+    });
+    const botao = buttonCreator([
+      {
+        style: ButtonStyle.Link,
+        label: "Me convide!.",
+        url: `https://discord.com/api/oauth2/authorize?client_id=1081613624713424907&permissions=8&scope=bot`,
+        emoji: `🤖`,
+      },
+      {
+        label: "Server Principal",
+        emoji: `🔮`,
+        url: `https://discord.gg/CH5bPQSB8r`,
+        style: ButtonStyle.Link,
+      },
+    ]);
     interaction.reply({
       embeds: [embed],
       components: [botao],

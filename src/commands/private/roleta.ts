@@ -1,7 +1,7 @@
 import { ApplicationCommandType, Guild, User } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import {
-  embed1,
+  EmbedCreator,
   errorreport,
   finduser,
   handle,
@@ -49,10 +49,10 @@ export default new Command({
         let resta = `${time} segundos`;
         if (time == 0) resta = "alguns milisegundos";
         if (time == 1) resta = "1 segundo";
-        const embed_err = embed1(
-          `<a:errado:1084631043757310043> Erro, roleta em cooldown!`,
-          `Vagabundo querendo trapacear né? Espera \`${time}s\` para usar a roleta novamente!`
-        );
+        const embed_err = await EmbedCreator({
+          title: `<a:errado:1084631043757310043> Erro, roleta em cooldown!`,
+          description: `Vagabundo querendo trapacear né? Espera \`${time}s\` para usar a roleta novamente!`,
+        });
         interaction.reply({ embeds: [embed_err], ephemeral: true });
         return;
       } else {
@@ -66,10 +66,7 @@ export default new Command({
           dataconfig: "balance",
           newdatavalue: bal - 300,
         });
-        const embed1s = embed1(
-          `<a:errado:1084631043757310043> Lose`,
-          `**Você perdeu** \`300\` **space coins**`
-        );
+        const embed1s = await EmbedCreator({title: `<a:errado:1084631043757310043> Lose`, description: `**Você perdeu** \`300\` **space coins**`})
         interaction.reply({ embeds: [embed1s] });
       } else {
         let roll2 = Math.ceil(Math.random() * 800);
@@ -80,10 +77,7 @@ export default new Command({
           dataconfig: "balance",
           newdatavalue: bal + roll2,
         });
-        const embed1s = embed1(
-          `<a:certo:1084630932885078036> Win`,
-          `**Você ganhou** \`${roll2}\` **space coins**`
-        );
+        const embed1s = await EmbedCreator({title: `<a:certo:1084630932885078036> Win`, description: `**Você ganhou** \`${roll2}\` **space coins**`})
         interaction.reply({ embeds: [embed1s] });
       }
     }

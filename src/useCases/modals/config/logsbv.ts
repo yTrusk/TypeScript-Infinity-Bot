@@ -20,7 +20,7 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ client, interaction }: actionEventProps) {
     if (!interaction.isModalSubmit()) return;
-    await interaction.deferReply({ephemeral: true})
+    await interaction.deferReply({ ephemeral: true });
     const id = interaction.fields.getTextInputValue("logbv-s");
     let canals = interaction.guild?.channels.cache.find((c) => c.id === id);
     if (!canals) {
@@ -48,7 +48,12 @@ export default class RecusarDueloClass extends actionEvent {
           logsbv: id,
         },
       });
-      const embed = embedlogs(`Boas Vindas`, id, interaction.guild?.id, interaction.guild?.name);
+      const embed = await embedlogs(
+        `Boas Vindas`,
+        id,
+        interaction.guild?.id,
+        interaction.guild?.name
+      );
       await logs(embed);
       interaction
         .editReply({

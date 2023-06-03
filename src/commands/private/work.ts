@@ -1,7 +1,7 @@
 import { ApplicationCommandType, Guild, User } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import {
-  embed1,
+  EmbedCreator,
   errorreport,
   finduser,
   handle,
@@ -41,10 +41,7 @@ export default new Command({
       let resta = `${time} segundos`;
       if (time == 0) resta = "alguns milisegundos";
       if (time == 1) resta = "1 segundo";
-      const embed_err = embed1(
-        `<a:errado:1084631043757310043> Erro, work em cooldown!`,
-        `Vagabundo querendo trapacear né? Espera \`${time}s\` para usar o work novamente!`
-      );
+      const embed_err = await EmbedCreator({title: `<a:errado:1084631043757310043> Erro, work em cooldown!`, description: `Vagabundo querendo trapacear né? Espera \`${time}s\` para usar o work novamente!`})
       interaction.reply({ embeds: [embed_err], ephemeral: true });
       return;
     } else {
@@ -58,10 +55,8 @@ export default new Command({
       dataconfig: "balance",
       newdatavalue: bal + quantia,
     });
-    const resgatado_work = embed1(
-      `💼 Recompensa pelo serviço`,
-      `<:dinheiro:1084628513707016253> **Você ganhou** \`${quantia} space coins\` **em seu trabalho.**\n \n<:banco:1079896026124664903> **Utilize /saldo para verificar seu saldo.**`
-    );
+    const resgatado_work = await EmbedCreator({title: `💼 Recompensa pelo serviço`, description: `<:dinheiro:1084628513707016253> **Você ganhou** \`${quantia} space coins\` **em seu trabalho.**\n \n<:banco:1079896026124664903> **Utilize /saldo para verificar seu saldo.**`})
+
     interaction.reply({ embeds: [resgatado_work] });
   },
 });

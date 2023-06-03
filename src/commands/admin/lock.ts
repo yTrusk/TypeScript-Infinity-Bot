@@ -7,7 +7,7 @@ import {
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { embeddesc } from "../../functions/functions";
+import { EmbedCreator } from "../../functions/functions";
 import { client } from "../../main";
 
 export default new Command({
@@ -47,30 +47,18 @@ export default new Command({
       await ch.permissionOverwrites.edit(gid.id as string, {
         SendMessages: false,
       });
-      const emb = embeddesc(
-        `<a:certo:1084630932885078036> **Canal trancado com sucesso! **`,
-        interaction
-      );
-      interaction.reply({ embeds: [emb] }).then(() => {
-        const emb2 = embeddesc(
-          `🔒 **Este canal foi trancado pelo adm: ${interaction.user}.**`,
-          interaction
-        );
+      const emb = await EmbedCreator({description: `<a:certo:1084630932885078036> **Canal trancado com sucesso! **`})
+      interaction.reply({ embeds: [emb] }).then(async () => {
+        const emb2 = await EmbedCreator({description: `🔒 **Este canal foi trancado pelo adm: ${interaction.user}.**`})
         ch.send({ embeds: [emb2] });
       });
     } else {
       await ch.permissionOverwrites.edit(gid.id as string, {
         SendMessages: false,
       });
-      const emb = embeddesc(
-        `<a:certo:1084630932885078036> **Canal trancado com sucesso!** \n<:info:1084952883818143815> **Canal:** ${ch} \n<:moderador:1065653834430546010> **Adm: ${interaction.user}**`,
-        interaction
-      );
+      const emb = await EmbedCreator({description: `<a:certo:1084630932885078036> **Canal trancado com sucesso!** \n<:info:1084952883818143815> **Canal:** ${ch} \n<:moderador:1065653834430546010> **Adm: ${interaction.user}**`})
       interaction.reply({ embeds: [emb] }).then(async () => {
-        const emb2 = embeddesc(
-          `🔒 **Este canal foi trancado pelo adm: ${interaction.user}.**`,
-          interaction
-        );
+        const emb2 = await EmbedCreator({description: `🔒 **Este canal foi trancado pelo adm: ${interaction.user}.**`})
         await ch.send({ embeds: [emb2] });
         chst.send({ embeds: [emb] });
       });

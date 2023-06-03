@@ -4,7 +4,7 @@ import {
   GuildMember,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { embeddesc } from "../../functions/functions";
+import { EmbedCreator } from "../../functions/functions";
 import { client } from "../../main";
 
 export default new Command({
@@ -39,10 +39,9 @@ export default new Command({
         ephemeral: true,
       });
     }
-    const embed = embeddesc(
-      `<a:certo:1084630932885078036> **Nick do usuário alterado com sucesso !** \n**Nick novo:** ${nick} \n**Nick antigo:** \`${boy.user.username}\``,
-      interaction
-    );
+    const embed = await EmbedCreator({
+      description: `<a:certo:1084630932885078036> **Nick do usuário alterado com sucesso !** \n**Nick novo:** ${nick} \n**Nick antigo:** \`${boy.user.username}\``,
+    });
     try {
       await boy.setNickname(nick);
       interaction.reply({ embeds: [embed] });

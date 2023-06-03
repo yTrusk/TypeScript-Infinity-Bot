@@ -1,7 +1,8 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder } from "discord.js";
+import { TextChannel } from "discord.js";
 import {
+  EmbedCreator,
   configCreate,
   errorreport,
   handle,
@@ -28,11 +29,10 @@ export default new Event({
       return;
     } else {
       const stf = guildConfig?.logstaff as string;
-
       const channels = client.channels.cache.get(stf) as TextChannel;
-      const embed = new EmbedBuilder().setDescription(
-        `**Canal criado:** ${channel} \n`
-      );
+      const embed = await EmbedCreator({
+        description: `**Canal criado:** ${channel}`,
+      });
       channels.send({ embeds: [embed] });
     }
   },

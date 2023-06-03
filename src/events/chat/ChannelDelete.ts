@@ -1,7 +1,12 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder, GuildChannel } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
+import { TextChannel, GuildChannel } from "discord.js";
+import {
+  EmbedCreator,
+  configCreate,
+  errorreport,
+  handle,
+} from "../../functions/functions";
 export default new Event({
   name: "channelDelete",
   async run(channel) {
@@ -27,9 +32,9 @@ export default new Event({
       const stf = guildConfig?.logstaff as string;
 
       const channels = client.channels.cache.get(stf) as TextChannel;
-      const embed = new EmbedBuilder().setDescription(
-        `**Canal deletado:** ${channel} \n`
-      );
+      const embed = await EmbedCreator({
+        description: `**Canal deletado:** ${channel}`,
+      });
       channels.send({ embeds: [embed] });
     }
   },

@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/node";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder, Role, GuildMember } from "discord.js";
+import { TextChannel, Role } from "discord.js";
 import {
-  configCreate,
+  EmbedCreator,
   errorreport,
   handle,
   userCreate,
@@ -28,13 +28,11 @@ export default new Event({
     const test = configs?.config?.logsbv as string;
     const channels = member.guild?.channels.cache.get(test) as TextChannel;
     if (!channels) return;
-    let embed = new EmbedBuilder()
-      .setColor(`#9600D8`)
-      .setThumbnail(member.user.displayAvatarURL())
-      .setTitle(`Seja Bem-Vindo(a) ${member.user.username}!`)
-      .setDescription(
-        `**Olá ${member.user.username}! Seja bem-vindo(a) ao nosso servidor ${member.guild.name}. Espero que se divirta conosco!**\n**Agora temos ${member.guild.memberCount} membros no servidor.**`
-      );
+    const embed = await EmbedCreator({
+      title: `Seja Bem-Vindo(a) ${member.user.username}!`,
+      description: `**Olá ${member.user.username}! Seja bem-vindo(a) ao nosso servidor ${member.guild.name}. Espero que se divirta conosco!**\n**Agora temos ${member.guild.memberCount} membros no servidor.**`,
+      thumbnail: member.user.displayAvatarURL()
+    });
     await channels.send({ embeds: [embed] });
     const rolex = configs?.config?.autorole as string;
     const role = member.guild.roles.cache.find((r) => r.id === rolex) as Role;

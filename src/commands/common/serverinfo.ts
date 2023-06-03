@@ -1,5 +1,6 @@
-import { ApplicationCommandType, ChannelType, EmbedBuilder } from "discord.js";
+import { ApplicationCommandType, ChannelType } from "discord.js";
 import { Command } from "../../configs/types/Command";
+import { EmbedCreator } from "../../functions/functions";
 export default new Command({
   name: "serverinfo",
   description: "[Member] Mostra informações do servidor",
@@ -29,11 +30,8 @@ export default new Command({
       (c) => c.type === ChannelType.GuildCategory
     ).size;
 
-    const embed1 = new EmbedBuilder()
-      .setAuthor({ name: nome as string, iconURL: icon || undefined })
-      .setColor("#9600D8")
-      .setThumbnail(icon || null)
-      .addFields(
+    const embed1 = await EmbedCreator({
+      fields: [
         {
           name: `🆔 Id Do servidor:`,
           value: `\`${id}\``,
@@ -58,7 +56,7 @@ export default new Command({
         {
           name: `💬 Canais: \`${canais}\``,
           value: ` 📝 **Canais de texto:** \`${canais_texto}\`
-      🔊 **Canais de Voz** \`${canais_voz}\``,
+  🔊 **Canais de Voz** \`${canais_voz}\``,
           inline: false,
         },
         {
@@ -81,8 +79,9 @@ export default new Command({
           name: "🎭 Cargos",
           value: `\`${roles}\``,
           inline: false,
-        }
-      );
+        },
+      ],
+    });
     interaction.reply({ embeds: [embed1] });
   },
 });

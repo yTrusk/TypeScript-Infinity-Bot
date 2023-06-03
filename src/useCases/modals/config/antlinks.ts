@@ -28,7 +28,7 @@ export default class RecusarDueloClass extends actionEvent {
         guild_id: guildid,
       },
     });
-    const embed = embedlogs(`Ant link Modulo`, id, interaction.guild?.id, interaction.guild?.name);
+    const embed = await embedlogs(`Ant link Modulo`, id, interaction.guild?.id, interaction.guild?.name);
     await logs(embed);
     if (!guildConfig) {
       const [user, userError] = await handle(configCreate(guildid));

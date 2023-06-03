@@ -7,7 +7,7 @@ import {
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { buttonsRow, embed1 } from "../../functions/functions";
+import { EmbedCreator, buttonCreator } from "../../functions/functions";
 
 export default new Command({
   name: "verify-role",
@@ -29,19 +29,12 @@ export default new Command({
     let c = options.getChannel("canal") as TextChannel;
     if (!c) c = interaction.channel as TextChannel;
     const g = interaction.guild as Guild;
-    const embed = embed1(
-      `Verifique-se aqui!`,
-      `Clique no botão abaixo para se verificar e liberar acesso ao servidor!`
-    );
-    const row = buttonsRow([
-      {
-        id: `verification`,
-        emoji: `<a:certo:1084630932885078036>`,
-        label: `Verifique-se`,
-        disabled: false,
-        style: ButtonStyle.Success,
-      },
-    ]);
+    const embed = await EmbedCreator({
+      title: `Verifique-se aqui!`,
+      description: `Clique no botão abaixo para se verificar e liberar acesso ao servidor!`,
+    });
+    const row = buttonCreator([{id: `verification`, emoji: `<a:certo:1084630932885078036>`, label: `Verifique-se`, style: ButtonStyle.Success}])
+
     interaction
       .reply({
         content: `<a:certo:1084630932885078036> **Painel de verificação enviado com sucesso!**`,

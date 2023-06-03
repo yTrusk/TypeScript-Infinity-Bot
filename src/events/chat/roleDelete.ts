@@ -1,7 +1,12 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder, Guild } from "discord.js";
-import { configCreate, errorreport, handle } from "../../functions/functions";
+import { TextChannel, Guild } from "discord.js";
+import {
+  EmbedCreator,
+  configCreate,
+  errorreport,
+  handle,
+} from "../../functions/functions";
 
 export default new Event({
   name: "roleDelete",
@@ -27,9 +32,9 @@ export default new Event({
       } else {
         const stf = guildConfig?.logstaff as string;
         const channels = client.channels.cache.get(stf) as TextChannel;
-        const embed = new EmbedBuilder().setDescription(
-          `**🔮 Novo Cargo deletado.`
-        );
+        const embed = await EmbedCreator({
+          description: `**🔮 Novo Cargo deletado.**`,
+        });
         await channels.send({ embeds: [embed] });
       }
     }

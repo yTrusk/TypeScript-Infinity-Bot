@@ -1,5 +1,6 @@
-import { ApplicationCommandType, EmbedBuilder } from "discord.js";
+import { ApplicationCommandType } from "discord.js";
 import { Command } from "../../configs/types/Command";
+import { EmbedCreator } from "../../functions/functions";
 export default new Command({
   name: "avatar-guild",
   description: "[Member] Exibe a foto do servidor.",
@@ -14,12 +15,10 @@ export default new Command({
         ephemeral: true,
       });
     } else {
-      let guild = new EmbedBuilder()
-        .setColor(`#9600D8`)
-        .setTitle(`${interaction.guild?.name}`)
-        .setTimestamp()
-        .setImage(servericon || null);
-
+      const guild = await EmbedCreator({
+        title: `${interaction.guild?.name}`,
+        image: servericon,
+      });
       interaction.reply({ embeds: [guild] });
     }
   },

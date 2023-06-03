@@ -7,9 +7,8 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import {
-  buttonsRow,
-  embed1,
-  embeddesc,
+  EmbedCreator,
+  buttonCreator,
   errorreport,
   finduser,
   handle,
@@ -89,20 +88,20 @@ export default new Command({
         let resta = `${time} segundos`;
         if (time == 0) resta = "alguns milisegundos";
         if (time == 1) resta = "1 segundo";
-        const embed_err = embed1(
-          `<a:errado:1084631043757310043> Erro, duelo em cooldown!`,
-          `Vagabundo querendo trapacear né? Espera \`${time}\` para duelar novamente!`
-        );
+        const embed_err = await EmbedCreator({
+          title: `<a:errado:1084631043757310043> Erro, duelo em cooldown!`,
+          description: `Vagabundo querendo trapacear né? Espera \`${time}\` para duelar novamente!`,
+        });
         interaction.editReply({ embeds: [embed_err] });
         return;
       } else {
         cooldowns[users.id].lastCmd = Date.now();
       }
-      const embed = embed1(
-        `<:Modicon:1065654040874188870> Duelo de Apostas`,
-        `<:mais:1084631761406931024> **Desafiante:** ${users} \n<:menos:1084631141945966722> **Desafiado:** ${user2}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\``
-      );
-      const row = buttonsRow([
+      const embed = await EmbedCreator({
+        title: `<:Modicon:1065654040874188870> Duelo de Apostas`,
+        description: `<:mais:1084631761406931024> **Desafiante:** ${users} \n<:menos:1084631141945966722> **Desafiado:** ${user2}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\``,
+      });
+      const row = buttonCreator([
         {
           id: `recusarduelo`,
           emoji: `<a:errado:1084631043757310043>`,
@@ -118,7 +117,7 @@ export default new Command({
           style: ButtonStyle.Success,
         },
       ]);
-      const row2 = buttonsRow([
+      const row2 = buttonCreator([
         {
           id: `recusarduelo`,
           emoji: `<a:errado:1084631043757310043>`,
@@ -143,10 +142,9 @@ export default new Command({
       });
       collector.on("collect", async (i) => {
         if (i.customId === "recusarduelo") {
-          const embed = embeddesc(
-            `**O usuário: ${user2} recusou o duelo**`,
-            interaction
-          );
+          const embed = await EmbedCreator({
+            description: `**O usuário: ${user2} recusou o duelo**`,
+          });
           interaction.editReply({ embeds: [embed], components: [row2] });
         } else if (i.customId === "aceitarduelo") {
           let roll = Math.ceil(Math.random() * 10);
@@ -163,10 +161,10 @@ export default new Command({
               dataconfig: "balance",
               newdatavalue: userGuild2Balance - q,
             });
-            const embed = embed1(
-              `<:Modicon:1065654040874188870> Duelo finalizado`,
-              `<:trofeu:1095798926927462472> **Ganhador:** ${users} \n🦆 **Perdedor:** ${user2}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\` `
-            );
+            const embed = await EmbedCreator({
+              title: `<:Modicon:1065654040874188870> Duelo finalizado`,
+              description: `<:trofeu:1095798926927462472> **Ganhador:** ${users} \n🦆 **Perdedor:** ${user2}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\``,
+            });
             interaction.editReply({ embeds: [embed], components: [row2] });
           } else {
             await updateuser({
@@ -181,10 +179,10 @@ export default new Command({
               dataconfig: "balance",
               newdatavalue: userGuild2Balance + q,
             });
-            const embed = embed1(
-              `<:Modicon:1065654040874188870> Duelo finalizado`,
-              `<:trofeu:1095798926927462472> **Ganhador:** ${user2} \n🦆 **Perdedor:** ${users}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\` `
-            );
+            const embed = await EmbedCreator({
+              title: `<:Modicon:1065654040874188870> Duelo finalizado`,
+              description: `<:trofeu:1095798926927462472> **Ganhador:** ${user2} \n🦆 **Perdedor:** ${users}\n<:coins:1095800360829980762> **Quantidade:** \`${q}\``,
+            });
             interaction.editReply({ embeds: [embed], components: [row2] });
           }
         }

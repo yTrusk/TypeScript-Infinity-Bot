@@ -1,7 +1,8 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder, Guild } from "discord.js";
+import { TextChannel, Guild } from "discord.js";
 import {
+  EmbedCreator,
   configCreate,
   errorreport,
   handle,
@@ -30,9 +31,9 @@ export default new Event({
       } else {
         const stf = guildConfig?.logstaff as string;
         const channels = client.channels.cache.get(stf) as TextChannel;
-        const embed = new EmbedBuilder().setDescription(
-          `**Invite deletado:** ${invite} \n`
-        );
+        const embed = await EmbedCreator({
+          description: `**Invite deletado:** ${invite}`,
+        });
         channels.send({ embeds: [embed] });
       }
     }

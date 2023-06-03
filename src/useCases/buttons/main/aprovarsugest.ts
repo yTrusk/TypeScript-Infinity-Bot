@@ -1,7 +1,7 @@
 import { ButtonStyle, EmbedBuilder } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import { buttonsRow, embeddesc, logs } from "../../../functions/functions";
+import { EmbedCreator, buttonCreator, logs } from "../../../functions/functions";
 import { client } from "../../../main";
 import util from "util";
 export default class RecusarDueloClass extends actionEvent {
@@ -57,8 +57,8 @@ export default class RecusarDueloClass extends actionEvent {
             votes: true,
           },
         });
-        const embed = await embeddesc(
-          `**Sugestion id:**\`${
+        const embed = await EmbedCreator({
+          description: `**Sugestion id:**\`${
             sugestion.id
           }\`\n**User Voted id:**\`${getUserVoteId}\`\n**Vote Update:**\n\n ${util.inspect(
             voteUpdate,
@@ -66,8 +66,8 @@ export default class RecusarDueloClass extends actionEvent {
               showHidden: false,
               depth: null,
             }
-          )}`
-        );
+          )}`,
+        });
         await logs(embed);
         const positives = voteUpdate.votes.filter(
           (v) => v.positive != 0
@@ -80,7 +80,7 @@ export default class RecusarDueloClass extends actionEvent {
         const aprovados = somes * positives;
         const reprovados = somes * negatives;
 
-        const row = buttonsRow([
+        const row = buttonCreator([
           {
             id: "aprovarsugest",
             emoji: "<a:certo:1084630932885078036>",
@@ -101,7 +101,9 @@ export default class RecusarDueloClass extends actionEvent {
           },
         ]);
         await interaction.message.edit({ components: [row] });
-        const em = embeddesc(`🗑️ **Você retirou seu voto.**`, interaction);
+        const em = await EmbedCreator({
+          description: `🗑️ **Você retirou seu voto.**`,
+        });
         interaction.followUp({
           ephemeral: true,
           embeds: [em],
@@ -136,7 +138,7 @@ export default class RecusarDueloClass extends actionEvent {
         const aprovados = somes * positives;
         const reprovados = somes * negatives;
 
-        const row = buttonsRow([
+        const row = buttonCreator([
           {
             id: "aprovarsugest",
             emoji: "<a:certo:1084630932885078036>",

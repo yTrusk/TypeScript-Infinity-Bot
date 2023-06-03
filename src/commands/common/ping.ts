@@ -1,7 +1,7 @@
 import { ApplicationCommandType } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
-import { embeddesc } from "../../functions/functions";
+import { EmbedCreator } from "../../functions/functions";
 
 export default new Command({
   name: "ping",
@@ -10,15 +10,14 @@ export default new Command({
   async run({ interaction }) {
     if (!interaction.isCommand()) return;
     let now_time = Date.now();
-    const embed = embeddesc(`**Calculando ping...**`, interaction);
-    interaction.reply({ embeds: [embed] }).then(() => {
-      const embed2 = embeddesc(
-        `🕑 **Tempo de resposta: ${
+    const embed = await EmbedCreator({ description: `**Calculando ping...**` });
+    interaction.reply({ embeds: [embed] }).then(async () => {
+      const embed2 = await EmbedCreator({
+        description: `🕑 **Tempo de resposta: ${
           Date.now() - now_time
         }ms** \n🌍 **WebSocket: ${client.ws.ping}ms**`,
-        interaction
-      );
-      interaction.reply({ embeds: [embed2] });
+      });
+      interaction.editReply({ embeds: [embed2] });
     });
   },
 });

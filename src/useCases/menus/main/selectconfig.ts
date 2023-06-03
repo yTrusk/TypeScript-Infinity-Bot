@@ -2,9 +2,9 @@ import { EmbedBuilder, ButtonStyle } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import {
+  buttonCreator,
   configModal,
-  embeddesc,
-  buttonsRow,
+  EmbedCreator,
 } from "../../../functions/functions";
 
 export default class selectConfigClass extends actionEvent {
@@ -127,8 +127,10 @@ export default class selectConfigClass extends actionEvent {
         );
       interaction.reply({ embeds: [embed], ephemeral: true });
     } else if (op === "op9") {
-      const embed = embeddesc(`Configure os produtos da loja.`, interaction);
-      const rows = buttonsRow([
+      const embed = await EmbedCreator({
+        description: `Configure os produtos da loja.`,
+      });
+      const rows = buttonCreator([
         {
           id: `adicionar`,
           emoji: `➕`,

@@ -2,6 +2,7 @@ import { client } from "../../main";
 import { Event } from "../../configs/types/event";
 import { TextChannel, EmbedBuilder, Guild } from "discord.js";
 import {
+  EmbedCreator,
   configCreate,
   errorreport,
   handle,
@@ -31,9 +32,10 @@ export default new Event({
         const stf = guildConfig?.logstaff as string;
 
         const channels = client.channels.cache.get(stf) as TextChannel;
-        const embed = new EmbedBuilder().setDescription(
-          `**Invite criado:** ${invite} \n`
-        );
+        const embed = await EmbedCreator({
+          description: `**Invite criado:** ${invite}`,
+        });
+
         channels.send({ embeds: [embed] });
       }
     }

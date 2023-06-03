@@ -1,6 +1,6 @@
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import { embed1, logs } from "../../../functions/functions";
+import { EmbedCreator, logs } from "../../../functions/functions";
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
@@ -26,10 +26,10 @@ export default class RecusarDueloClass extends actionEvent {
           id: isExistsProductName.id,
         },
       });
-      const embed = embed1(
-        `<a:planeta:1084627835408363640> - Produto criado (Economia)`,
-        `<:tabela:1084631840528281701> **- Nome do produto:** \`${isExistsProductName.name}\` \n<:dinheiro:1084628513707016253> **- Preço do produto:** \`${isExistsProductName.price}\` `
-      );
+      const embed = await EmbedCreator({
+        title: `<a:planeta:1084627835408363640> - Produto criado (Economia)`,
+        description: `<:tabela:1084631840528281701> **- Nome do produto:** \`${isExistsProductName.name}\` \n<:dinheiro:1084628513707016253> **- Preço do produto:** \`${isExistsProductName.price}\``,
+      });
       await logs(embed);
       interaction.editReply({
         content: "produto deletado",

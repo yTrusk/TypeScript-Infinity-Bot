@@ -1,12 +1,12 @@
 import {
   ActionRowBuilder,
   ApplicationCommandType,
-  EmbedBuilder,
   StringSelectMenuBuilder,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { User } from "@prisma/client";
 import {
+  EmbedCreator,
   createGuild,
   errorreport,
   handle,
@@ -20,15 +20,7 @@ export default new Command({
   defaultMemberPermissions: "ManageGuild",
   async run({ interaction }) {
     const servericon = interaction.guild?.iconURL();
-
-    let embedconfig = new EmbedBuilder()
-      .setColor(`#9600D8`)
-      .setDescription(
-        `**Olá ${interaction.user.username}, aqui é o meu painel de configurações utilize-o para configurar meus comandos e os logs de comandos.** `
-      )
-      .setTitle(`🔮 Seja Bem-Vindo (a) ao Painel de Configurações do Infinity `)
-      .setTimestamp()
-      .setThumbnail(servericon || null);
+    const embedconfig = await EmbedCreator({description: `**Olá ${interaction.user.username}, aqui é o meu painel de configurações utilize-o para configurar meus comandos e os logs de comandos.**`, title: `🔮 Seja Bem-Vindo (a) ao Painel de Configurações do Infinity`})
 
     const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
       new StringSelectMenuBuilder()
