@@ -1,6 +1,6 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder } from "discord.js";
+import { TextChannel } from "discord.js";
 import { EmbedCreator } from "../../functions/functions";
 
 export default new Event({

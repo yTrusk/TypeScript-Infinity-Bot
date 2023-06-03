@@ -1,6 +1,6 @@
 import { client } from "../../main";
 import { Event } from "../../configs/types/event";
-import { TextChannel, EmbedBuilder, Guild } from "discord.js";
+import { TextChannel, Guild } from "discord.js";
 import {
   EmbedCreator,
   configCreate,

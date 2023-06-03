@@ -1,7 +1,6 @@
-import { EmbedBuilder } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-
+import { EmbedCreator } from "../../../functions/functions";
 export default class selectConfigClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
@@ -11,13 +10,11 @@ export default class selectConfigClass extends actionEvent {
   }
   async execute({ interaction }: actionEventProps) {
     if (!interaction.isStringSelectMenu()) return;
-
     let opcions = interaction.values[0];
     if (opcions === "h1") {
-      let embed_comands_staff = new EmbedBuilder()
-        .setColor(`#9600D8`)
-        .setTitle(`🛠 Comandos Staff`)
-        .addFields(
+      const embed_comands_staff = await EmbedCreator({
+        title: `🛠 Comandos Staff`,
+        fields: [
           {
             name: `📌 |   /config`,
             value: `\`Configure o bot nas opções de logs etc.\``,
@@ -88,17 +85,18 @@ export default class selectConfigClass extends actionEvent {
             name: `📌 |   /clear`,
             value: `\`Limpe uma quantidade de mensagens em determinado canal.\``,
             inline: false,
-          }
-        );
+          },
+        ],
+      });
+
       interaction.reply({
         embeds: [embed_comands_staff],
         ephemeral: true,
       });
     } else if (opcions === "h2") {
-      let embedecom = new EmbedBuilder()
-        .setColor(`#9600D8`)
-        .setTitle(`💼 Comandos Economia`)
-        .addFields(
+      const embedecom = await EmbedCreator({
+        title: `💼 Comandos Economia`,
+        fields: [
           {
             name: `📌 |   /roleta`,
             value: `\`Gire em uma roleta e aposte 300 caso ganhe tem a chance de ganhar de 100 a 500 space coins.\``,
@@ -138,14 +136,14 @@ export default class selectConfigClass extends actionEvent {
             name: `📌 |   /loja`,
             value: `\`Vejá o menu de coisas para comprar com space coins.\``,
             inline: false,
-          }
-        );
+          },
+        ],
+      });
       interaction.reply({ embeds: [embedecom], ephemeral: true });
     } else if (opcions === "h3") {
-      let embed_comands_utilitarios = new EmbedBuilder()
-        .setColor(`#9600D8`)
-        .setTitle(`🔥 Comandos Utilitarios`)
-        .addFields(
+      const embed_comands_utilitarios = await EmbedCreator({
+        title: `🔥 Comandos Utilitarios`,
+        fields: [
           {
             name: `📌 |   /botinfo `,
             value: `\`Vejá informaçôes sobre mim.\``,
@@ -190,8 +188,10 @@ export default class selectConfigClass extends actionEvent {
             name: `📌 |   /invites`,
             value: `\`Veja quantos invites você possui ou os de um usuário.\``,
             inline: false,
-          }
-        );
+          },
+        ],
+      });
+
       interaction.reply({
         embeds: [embed_comands_utilitarios],
         ephemeral: true,

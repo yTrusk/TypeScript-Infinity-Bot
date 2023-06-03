@@ -1,4 +1,4 @@
-import { ButtonStyle, EmbedBuilder } from "discord.js";
+import { ButtonStyle } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import { EmbedCreator, buttonCreator } from "../../../functions/functions";
@@ -140,9 +140,7 @@ export default class RecusarDueloClass extends actionEvent {
           },
         ]);
         await interaction.message.edit({ components: [row] });
-        const embed = new EmbedBuilder().setDescription(
-          `<a:errado:1084631043757310043> **Você reprovou essa sugestão.**`
-        );
+        const embed = await EmbedCreator({ description: `<a:errado:1084631043757310043> **Você reprovou essa sugestão.**`})
         interaction.editReply({
           embeds: [embed],
         });

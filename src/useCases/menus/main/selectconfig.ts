@@ -1,4 +1,4 @@
-import { EmbedBuilder, ButtonStyle } from "discord.js";
+import { ButtonStyle } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
 import {
@@ -76,14 +76,15 @@ export default class selectConfigClass extends actionEvent {
       let test = configs?.antlk;
       if (test === "y") test = "Modulo Ativado";
       if (test === "n") test = "Modulo Desativado";
-      const embed = new EmbedBuilder()
-        .setColor(`#9600D8`)
-        .setTitle(`<:moderador:1065653834430546010> Configurações`)
-        .setAuthor({
-          name: interaction.user?.username,
-          iconURL: interaction.user.avatarURL() || undefined,
-        })
-        .setFields(
+      const embed = await EmbedCreator({
+        title: `<:moderador:1065653834430546010> Configurações`,
+        author: [
+          {
+            name: interaction.user?.username,
+            iconurl: interaction.user.avatarURL() || undefined,
+          },
+        ],
+        fields: [
           {
             name: `Log Staff:`,
             value: `<#${configs?.logstaff}>`,
@@ -123,8 +124,9 @@ export default class selectConfigClass extends actionEvent {
             name: `Auto role:`,
             value: `<@&${configs?.autorole}>`,
             inline: false,
-          }
-        );
+          },
+        ],
+      });
       interaction.reply({ embeds: [embed], ephemeral: true });
     } else if (op === "op9") {
       const embed = await EmbedCreator({

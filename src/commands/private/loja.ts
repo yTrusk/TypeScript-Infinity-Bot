@@ -1,6 +1,5 @@
 import {
   ApplicationCommandType,
-  EmbedBuilder,
   Guild,
   ComponentType,
   ButtonStyle,
@@ -76,11 +75,10 @@ export default new Command({
         },
       ]);
     });
-
-    const embed = new EmbedBuilder()
-      .setColor(`#9600D8`)
-      .setDescription(`Desc sla dps coloco`);
-
+    const embed = await EmbedCreator({
+      title: `<:dinheiro:1084628513707016253> Economy Shop`,
+      description: `**Vejá a loja da economia do servidor, no select menu vejá os produtos e os preços.**`,
+    });
     menu.updateInputs();
 
     interaction.editReply({
@@ -113,12 +111,10 @@ export default new Command({
         }
 
         if (productToGuild) {
-          const embed = new EmbedBuilder()
-            .setColor(`#9600D8`)
-            .setDescription(
-              `${productToGuild.embeddesc}\n**Preço:** ${productToGuild.price}`
-            )
-            .setTitle(`${productToGuild.embedtitle}`);
+          const embed = await EmbedCreator({
+            description: `${productToGuild.embeddesc}\n**Preço:** ${productToGuild.price}`,
+            title: `${productToGuild.embedtitle}`,
+          });
           const row = buttonCreator([
             {
               id: productToGuild.id,
@@ -126,7 +122,7 @@ export default new Command({
               label: `Comprar`,
               style: ButtonStyle.Primary,
             },
-          ])
+          ]);
           await i.reply({
             embeds: [embed],
             components: [row],
@@ -177,7 +173,9 @@ export default new Command({
             (c) => c.type === ChannelType.GuildText && c.id === channelstaff
           ) as TextChannel;
           if (chs) {
-            const embedsss = await EmbedCreator({description: `<a:certo:1084630932885078036> **O usuário comprou o produto:** ${productToGuild?.name} \n**User:** ${interaction.user}`})
+            const embedsss = await EmbedCreator({
+              description: `<a:certo:1084630932885078036> **O usuário comprou o produto:** ${productToGuild?.name} \n**User:** ${interaction.user}`,
+            });
             await interaction.followUp({
               content: `<a:certo:1084630932885078036> **Você efetuou a compra com sucesso!**`,
             });
