@@ -1,8 +1,10 @@
 import {
+  APIEmbed,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
+  ColorResolvable,
   EmbedBuilder,
   ModalBuilder,
   PermissionFlagsBits,
@@ -350,5 +352,53 @@ export async function logs(embed: EmbedBuilder) {
     (c) => c.id === "1112534964181942293"
   ) as TextChannel;
   return ho.send({ embeds: [embed] });
+}
+interface fieldsProps {
+  name: string;
+  value: string;
+  inline: boolean;
+}
+
+interface embedcreatorProps {
+  description?: string;
+  title?: string;
+  color?: string;
+  thumbnail?: string;
+  image?: string;
+  fields?: fieldsProps[];
+}
+
+export async function EmbedCreator(
+  props: embedcreatorProps
+) {
+  const embed = new EmbedBuilder()
+    .setColor((props.color as ColorResolvable) || ("9600D8" as ColorResolvable))
+    .setFooter({
+      text: `Infinity System`,
+      iconURL: client.user?.avatarURL() || undefined,
+    })
+    .setTimestamp();
+  if (props.description) {
+    embed.setDescription(props.description);
+  }
+  if (props.title) {
+    embed.setTitle(props.title);
+  }
+  if (props.fields) {
+    props.fields.forEach((fields) => {
+      embed.addFields({
+        name: fields.name,
+        value: fields.value,
+        inline: fields.inline,
+      });
+    });
+  }
+  if (props.image) {
+    embed.setImage(props.image);
+  }
+  if (props.thumbnail) {
+    embed.setImage(props.image as string);
+  }
+  return embed ;
 }
 export { configModal, embeddesc, embed1, ticket, configCreate, userCreate };

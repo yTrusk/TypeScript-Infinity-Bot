@@ -20,6 +20,7 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ client, interaction }: actionEventProps) {
     if (!interaction.isModalSubmit()) return;
+    await interaction.deferReply({ephemeral: true})
     const id = interaction.fields.getTextInputValue("antlkss-s");
     const guildid = interaction.guild?.id as string;
     let guildConfig = await client.prisma.config.findUnique({
@@ -45,9 +46,8 @@ export default class RecusarDueloClass extends actionEvent {
         },
       });
       interaction
-        .reply({
+        .editReply({
           content: `**Modulo Ativado**`,
-          ephemeral: true,
         })
         .then(() => {
           return set;
@@ -62,9 +62,8 @@ export default class RecusarDueloClass extends actionEvent {
         },
       });
       interaction
-        .reply({
+        .editReply({
           content: `**Modulo Desativado**`,
-          ephemeral: true,
         })
         .then(() => {
           return set;
@@ -79,9 +78,8 @@ export default class RecusarDueloClass extends actionEvent {
         },
       });
       interaction
-        .reply({
+        .editReply({
           content: `**Modulo Desativado**`,
-          ephemeral: true,
         })
         .then(() => {
           return set;

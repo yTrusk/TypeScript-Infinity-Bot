@@ -1,8 +1,9 @@
 import { ButtonStyle, EmbedBuilder } from "discord.js";
 import { actionEvent, actionEventProps } from "../../../classes/actions";
 import { ExtendedClient } from "../../../configs/ExtendedClient";
-import { buttonsRow, embeddesc } from "../../../functions/functions";
+import { buttonsRow, embeddesc, logs } from "../../../functions/functions";
 import { client } from "../../../main";
+import util from "util";
 export default class RecusarDueloClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
@@ -56,6 +57,18 @@ export default class RecusarDueloClass extends actionEvent {
             votes: true,
           },
         });
+        const embed = await embeddesc(
+          `**Sugestion id:**\`${
+            sugestion.id
+          }\`\n**User Voted id:**\`${getUserVoteId}\`\n**Vote Update:**\n\n ${util.inspect(
+            voteUpdate,
+            {
+              showHidden: false,
+              depth: null,
+            }
+          )}`
+        );
+        await logs(embed);
         const positives = voteUpdate.votes.filter(
           (v) => v.positive != 0
         ).length;

@@ -7,7 +7,6 @@ import {
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
-import { buttonsRow } from "../../functions/functions";
 export default new Command({
   name: "botinfo",
   description: "[Member] Vejá informaçôes sobre mim.",

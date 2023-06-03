@@ -20,12 +20,12 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ client, interaction }: actionEventProps) {
     if (!interaction.isModalSubmit()) return;
+    await interaction.deferReply({ ephemeral: true });
     const id = interaction.fields.getTextInputValue("logstaff-s");
     let canals = interaction.guild?.channels.cache.find((c) => c.id === id);
     if (!canals) {
-      interaction.reply({
+      interaction.editReply({
         content: `<a:errado:1084631043757310043> **O id informado não existem nos canais.**`,
-        ephemeral: true,
       });
     } else {
       const guildid = interaction.guild?.id as string;
@@ -56,9 +56,8 @@ export default class RecusarDueloClass extends actionEvent {
       );
       await logs(embed);
       interaction
-        .reply({
+        .editReply({
           content: `**Canal de log staff setado em:** <#${id}>`,
-          ephemeral: true,
         })
         .then(() => {
           return set;

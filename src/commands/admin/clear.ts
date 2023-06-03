@@ -8,7 +8,6 @@ import {
 import { Command } from "../../configs/types/Command";
 import { embeddesc, errorreport } from "../../functions/functions";
 import { client } from "../../main";
-import { RESTJSONErrorCodes } from "discord.js";
 export default new Command({
   name: "clear",
   description:

@@ -3,7 +3,7 @@ import { Event } from "../../configs/types/event";
 import path from "path";
 import fs from "fs";
 import { joinVoiceChannel } from "@discordjs/voice";
-import { VoiceChannel } from "discord.js";
+import { ActivityType, VoiceChannel } from "discord.js";
 export * from "colors";
 export default new Event({
   name: "ready",
@@ -47,5 +47,17 @@ export default new Event({
       ✅ Logado no bot: ${client.user?.username}`.red
       );
     }
+    let activities = [
+      `Ajudando: ${client.guilds.cache.size} servidores.`,
+      `Observando: ${client.users.cache.size} usuários.`,
+    ];
+    let i = 0;
+    setInterval(() => {
+      client.user?.setActivity(`${activities[i++ % activities.length]}`, {
+        type: ActivityType.Streaming,
+        url: "https://discord.gg/CH5bPQSB8r",
+      });
+    }, 300000);
+    client.user?.setStatus(`online`);
   },
 });

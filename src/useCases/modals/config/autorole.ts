@@ -20,12 +20,12 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ client, interaction }: actionEventProps) {
     if (!interaction.isModalSubmit()) return;
+    await interaction.deferReply({ ephemeral: true });
     const id = interaction.fields.getTextInputValue("autorole-s");
     let canals = interaction.guild?.roles.cache.find((c) => c.id === id);
     if (!canals) {
-      interaction.reply({
+      interaction.editReply({
         content: `<a:errado:1084631043757310043> **O id informado não existem nos cargos.**`,
-        ephemeral: true,
       });
     } else {
       const guildid = interaction.guild?.id as string;
@@ -56,9 +56,8 @@ export default class RecusarDueloClass extends actionEvent {
       );
       await logs(embed);
       interaction
-        .reply({
+        .editReply({
           content: `**Cargo de verificação setado:** <@${id}>`,
-          ephemeral: true,
         })
         .then(() => {
           return set;

@@ -27,6 +27,7 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ interaction }: actionEventProps) {
     if (!interaction.isButton()) return;
+    await interaction.deferReply({ephemeral: true})
     const u = interaction.user as User;
     const gid = interaction.guild as Guild;
     const nome_canal = `🔖-${u.id}`;
@@ -36,9 +37,8 @@ export default class RecusarDueloClass extends actionEvent {
     if (botmember.permissions.has(["ManageChannels", "SendMessages"])) {
       let canal = gid.channels.cache.find((c) => c.name === nome_canal);
       if (canal) {
-        interaction.reply({
+        interaction.editReply({
           content: `Olá **${interaction.user.username}**, você já possui um ticket em ${canal}.`,
-          ephemeral: true,
         });
       } else {
         const sla = await client.prisma.config.findUnique({
@@ -49,16 +49,14 @@ export default class RecusarDueloClass extends actionEvent {
           (c) => c.type === ChannelType.GuildCategory && c.id === slas
         );
         if (!cate) {
-          interaction.reply({
+          interaction.editReply({
             content: `<a:errado:1084631043757310043> **Categoria de ticket não encontrada**`,
-            ephemeral: true,
           });
           return;
         } else {
           await ticket(nome_canal, cate, interaction).then(async (chat) => {
-            await interaction.reply({
+            await interaction.editReply({
               content: `Olá **${interaction.user.username}**, seu ticket foi aberto em ${chat}.`,
-              ephemeral: true,
             });
             const embed = embed1(
               `Ticket de: ${interaction.user.username}`,

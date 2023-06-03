@@ -13,6 +13,7 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ client, interaction }: actionEventProps) {
     if (!interaction.isModalSubmit()) return;
+    await interaction.deferReply({ ephemeral: true });
     const product_name = interaction.fields.getTextInputValue(
       "nomeremover"
     ) as string;
@@ -30,15 +31,13 @@ export default class RecusarDueloClass extends actionEvent {
         `<:tabela:1084631840528281701> **- Nome do produto:** \`${isExistsProductName.name}\` \n<:dinheiro:1084628513707016253> **- Preço do produto:** \`${isExistsProductName.price}\` `
       );
       await logs(embed);
-      interaction.reply({
+      interaction.editReply({
         content: "produto deletado",
-        ephemeral: true,
       });
       return;
     } else {
-      interaction.reply({
+      interaction.editReply({
         content: `Não foi encontrado nenhum produto com esse nome no banco de dados.`,
-        ephemeral: true,
       });
       return;
     }

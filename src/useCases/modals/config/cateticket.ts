@@ -21,14 +21,14 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ client, interaction }: actionEventProps) {
     if (!interaction.isModalSubmit()) return;
+    await interaction.deferReply({ephemeral: true})
     const id = interaction.fields.getTextInputValue("cateticket-s");
     let canals = interaction.guild?.channels.cache.find(
       (c) => c.type === ChannelType.GuildCategory && c.id === id
     );
     if (!canals) {
-      interaction.reply({
+      interaction.editReply({
         content: `<a:errado:1084631043757310043> **O id informado não existe nas categorias**`,
-        ephemeral: true,
       });
     } else {
       const guildid = interaction.guild?.id as string;
@@ -54,9 +54,8 @@ export default class RecusarDueloClass extends actionEvent {
       const embed = embedlogs(`Categoria`, id, interaction.guild?.id, interaction.guild?.name);
       await logs(embed);
       interaction
-        .reply({
+        .editReply({
           content: `**Categoria setado em:** <#${id}>`,
-          ephemeral: true,
         })
         .then(() => {
           return set;

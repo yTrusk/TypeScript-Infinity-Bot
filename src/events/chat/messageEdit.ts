@@ -7,6 +7,7 @@ export default new Event({
   name: "messageUpdate",
   async run(message) {
     if (message.author?.id === client.user?.id) return;
+    if (message.author?.bot === true) return;
     const guildid = message.guild?.id as string;
     let guildConfig = await client.prisma.config.findUnique({
       where: {
