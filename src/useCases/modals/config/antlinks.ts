@@ -37,7 +37,7 @@ export default class RecusarDueloClass extends actionEvent {
       }
     }
     if (id === "y") {
-      const set = await client.prisma.config.update({
+     await client.prisma.config.update({
         where: {
           guild_id: interaction.guild?.id,
         },
@@ -49,11 +49,8 @@ export default class RecusarDueloClass extends actionEvent {
         .editReply({
           content: `**Modulo Ativado**`,
         })
-        .then(() => {
-          return set;
-        });
     } else if (id === "n") {
-      const set = await client.prisma.config.update({
+     await client.prisma.config.update({
         where: {
           guild_id: interaction.guild?.id,
         },
@@ -65,11 +62,8 @@ export default class RecusarDueloClass extends actionEvent {
         .editReply({
           content: `**Modulo Desativado**`,
         })
-        .then(() => {
-          return set;
-        });
     } else {
-      const set = await client.prisma.config.update({
+      await client.prisma.config.update({
         where: {
           guild_id: interaction.guild?.id,
         },
@@ -81,9 +75,6 @@ export default class RecusarDueloClass extends actionEvent {
         .editReply({
           content: `**Modulo Desativado**`,
         })
-        .then(() => {
-          return set;
-        });
     }
   }
 }

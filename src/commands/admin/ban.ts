@@ -1,10 +1,8 @@
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  Guild,
   GuildMember,
   TextChannel,
-  User,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
 import { client } from "../../main";
@@ -31,59 +29,50 @@ export default new Command({
   ],
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
-    const userr = options.getUser("usuário") as User;
-    const gid = interaction.guild as Guild;
-     const guildid = interaction.guild?.id as string;
-        const test = await client.prisma.guild.findUnique({
-          where: {
-            guild_id: guildid,
-          },
-          include: {
-            config: true,
-          },
-        });
+    const userr = options.getMember("usuário") as GuildMember;
+    const test = await client.prisma.guild.findUnique({
+      where: {
+        guild_id: interaction.guild!.id,
+      },
+      include: {
+        config: true,
+      },
+    });
     const sla = test?.config?.logstaff as string;
-    const ch = gid.channels.cache.find((c) => c.id === sla) as TextChannel;
-    const user = gid.members.cache.get(userr.id) as GuildMember;
-    let motivo = options.getString("motivo") as string;
-    const embederro = await EmbedCreator({description: `<a:errado:1084631043757310043> **Não foi possivel executar o banimento, verifique se o usuário está no servidor ou tem um cargo mais alto que o meu.`})
-    if (interaction.user?.id === userr.id) {
+    const ch = sla
+      ? (interaction.guild!.channels.cache.get(sla) as TextChannel)
+      : null;
+    const user = interaction.guild!.members.cache.get(userr.id);
+    let motivo = options.getString("motivo") || "Não informado.";
+    const embederro = await EmbedCreator({
+      description: `<a:errado:1084631043757310043> **Não foi possivel executar o banimento, verifique se o usuário está no servidor ou tem um cargo mais alto que o meu.`,
+    });
+    if (
+      interaction.user?.id === userr.id ||
+      userr.id === client.user?.id ||
+      !user
+    ) {
       interaction.reply({
-        content: `<a:errado:1084631043757310043> **Você não pode se banir.**`,
+        content: `<a:errado:1084631043757310043> **Ocorreu um erro ao obter informações de usuário.**`,
       });
       return;
     }
-    if (userr.id === client.user?.id) {
-      interaction.reply({
-        content: `<a:errado:1084631043757310043> **Eu não posso me banir.**`,
-      });
-      return;
-    }
-    if (!motivo) motivo = "Não informado." as string;
-    const embed = await EmbedCreator({description: `<a:carregando:1084633391820980254> **Carregando banimento...**`})
-    interaction.reply({ embeds: [embed] }).then(async () => {
-      if (ch) {
-        try {
-          await user.ban();
-        } catch {
-          interaction.editReply({ embeds: [embederro] });
-          return;
-        }
-        const embed = await EmbedCreator({description: `<:alert:1084951668648591461> **O usuário: ${user} foi banido com sucesso!**\n\n<:config:1084633909020602420> **Motivo:** \`${motivo}\` \n<a:planeta:1084627835408363640> **Servidor:** \`${gid.name}\`\n<:moderador:1065653834430546010> **Autor:** \`${interaction.user.username}\``})
-        await interaction.editReply({ embeds: [embed] });
-        ch.send({ embeds: [embed] });
-        return;
-      } else {
-        try {
-          await user.ban();
-        } catch {
-          interaction.editReply({ embeds: [embederro] });
-          return;
-        }
-        const embed = await EmbedCreator({description: `<:alert:1084951668648591461> **O usuário: ${user} foi banido com sucesso!**\n\n<:config:1084633909020602420> **Motivo:** \`${motivo}\` \n<a:planeta:1084627835408363640> **Servidor:** \`${gid.name}\`\n<:moderador:1065653834430546010> **Autor:** \`${interaction.user.username}\``})
-        await interaction.editReply({ embeds: [embed] });
+      try {
+        await user.ban();
+      } catch {
+        interaction.editReply({ embeds: [embederro] });
         return;
       }
-    });
+      const embed = await EmbedCreator({
+        description: `<:alert:1084951668648591461> **O usuário: ${user} foi banido com sucesso!**\n\n<:config:1084633909020602420> **Motivo:** \`${motivo}\` \n<a:planeta:1084627835408363640> **Servidor:** \`${
+          interaction.guild!.name
+        }\`\n<:moderador:1065653834430546010> **Autor:** \`${
+          interaction.user.username
+        }\``,
+      });
+      await interaction.reply({ embeds: [embed] });
+    if (ch) {
+      ch.send({ embeds: [embed] });
+    }
   },
 });

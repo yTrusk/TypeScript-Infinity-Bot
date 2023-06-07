@@ -51,7 +51,7 @@ export default new Command({
         content: `<a:certo:1084630932885078036> Sua mensagem foi enviada com sucesso!`,
         ephemeral: true,
       });
-      await ch.send({ embeds: [embed1] });
+      return ch.send({ embeds: [embed1] });
     } else {
       const embed2 = await EmbedCreator({
         title: `${title}`,
@@ -62,7 +62,7 @@ export default new Command({
         content: `<a:certo:1084630932885078036> Sua mensagem foi enviada com sucesso!`,
         ephemeral: true,
       });
-      await ch.send({ embeds: [embed2] });
+      return ch.send({ embeds: [embed2] });
     }
   },
 });

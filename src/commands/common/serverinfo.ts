@@ -7,18 +7,13 @@ export default new Command({
   type: ApplicationCommandType.ChatInput,
   async run({ interaction }) {
     if (!interaction.isCommand()) return;
-    let nome = interaction.guild?.name;
     let id = interaction.guild?.id;
-    const icon = interaction.guild?.iconURL();
-
     let owner_id = interaction.guild?.ownerId as string;
     let owner = interaction.guild?.members.cache.get(owner_id);
     let roles = interaction.guild?.roles.cache.size;
     let boosts = interaction.guild?.premiumSubscriptionCount;
-
     const criação = interaction.guild?.createdAt.toLocaleDateString("pt-br");
     let membros = interaction.guild?.memberCount;
-
     const canais = interaction.guild?.channels.cache.size;
     const canais_texto = interaction.guild?.channels.cache.filter(
       (c) => c.type === ChannelType.GuildText

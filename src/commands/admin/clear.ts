@@ -6,7 +6,7 @@ import {
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
-import { EmbedCreator, errorreport } from "../../functions/functions";
+import { EmbedCreator } from "../../functions/functions";
 import { client } from "../../main";
 export default new Command({
   name: "clear",
@@ -19,6 +19,8 @@ export default new Command({
       name: `quantidade`,
       description: `Selecione a quantidade de mensagens que deseja enviar.`,
       type: ApplicationCommandOptionType.Number,
+      min_value: 1,
+      max_value: 100,
       required: true,
     },
     {
@@ -30,9 +32,8 @@ export default new Command({
     },
   ],
   async run({ interaction, options }) {
-    const q = options.getNumber("quantidade");
+    const q = options.getNumber("quantidade") as number;
     let c = options.getChannel("canal") as TextChannel;
-    if (q === null) return;
     if (!c) c = interaction.channel as TextChannel;
     let clientmember = interaction.guild?.members.cache.find(
       (u) => u.id === client.user?.id
@@ -43,31 +44,17 @@ export default new Command({
         ephemeral: true,
       });
     }
-    if (q > 100) {
-      interaction.reply({
-        content: `Você não pode apagar mais de 100 mensagens por vez.`,
+    try {
+      await c.bulkDelete(q);
+      const embedfinish = await EmbedCreator({
+        description: `<a:certo:1084630932885078036> **Limpeza concluída.**`,
       });
-    } else if (q < 1) {
-      interaction.reply({
-        content: `Você não pode apagar menos que 1 mensagem por vez.`,
+      return interaction.reply({ embeds: [embedfinish] });
+    } catch (err: any) {
+      const em = await EmbedCreator({
+        description: `<a:errado:1084631043757310043> **Erro ao tentar limpar as mensagens do canal:** ${c}`,
       });
-    } else {
-      const embedfazendo = await EmbedCreator({description: `<:config:1084633909020602420> **Preparando a limpeza...**`})
-      interaction
-        .reply({ embeds: [embedfazendo], ephemeral: true })
-        .then(async () => {
-          try {
-            await c.bulkDelete(q);
-            const embedfinish = await EmbedCreator({description: `<a:certo:1084630932885078036> **Limpeza concluída.**`})
-            return interaction.editReply({ embeds: [embedfinish] });
-          } catch (err: any) {
-            if (err.code !== 50034) {
-              await errorreport(err);
-            }
-            const em = await EmbedCreator({description: `<a:errado:1084631043757310043> **Erro ao tentar limpar as mensagens do canal:** ${c}`})
-            return interaction.editReply({ embeds: [em] });
-          }
-        });
+      return interaction.reply({ embeds: [em] });
     }
   },
 });

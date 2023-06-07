@@ -13,9 +13,11 @@ import {
   TextChannel,
   TextInputBuilder,
   TextInputStyle,
+  User,
 } from "discord.js";
 import { Prisma } from "@prisma/client";
 import { client } from "../main";
+import ms from "ms";
 
 function configModal(customId: any, title: any, label1: any) {
   const modal = new ModalBuilder().setCustomId(customId).setTitle(title);
@@ -113,12 +115,14 @@ export class SelectMenuBuilderClass {
 
   addMenus(props: Array<SelectMenuString>) {
     props.map((m) => {
-      this.menu.addOptions(
-        new StringSelectMenuOptionBuilder()
-          .setLabel(m.label)
-          .setDescription(m.description)
-          .setValue(m.value)
-      );
+      const option = new StringSelectMenuOptionBuilder()
+        .setLabel(m.label)
+        .setDescription(m.description)
+        .setValue(m.value);
+      if (m.emoji) {
+        option.setEmoji(m.emoji);
+      }
+      this.menu.addOptions(option);
     });
   }
   updateInputs() {
@@ -226,53 +230,8 @@ export async function createGuild(guildid: any, guildname: any) {
   return guildcreate;
 }
 
-export async function setPremiumExpiration(guildid: string, dias: number) {
-  const dataAtual = new Date();
-  const dataExpiracao = new Date(dataAtual.getTime());
-  dataExpiracao.setDate(dataExpiracao.getDate() + dias);
-  const test = await client.prisma.guild.findUnique({
-    where: { guild_id: guildid },
-  });
-  if (!test) {
-    await client.prisma.guild.create({
-      data: { guild_id: guildid, premium: true, dateexpires: dataExpiracao },
-    });
-    return;
-  }
-  await client.prisma.guild.update({
-    where: { guild_id: guildid },
-    data: { dateexpires: dataExpiracao, premium: true },
-  });
-  return console.log(
-    `O servidor: ${guildid} agora possui premium ativado até ${dataExpiracao}`
-  );
-}
-
-export async function verificarUsersPremium() {
-  const usuarios = await client.prisma.guild.findMany();
-  for (const usuario of usuarios) {
-    let mensagem;
-    let test;
-    if (new Date(usuario.dateexpires) > new Date()) {
-      test = await client.prisma.guild.update({
-        where: { id: usuario.id },
-        data: { premium: true },
-      });
-      mensagem = `O servidor: ${usuario.guild_name} tem premium ativo`;
-    } else {
-      test = await client.prisma.guild.update({
-        where: { id: usuario.id },
-        data: { premium: false },
-      });
-      mensagem = `O servidor: ${usuario.guild_name} não tem premium ativo`;
-    }
-  }
-}
-
 export async function errorreport(error: any) {
-  const ho = client.channels.cache.find(
-    (c) => c.id === "1113178570236375100"
-  ) as TextChannel;
+  const ho = client.channels.cache.get("1113178570236375100") as TextChannel;
   const embed = await EmbedCreator({ description: `${error}` });
   return ho.send({ embeds: [embed] });
 }
@@ -290,9 +249,7 @@ export async function embedlogs(
   return embed;
 }
 export async function logs(embed: EmbedBuilder) {
-  const ho = client.channels.cache.find(
-    (c) => c.id === "1112534964181942293"
-  ) as TextChannel;
+  const ho = client.channels.cache.get("1112534964181942293") as TextChannel;
   return ho.send({ embeds: [embed] });
 }
 
@@ -331,7 +288,6 @@ export function buttonCreator(props: buttonRowPropsV2[]) {
   const convertActionRowToJSON = (actionRow: ActionRowBuilder): any => {
     return JSON.parse(JSON.stringify(actionRow));
   };
-
   const botao = convertActionRowToJSON(actionRow);
   return botao;
 }
@@ -391,4 +347,5 @@ export async function EmbedCreator(props: embedcreatorProps) {
   }
   return embed;
 }
+
 export { configModal, ticket, configCreate, userCreate };

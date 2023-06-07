@@ -23,6 +23,8 @@ export default new Command({
       name: `numero`,
       description: `De uma nota de 1 a 10 para o staff.`,
       type: ApplicationCommandOptionType.Number,
+      max_value: 10,
+      min_value: 1,
       required: true,
     },
     {
@@ -46,11 +48,13 @@ export default new Command({
     const canalsend2 = interaction.guild?.channels.cache.find(
       (c) => c.id === cst
     ) as TextChannel;
-
     let user = options.getUser("staff") as User;
     let num = options.getNumber("numero") as number;
     let op = options.getString("opinião") as String;
-    const embed = await EmbedCreator({title: `<:Modicon:1065654040874188870> Avaliação do Staff: ${user.username}`, description: `<:moderador:1065653834430546010> **Staff:** ${user}\n<:tabela:1084631840528281701> **Nota de atendimento:** \`${num}\` \n<:cupom:1084631807502319637> **Opinião sobre atendimento:** \`\`\`${op}\`\`\`` });
+    const embed = await EmbedCreator({
+      title: `<:Modicon:1065654040874188870> Avaliação do Staff: ${user.username}`,
+      description: `<:moderador:1065653834430546010> **Staff:** ${user}\n<:tabela:1084631840528281701> **Nota de atendimento:** \`${num}\` \n<:cupom:1084631807502319637> **Opinião sobre atendimento:** \`\`\`${op}\`\`\``,
+    });
     if (!canalsend2) {
       interaction.reply({
         content: `<a:errado:1084631043757310043> **O canal de referencias staff não foi setado.**`,
@@ -58,32 +62,18 @@ export default new Command({
       });
       return;
     }
-    if (num > 10 || num < 1) {
-      interaction.reply({
-        content: `Você não pode avaliar com mais de 10 ou menos que 1 😢 `,
-        ephemeral: true,
+    const embed1 = await EmbedCreator({
+      description: `<a:certo:1084630932885078036> **Avaliação enviada com sucesso!!**`,
+    });
+    await interaction.reply({ embeds: [embed1], ephemeral: true });
+    canalsend2.send({ embeds: [embed] }).catch(async (err: any) => {
+      const embederro = await EmbedCreator({
+        description: `<a:errado:1084631043757310043> **Erro ao enviar avaliação. \n **Erro:** \n\n \`\`\`${err}\`\`\`**`,
       });
-      return;
-    }
-    if (!canalsend) {
-      const embed1 = await EmbedCreator({ description: `<a:certo:1084630932885078036> **Avaliação enviada com sucesso!!**` });
-      await interaction.reply({ embeds: [embed1], ephemeral: true });
-      canalsend2.send({ embeds: [embed] }).catch(async (err: any) => {
-        const embederro = await EmbedCreator({ description: `<a:errado:1084631043757310043> **Erro ao enviar avaliação. \n **Erro:** \n\n \`\`\`${err}\`\`\`**` });
-        interaction.reply({ embeds: [embederro], ephemeral: true });
-      });
-      return;
-    } else if (chref) {
-      const embed1 = await EmbedCreator({
-        description: `<a:certo:1084630932885078036> **Avaliação enviada com sucesso!!**`,
-      });
-      await interaction.reply({ embeds: [embed1], ephemeral: true });
-      await canalsend2.send({ embeds: [embed] });
-      await canalsend.send({ embeds: [embed] });
-      async (err: any) => {
-        const embederro = await EmbedCreator({description: `<a:errado:1084631043757310043> **Erro ao enviar avaliação. \n **Erro:** \n\n \`\`\`${err}\`\`\`**`})
-        interaction.reply({ embeds: [embederro] });
-      };
+      interaction.reply({ embeds: [embederro], ephemeral: true });
+    });
+    if (canalsend) {
+      canalsend.send({ embeds: [embed] });
     }
   },
 });

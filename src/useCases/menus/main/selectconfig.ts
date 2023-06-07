@@ -5,8 +5,8 @@ import {
   buttonCreator,
   configModal,
   EmbedCreator,
+  SelectMenuBuilderClass,
 } from "../../../functions/functions";
-
 export default class selectConfigClass extends actionEvent {
   constructor(client: ExtendedClient) {
     super(client, {
@@ -61,12 +61,40 @@ export default class selectConfigClass extends actionEvent {
       );
       await interaction.showModal(modal);
     } else if (op === "op7") {
-      const modal = configModal(
-        `cateticket`,
-        `Categoria ticket`,
-        `Envie o Id da Categoria ticket`
-      );
-      await interaction.showModal(modal);
+      const embed = await EmbedCreator({
+        description: `**Olá ${interaction.user}, sejá bem vindo (a) ao meu painel de configurações de ticket, utilize o select menu abaixo para selecionar a categoria que deseja configurar (lembre se de configurar todas para que o bot funcione corretamente).**`,
+        title: `<a:planeta:1084627835408363640> | Infinity Ticket System`,
+      });
+      const menu = new SelectMenuBuilderClass({
+        customid: `selectticket`,
+        disabled: false,
+      });
+      menu.addMenus([
+        {
+          description: `Configure a categoria de ticket.`,
+          label: `Categoria ticket`,
+          value: "top1",
+          emoji: "<:pasta:1094089826661318698>",
+        },
+        {
+          label: `Transcript Channel`,
+          description: `Configure o canal de transcript.`,
+          value: "top2",
+          emoji: "<:Guild_administrator_white_theme:1115758385674080337>",
+        },
+        {
+          label: `Cargo Staff Ticket`,
+          description: `Configure o cargo staff de ticket.`,
+          value: "top3",
+          emoji: "<:cc_post:1115759163369332757>",
+        },
+      ]);
+      menu.updateInputs();
+      interaction.reply({
+        embeds: [embed],
+        components: [menu.row],
+        ephemeral: true,
+      });
     } else if (op === "op8") {
       const configs = await client.prisma.config.findUnique({
         where: {

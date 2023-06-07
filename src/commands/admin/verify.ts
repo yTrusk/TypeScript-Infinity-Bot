@@ -3,7 +3,6 @@ import {
   ApplicationCommandType,
   ButtonStyle,
   ChannelType,
-  Guild,
   TextChannel,
 } from "discord.js";
 import { Command } from "../../configs/types/Command";
@@ -28,20 +27,23 @@ export default new Command({
     if (!interaction.isCommand()) return;
     let c = options.getChannel("canal") as TextChannel;
     if (!c) c = interaction.channel as TextChannel;
-    const g = interaction.guild as Guild;
     const embed = await EmbedCreator({
       title: `Verifique-se aqui!`,
       description: `Clique no botão abaixo para se verificar e liberar acesso ao servidor!`,
     });
-    const row = buttonCreator([{id: `verification`, emoji: `<a:certo:1084630932885078036>`, label: `Verifique-se`, style: ButtonStyle.Success}])
+    const row = buttonCreator([
+      {
+        id: `verification`,
+        emoji: `<a:certo:1084630932885078036>`,
+        label: `Verifique-se`,
+        style: ButtonStyle.Success,
+      },
+    ]);
 
-    interaction
-      .reply({
-        content: `<a:certo:1084630932885078036> **Painel de verificação enviado com sucesso!**`,
-        ephemeral: true,
-      })
-      .then(() => {
-        c.send({ embeds: [embed], components: [row] });
-      });
+    await interaction.reply({
+      content: `<a:certo:1084630932885078036> **Painel de verificação enviado com sucesso!**`,
+      ephemeral: true,
+    });
+    c.send({ embeds: [embed], components: [row] });
   },
 });

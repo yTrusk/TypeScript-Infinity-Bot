@@ -40,7 +40,7 @@ export default class RecusarDueloClass extends actionEvent {
           await errorreport(userError);
         }
       }
-      const set = await client.prisma.config.update({
+      await client.prisma.config.update({
         where: {
           guild_id: interaction.guild?.id,
         },
@@ -48,15 +48,16 @@ export default class RecusarDueloClass extends actionEvent {
           logsugest: id,
         },
       });
-      const embed = await embedlogs(`Log Sugestions`, id, interaction.guild?.id, interaction.guild?.name);
+      const embed = await embedlogs(
+        `Log Sugestions`,
+        id,
+        interaction.guild?.id,
+        interaction.guild?.name
+      );
       await logs(embed);
-      interaction
-        .editReply({
-          content: `**Canal de log sugestões setado em:** <#${id}>`,
-        })
-        .then(() => {
-          return set;
-        });
+      interaction.editReply({
+        content: `**Canal de log sugestões setado em:** <#${id}>`,
+      });
     }
   }
 }

@@ -81,3 +81,10 @@ model Products {
 
     @@index([guild_id])
 }
+
+model UserBuys {
+  id String @id @unique @default(uuid())
+  user_id String @unique
+  guild_id String @unique
+  produto_comprado String
+}

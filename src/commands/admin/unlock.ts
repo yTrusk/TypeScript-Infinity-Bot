@@ -44,25 +44,19 @@ export default new Command({
         ephemeral: true,
       });
     }
-    if (!chst) {
-      await ch.permissionOverwrites.edit(gid.id as string, {
-        SendMessages: true,
-      });
-      const emb = await EmbedCreator({description: `<a:certo:1084630932885078036> **Canal destrancado com sucesso! **`})
-      interaction.reply({ embeds: [emb], ephemeral: true }).then(async () => {
-        const emb2 = await EmbedCreator({description: `🔒 **Este canal foi destrancado pelo adm: ${interaction.user}.**`})
-        ch.send({ embeds: [emb2] });
-      });
-    } else {
-      await ch.permissionOverwrites.edit(gid.id as string, {
-        SendMessages: true,
-      });
-      const emb = await EmbedCreator({description: `<a:certo:1084630932885078036> **Canal destrancado com sucesso!** \n<:info:1084952883818143815> **Canal:** ${ch} \n<:moderador:1065653834430546010> **Adm: ${interaction.user}**`})
-      interaction.reply({ embeds: [emb], ephemeral: true }).then(async () => {
-        const emb2 = await EmbedCreator({description: `🔓 **Este canal foi destrancado pelo adm: ${interaction.user}.**`})
-        await ch.send({ embeds: [emb2] });
-        chst.send({ embeds: [emb] });
-      });
+    await ch.permissionOverwrites.edit(gid.id as string, {
+      SendMessages: true,
+    });
+    const emb = await EmbedCreator({
+      description: `<a:certo:1084630932885078036> **Canal destrancado com sucesso!** \n<:info:1084952883818143815> **Canal:** ${ch} \n<:moderador:1065653834430546010> **Adm: ${interaction.user}**`,
+    });
+    await interaction.reply({ embeds: [emb], ephemeral: true });
+    const emb2 = await EmbedCreator({
+      description: `🔓 **Este canal foi destrancado pelo adm: ${interaction.user}.**`,
+    });
+    await ch.send({ embeds: [emb2] });
+    if (chst) {
+      chst.send({ embeds: [emb] });
     }
   },
 });

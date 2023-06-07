@@ -98,10 +98,11 @@ export default new Command({
       });
     }
     let d = ms(`${times}`);
-    canal.setRateLimitPerUser(d / 1000).then(() => {
+    try {
+      canal.setRateLimitPerUser(d / 1000)
       interaction.reply({
-        content: `<a:certo:1084630932885078036> **Cooldown do canal definido para:** \`${times}\``,
-      });
-    });
+        content: `<a:certo:1084630932885078036> **Cooldown do canal definido para:** \`${times}\``,});
+    } catch {
+    }
   },
 });

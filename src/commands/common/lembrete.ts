@@ -13,18 +13,14 @@ export default new Command({
       name: `tempo`,
       description: `Envie o tempo que deseja que eu te mencione.`,
       type: ApplicationCommandOptionType.Number,
+      max_value: 1200,
+      min_value: 1,
       required: true,
     },
   ],
   async run({ interaction, options }) {
     if (!interaction.isCommand()) return;
     const time = options.getNumber("tempo") as number;
-    if (time > 1200) {
-      return interaction.reply({
-        content: `**Você não pode colocar mais que 20 minutos.**`,
-        ephemeral: true,
-      });
-    }
     interaction
       .reply({
         content: `${interaction.user}, irei te marcar daqui: ${time}s`,

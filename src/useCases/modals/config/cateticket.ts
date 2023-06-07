@@ -21,7 +21,7 @@ export default class RecusarDueloClass extends actionEvent {
   }
   async execute({ client, interaction }: actionEventProps) {
     if (!interaction.isModalSubmit()) return;
-    await interaction.deferReply({ephemeral: true})
+    await interaction.deferReply({ ephemeral: true });
     const id = interaction.fields.getTextInputValue("cateticket-s");
     let canals = interaction.guild?.channels.cache.find(
       (c) => c.type === ChannelType.GuildCategory && c.id === id
@@ -43,7 +43,7 @@ export default class RecusarDueloClass extends actionEvent {
           await errorreport(userError);
         }
       }
-      const set = await client.prisma.config.update({
+      await client.prisma.config.update({
         where: {
           guild_id: interaction.guild?.id,
         },
@@ -51,15 +51,16 @@ export default class RecusarDueloClass extends actionEvent {
           cateticket: id,
         },
       });
-      const embed = await embedlogs(`Categoria`, id, interaction.guild?.id, interaction.guild?.name);
+      const embed = await embedlogs(
+        `Categoria`,
+        id,
+        interaction.guild?.id,
+        interaction.guild?.name
+      );
       await logs(embed);
-      interaction
-        .editReply({
-          content: `**Categoria setado em:** <#${id}>`,
-        })
-        .then(() => {
-          return set;
-        });
+      interaction.editReply({
+        content: `**Categoria setado em:** <#${id}>`,
+      });
     }
   }
 }
