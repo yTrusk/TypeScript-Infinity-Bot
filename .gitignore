@@ -1,9 +1,5 @@
 node_modules
 .env
-migrations
 package-lock.json
-zip.zip
-squarecloud.app
-basecmd.txt
 dist
 infinity-ts.zip
